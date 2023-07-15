@@ -7,7 +7,7 @@ const columns = [
   {
     field: 'district',
     headerName: 'District',
-    width: 80,
+    width: 200,
   },
   {
     field: 'quantity',
@@ -59,7 +59,7 @@ export default function CountryLevelMilkProductionTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        components={{Toolbar: CustomToolbar}}
+        // components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );

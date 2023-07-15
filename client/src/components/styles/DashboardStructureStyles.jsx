@@ -21,7 +21,7 @@ export const TopNavigationBar = styled.div`
             font-size: 200%;
             text-decoration: none;
             font-weight: 900;
-            color: #0066cc;
+            color: #339966;
         }
 
         svg {
@@ -96,7 +96,7 @@ export const SideBarMenueContainer = styled.div`
     overflow-y: auto;
     padding: 10px;
     border-radius: 5px;
-    background: #003366;
+    background: #26734d;
     color: white;
     height: 90vh;
     height: 90svh;
@@ -146,11 +146,11 @@ export const SideBarMenuItem = styled(NavLink)`
     }
 
     &:hover {
-        color: #3399ff;
+        color: yellow;
     }
 
     &.active {
-        color: #1a8cff;
+        color: orange;
     }
 
     @media (max-width: 991px) {

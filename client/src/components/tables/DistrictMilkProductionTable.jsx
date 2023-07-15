@@ -7,7 +7,7 @@ const columns = [
   {
     field: 'district',
     headerName: 'District',
-    width: 80,
+    width: 150,
   },
   {
     field: 'mccName',
@@ -64,7 +64,7 @@ export default function DistrictMilkProductionTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        components={{Toolbar: CustomToolbar}}
+        // components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );

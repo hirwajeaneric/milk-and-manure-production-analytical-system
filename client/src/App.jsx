@@ -145,9 +145,13 @@ function App() {
             <Route path='forgot-password' element={<RabForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<RabResetPassword />} />
           </Route>
-          <Route path='/rab/' element={authToken ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}>
-            <Route path='' element={<RabStats />} />
+          <Route path='/rab/' element={<RabDashboardMain />}>
+          {/* <Route path='/rab/' element={authToken ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}> */}
+            <Route path='dashboard' element={<RabStats />} />
             <Route path='production' element={<RabProduction />} >
+              <Route path='' element={<RabMilkProduction />}>
+                <Route path=':productionId' element={<RabProductionDetails />} />
+              </Route>
               <Route path='milk' element={<RabMilkProduction />}>
                 <Route path=':productionId' element={<RabProductionDetails />} />
               </Route>
@@ -178,7 +182,7 @@ function App() {
             <Route path='reset-password/:token/:userId' element={<VetResetPassword />} />
           </Route>
           <Route path='/vet/:district/' element={authToken ? <VetDashboardMain /> : <Navigate replace to={'/vet/auth/signin'} />}>
-            <Route path='' element={<VetStats />} />
+            <Route path='dashboard' element={<VetStats />} />
             <Route path='production' element={<VetProduction />} >
               <Route path='milk' element={<VetMilkProduction />}>
                 <Route path=':productionId' element={<VetProductionDetails />} />
@@ -207,7 +211,7 @@ function App() {
             <Route path='reset-password/:token/:userId' element={<MCCResetPassword />} />
           </Route>
           <Route path='/mcc/:code/' element={authToken ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}>
-            <Route path='' element={<MCCStats />} />
+            <Route path='dashboard' element={<MCCStats />} />
             <Route path='production' element={<MCCProduction />} >
               <Route path='milk' element={<MCCMilkProduction />}>
                 <Route path=':productionId' element={<MCCProductionDetails />} />
@@ -234,7 +238,7 @@ function App() {
             <Route path='reset-password/:token/:userId' element={<FarmerResetPassword />} />
           </Route>
           <Route path='/' element={authToken ? <FarmerDashboardMain /> : <Navigate replace to={'/auth/signin'} />}>
-            <Route path='' element={<FarmerStats />} />
+            <Route path='dashboard' element={<FarmerStats />} />
             <Route path='production' element={<FarmerProduction />} >
               <Route path='milk' element={<FarmerMilkProduction />}>
                 <Route path=':productionId' element={<FarmerProductionDetails />} />

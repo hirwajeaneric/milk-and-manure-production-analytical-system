@@ -28,22 +28,31 @@ const DashboardMain = () => {
         setAnchorEl(null);
     };
 
-    const user = cookies.UserData;      
+    // const user = cookies.UserData;      
+    const user = {
+        fullName: 'Impuhwe Stella',
+        userRole: 'rab-admin',
+        email: 'impuhwe@gmail.com'
+    }
 
     const signout = () => {
         removeCookie('AuthToken');
         removeCookie('UserData');
-        navigate('/auth/signin')
+        navigate('/rab/auth/signin')
     }
 
-    const { isLoading, listOfConsultantsProjects, listOfOwnerProjects, numberOfProjects } = useSelector(state => state.project);
+    const { isLoading: loadingManure, manureProductionOnCountryLevel, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
+    const { isLoading: loadingMilk, milkProductionOnCountryLevel, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
+    const { isLoading: loadingMccs, allMCCs, numberOfAllMCCs } = useSelector(state => state.mcc);
+    const { isLoading: loadingUsers, allMccEmployees, numberOfAllMccEmployees } = useSelector(state => state.user);
     
+
     return (
         <VerticallyFlexSpaceBetweenContainer style={{ backgroundColor: '#e0ebeb' }}>
             <TopNavigationBar>
                 <div className="left">
                     <MdMenu style={{ cursor: 'pointer' }} onClick={() => setFullSize(!fullSize)}/>
-                    <Link to='/'>Contruc</Link>
+                    <Link to='/'>MMPAs</Link>
                 </div>    
                 <div className="right">
                     <MdNotifications style={{ fontSize: '150%', color: 'gray'}} />

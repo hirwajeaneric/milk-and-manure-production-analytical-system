@@ -7,22 +7,22 @@ const columns = [
   {
     field: 'fullName',
     headerName: 'Name',
-    width: 80,
+    width: 200,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 80,
+    width: 130,
   },
   {
     field: 'email',
     headerName: 'Email',
-    width: 80,
+    width: 200,
   },
   {
     field: 'district',
     headerName: 'District',
-    width: 80,
+    width: 120,
   },
   {
     field: 'status',
@@ -51,7 +51,7 @@ export const TableStyles = {
   width: '100%',
   height: '500px',
   background: 'white',
-  marginTop: '20px' 
+  // marginTop: '20px' 
 }
 
 var rows = [];

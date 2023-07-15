@@ -33,6 +33,19 @@ export const VerticallyFlexGapContainer = styled.div`
     align-items: center;
 `;
 
+export const DetailsContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+
+    label {
+        font-weight: 800;
+        color: gray;
+    }
+`;
+
 export const VerticallyFlexSpaceBetweenForm = styled.form`
     width: 100%;  
     display: flex;

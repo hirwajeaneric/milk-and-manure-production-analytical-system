@@ -19,14 +19,13 @@ const Signup = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = data => {
-
     if (data.password !== data.confirmPassword) {
       setResponseMessage({message:'Passwords do not match', severity: 'warning'});
       setOpen(true);
       return;
     } else {
 
-      data.role = 'Consultant';
+      data.userRole = 'rab-admin';
       setIsProcessing(true);
 
       axios.post(serverUrl+'/api/v1/mmpas/user/signup', data)
