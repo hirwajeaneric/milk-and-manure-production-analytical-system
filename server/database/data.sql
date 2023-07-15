@@ -8,8 +8,12 @@ CREATE TABLE mcc (
     district VARCHAR(80),
     sector VARCHAR(80),
     code VARCHAR(20),
-    status VARCHAR(10)
+    status VARCHAR(10),
+    registrationDate DATE
 );
+
+-- code is made of district name and mcc number: 
+-- Ex: gasabo01 
 
 CREATE TABLE useraccount (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -23,13 +27,12 @@ CREATE TABLE useraccount (
     password VARCHAR(255),
     status VARCHAR(10),
     mccId VARCHAR(255),
+    mccName VARCHAR(80),
+    joinDate DATE NOT NULL,
     FOREIGN KEY (mccId) REFERENCES mcc(id)
 );
 
--- code is made of district name and mcc number: 
--- Ex: gasabo01 
-
-CREATE TABLE production (
+CREATE TABLE milk_production (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
     date DATE NOT NULL,
     farmerId VARCHAR(255) NOT NULL,
@@ -39,8 +42,22 @@ CREATE TABLE production (
     mccName VARCHAR(80),
     district VARCHAR(80),
     sector VARCHAR(80),
-    milkQuantity INT,
-    manureQuantity INT,
+    quantity INT,
+    FOREIGN KEY (farmerId) REFERENCES userAccount(id),
+    FOREIGN KEY (mccId) REFERENCES mcc(id)
+);
+
+CREATE TABLE manure_production (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    date DATE NOT NULL,
+    farmerId VARCHAR(255) NOT NULL,
+    farmerName VARCHAR(80) NOT NULL,
+    farmerPhone VARCHAR(10) NOT NULL,
+    mccId VARCHAR(255),
+    mccName VARCHAR(80),
+    district VARCHAR(80),
+    sector VARCHAR(80),
+    quantity INT,
     FOREIGN KEY (farmerId) REFERENCES userAccount(id),
     FOREIGN KEY (mccId) REFERENCES mcc(id)
 );
