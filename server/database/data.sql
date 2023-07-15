@@ -20,6 +20,7 @@ CREATE TABLE useraccount (
     fullName VARCHAR(80) NOT NULL,
     email VARCHAR(80) NOT NULL,
     phone VARCHAR(10) NOT NULL,
+    nationalId varchar(16) NOT NULL,
     province VARCHAR(80),
     district VARCHAR(80),
     sector VARCHAR(80),
