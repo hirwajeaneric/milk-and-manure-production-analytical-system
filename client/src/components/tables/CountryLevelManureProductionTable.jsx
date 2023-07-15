@@ -7,23 +7,23 @@ const columns = [
   {
     field: 'district',
     headerName: 'District',
-    width: 80,
+    width: 200,
   },
   {
     field: 'quantity',
     headerName: 'Quantity',
-    width: 80,
+    width: 120,
   },
   {
     field: 'period',
     headerName: 'Period',
-    width: 80,
+    width: 100,
   },
   {
     field: 'actions',
     headerName: 'Actions',
     type: 'actions',
-    width: 70,
+    width: 80,
     renderCell: (params) => <TableActions parameters= {params} />
   },
 ]
@@ -41,12 +41,12 @@ export const TableStyles = {
   width: '100%',
   height: '500px',
   background: 'white',
-  marginTop: '20px' 
+  // marginTop: '20px' 
 }
 
 var rows = [];
 
-export default function DistrictManureProductionTable({data}) {
+export default function CountryLevelManureProductionTable({data}) {
   rows = data;
 
   return (

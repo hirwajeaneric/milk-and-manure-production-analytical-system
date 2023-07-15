@@ -69,6 +69,9 @@ import MCCInfo from './pages/mcc/MCCInfo';
 import MCCProduction from './pages/mcc/Production';
 import MCCProductionDetails from './pages/mcc/ProductionDetails';
 import MCCReportPreview from './pages/mcc/ReportPreview';
+import MCCFarmers from './pages/mcc/Farmers';
+import AddMilkProduction from './pages/mcc/AddMilkProduction';
+import AddManureProduction from './pages/mcc/AddManureProduction';
 
 
 // FARMER //////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,20 +213,24 @@ function App() {
             <Route path='forgot-password' element={<MCCForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<MCCResetPassword />} />
           </Route>
-          <Route path='/mcc/:code/' element={authToken ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}>
+          {/* <Route path='/mcc/:code/' element={authToken ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}> */}
+          <Route path='/mcc/:code/' element={<MCCDashboardMain />}>
             <Route path='dashboard' element={<MCCStats />} />
             <Route path='production' element={<MCCProduction />} >
               <Route path='milk' element={<MCCMilkProduction />}>
                 <Route path=':productionId' element={<MCCProductionDetails />} />
+                <Route path='add' element={<AddMilkProduction />} />
               </Route>
               <Route path='manure' element={<MCCManureProduction />}>
                 <Route path=':productionId' element={<MCCProductionDetails />} />
+                <Route path='add' element={<AddManureProduction />} />
               </Route>
             </Route>
             <Route path='employees' element={<MCCEmployees />}>
               <Route path=':employeeId' element={<MCCEmployeeInfo />} />
             </Route>
             <Route path='my-mcc' element={<MCCInfo />} />
+            <Route path='farmers' element={<MCCFarmers />} />
             <Route path='report' element={<MCCReportPreview />} />
             <Route path='settings' element={<MCCSettings />} />
           </Route>

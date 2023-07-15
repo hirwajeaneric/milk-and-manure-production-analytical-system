@@ -148,7 +148,7 @@ const DashboardMain = () => {
                                 {!fullSize && <span className="text">Dashboard</span>}
                             </div>
                         </SideBarMenuItem>
-                        <SideBarMenuItem to={'production'}>
+                        <SideBarMenuItem to={'production/milk'}>
                             <MdPropaneTank style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <>
@@ -182,12 +182,12 @@ const DashboardMain = () => {
                             {!fullSize && <><span className="text">Veterinaries</span></>}
                             </div>
                         </SideBarMenuItem>
-                        {/* <SideBarMenuItem to={'resources'}>
+                        <SideBarMenuItem to={'farmers'}>
                             <GiFarmer style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <><span className="text">Farmers</span></>}
                             </div>
-                        </SideBarMenuItem> */}
+                        </SideBarMenuItem>
                         <SideBarMenuItem to={'settings'}>
                             <RiUser4Fill style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">

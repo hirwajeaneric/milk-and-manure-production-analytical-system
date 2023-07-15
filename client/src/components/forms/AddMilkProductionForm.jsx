@@ -24,7 +24,7 @@ export default function AddMilkProductionForm({projectId}) {
         
         console.log(data);
 
-        axios.post(serverUrl+'/api/v1/mmpas/milkProduction/add', data)
+        axios.post(serverUrl+'/api/v1/mmpas/milk/add', data)
         .then(response => {
             setTimeout(() => {
                 if (response.status === 201) {

@@ -12,18 +12,18 @@ const columns = [
   {
     field: 'quantity',
     headerName: 'Quantity',
-    width: 80,
+    width: 120,
   },
   {
     field: 'period',
     headerName: 'Period',
-    width: 80,
+    width: 100,
   },
   {
     field: 'actions',
     headerName: 'Actions',
     type: 'actions',
-    width: 70,
+    width: 80,
     renderCell: (params) => <TableActions parameters= {params} />
   },
 ]
@@ -39,9 +39,9 @@ function CustomToolbar() {
 export const TableStyles = {
   padding: '0px',
   width: '100%',
-  height: '500px',
+  height: '400px',
   background: 'white',
-  marginTop: '20px' 
+  // marginTop: '20px' 
 }
 
 var rows = [];
@@ -73,7 +73,7 @@ const TableActions = ({parameters}) => {
   return (
     <Box>
       <Tooltip title='View / Edit'>
-        <IconButton onClick={() => {navigate(parameters.row.id)}}>
+        <IconButton onClick={() => {navigate(`./${parameters.row.id}`)}}>
           <Preview />
         </IconButton>
       </Tooltip>
