@@ -2,6 +2,7 @@ const express = require('express');
 const userRouter = express.Router();
 
 const {
+    list,
     createAccountForUser,
     deleteAccount,
     findByDistrict,
@@ -23,6 +24,7 @@ userRouter.post('/forgotPassword', forgotPassword);
 userRouter.post('/resetPassword', resetPassword);
 userRouter.put('/update', updateAccount);
 userRouter.delete('/delete', deleteAccount);
+userRouter.get('/list', list);
 userRouter.get('/findById', findById);
 userRouter.get('/findByDistrict', findByDistrict);
 userRouter.get('/findByMccId', findByMccId);
