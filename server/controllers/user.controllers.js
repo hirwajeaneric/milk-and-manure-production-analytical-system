@@ -153,67 +153,63 @@ const signup = asyncWrapper(async (req, res, next) => {
     var joinDate = new Date().toISOString();
     var status = 'active';
 
-    const user = await pool.query(
-        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)', 
+    const recordedUser = await pool.query(
+        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
         [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
     );   
 
-    console.log(user);
+    const token = generateToken({id: recordedUser.rows[0].id, role: recordedUser.rows[0].role, email: recordedUser.rows[0].email});
 
-    const recordedUser = await pool.query('SELECT * FROM useraccounts WHERE email= $1', [email])
-
-    const token = generateToken({id: recordedUser.id, role: recordedUser.role, email: recordedUser.email});
-
-    const createdAccount = {};
+    var createdAccount = {};
 
     if (role === 'farmer') {
         createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            province: response.rows[0].province,
-            district: response.rows[0].district,
-            sector: response.rows[0].sector,
+            id: recordedUser.rows[0].id,
+            fullName: recordedUser.rows[0].fullName,
+            email: recordedUser.rows[0].email,
+            role: recordedUser.rows[0].role,
+            status: recordedUser.rows[0].status,
+            province: recordedUser.rows[0].province,
+            district: recordedUser.rows[0].district,
+            sector: recordedUser.rows[0].sector,
             token: token,
         }
     } else if (role === 'mcc') {
         createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            mccId: response.rows[0].mccId,
-            mccName: response.rows[0].mccName,
-            status: response.rows[0].status,
+            id: recordedUser.rows[0].id,
+            fullName: recordedUser.rows[0].fullName,
+            email: recordedUser.rows[0].email,
+            role: recordedUser.rows[0].role,
+            mccId: recordedUser.rows[0].mccId,
+            mccName: recordedUser.rows[0].mccName,
+            status: recordedUser.rows[0].status,
             token: token,
         }
     } else if (role === 'veterinary') {
         createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            province: response.rows[0].province,
-            district: response.rows[0].district,
+            id: recordedUser.rows[0].id,
+            fullName: recordedUser.rows[0].fullName,
+            email: recordedUser.rows[0].email,
+            role: recordedUser.rows[0].role,
+            status: recordedUser.rows[0].status,
+            province: recordedUser.rows[0].province,
+            district: recordedUser.rows[0].district,
             token: token,
         }
     } else if (role === 'rab') {
         createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
+            id: recordedUser.rows[0].id,
+            fullName: recordedUser.rows[0].fullName,
+            email: recordedUser.rows[0].email,
+            role: recordedUser.rows[0].role,
+            status: recordedUser.rows[0].status,
             token: token,
         }
     }
 
     res.status(statusCodes.OK).json({
         message: 'Account created',
-        createdAccount
+        user: createdAccount
     })
 })
 
