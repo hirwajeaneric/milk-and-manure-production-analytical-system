@@ -236,92 +236,6 @@ const comparePassword = async (candidatePassword, existingUserPassword) => {
 }
 
 
-const createAccountForUser = asyncWrapper(async (req, res, next) => {
-    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
-    
-    const response = await pool.query('SELECT email FROM useraccounts WHERE email = $1', [email])
-    if (response.rowCount > 0) {
-        return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
-    }
-
-    const { error } = userAccountSignUpVal.validate({ fullName, email, phone, nationalId, role, status, password });
-
-    if (error) { 
-        return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
-    }
-    
-    const salt = await bcrypt.genSalt(10);
-
-    const hashedPassword = await bcrypt.hash(req.body.password, salt); 
-    var id = uuidv4(); 
-    var joinDate = Date.now();
-    var status = 'active';
-
-    const user = await pool.query(
-        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)', 
-        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
-    );   
-
-    console.log(user);
-
-    const recordedUser = await pool.query('SELECT * FROM useraccounts WHERE email= $1', [email])
-
-    const token = generateToken({id: recordedUser.id, role: recordedUser.role, email: recordedUser.email});
-
-    const createdAccount = {};
-
-    if (role === 'farmer') {
-        createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            province: response.rows[0].province,
-            district: response.rows[0].district,
-            sector: response.rows[0].sector,
-            token: token,
-        }
-    } else if (role === 'mcc') {
-        createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            mccId: response.rows[0].mccId,
-            mccName: response.rows[0].mccName,
-            status: response.rows[0].status,
-            token: token,
-        }
-    } else if (role === 'veterinary') {
-        createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            province: response.rows[0].province,
-            district: response.rows[0].district,
-            token: token,
-        }
-    } else if (role === 'rab') {
-        createdAccount = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            token: token,
-        }
-    }
-
-    res.status(statusCodes.OK).json({
-        message: 'Account created',
-        createdAccount
-    })
-})
-
-
 const forgotPassword = asyncWrapper(async(req, res, next) => {
     const { email } = req.body;
     
@@ -347,7 +261,7 @@ const forgotPassword = asyncWrapper(async(req, res, next) => {
 const resetPassword = asyncWrapper(async(req, res, next) => {
     const password = req.body.password;
 
-    const user = await pool.query('SELECT * FROM users WHERE id = $1', [req.query.id]);
+    const user = await pool.query('SELECT * FROM useraccounts WHERE id = $1', [req.query.id]);
     if (user.rowCount === 0) {
         throw new CustomError.BadRequestError('Invalid or expired link');
     }
@@ -375,7 +289,7 @@ const resetPassword = asyncWrapper(async(req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const newHashedPassword = await bcrypt.hash(password, salt);
 
-    const updateUserAccount = await pool.query('UPDATE EMPLOYEE SET password = $1 WHERE id = $2', [newHashedPassword, req.query.id]);
+    const updateUserAccount = await pool.query('UPDATE useraccounts SET password = $1 WHERE id = $2', [newHashedPassword, req.query.id]);
 
     if (!updateUserAccount) {
         throw new CustomError.UnauthenticatedError('Unable to change password');
@@ -416,10 +330,10 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
     const result = await pool.query(query);
 
     if (result.rowCount === 0) {
-      throw new CustomError.NotFoundError('Employee not found');
+      throw new CustomError.NotFoundError('User not found');
     }
 
-    res.status(statusCodes.OK).json({ message: 'Employee data updated successfully' });
+    res.status(statusCodes.OK).json({ message: 'User data updated successfully' });
 })
 
 
@@ -429,10 +343,10 @@ const deleteAccount = asyncWrapper(async (req, res, next) => {
     const deleteUserAccount = await pool.query('DELETE FROM useraccounts WHERE id = $1', [id]);
   
     if (deleteUserAccount.rowCount === 0) {
-      throw new CustomError.NotFoundError('Employee not found');
+      throw new CustomError.NotFoundError('User not found');
     }
   
-    res.status(statusCodes.OK).json({ message: 'Employee account deleted' });
+    res.status(statusCodes.OK).json({ message: 'User account deleted' });
 });
   
 const findById = asyncWrapper(async (req, res, next) => {
@@ -441,7 +355,7 @@ const findById = asyncWrapper(async (req, res, next) => {
     const user = await pool.query('SELECT * FROM useraccounts WHERE id = $1', [id]);
   
     if (user.rowCount === 0) {
-      throw new CustomError.NotFoundError('Employee not found');
+      throw new CustomError.NotFoundError('User not found');
     }
   
     res.status(statusCodes.OK).json(user.rows[0]);
@@ -463,20 +377,27 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
     res.status(statusCodes.OK).json(users.rows);
 });
 
-const findByMccId = (req, res, next) => {
-    
-}
+const findByMccId = asyncWrapper(async(req, res, next) => {
+    const { mccId } = req.query;
+  
+    const users = await pool.query('SELECT * FROM useraccounts WHERE mccId = $1', [mccId]);
+  
+    res.status(statusCodes.OK).json(users.rows);
+});
 
 
-const findByDistrict = (req, res, next) => {
-    
-}
+const findByDistrict = asyncWrapper(async(req, res, next) => {
+    const { district } = req.query;
+  
+    const users = await pool.query('SELECT * FROM useraccounts WHERE district = $1', [district]);
+  
+    res.status(statusCodes.OK).json(users.rows);
+})
 
 module.exports = { 
     list,
     signin, 
     signup, 
-    createAccountForUser, 
     deleteAccount, 
     updateAccount, 
     forgotPassword, 
