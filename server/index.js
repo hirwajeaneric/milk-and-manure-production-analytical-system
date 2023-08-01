@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('express-async-errors');
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 6000
 const express = require('express');
 const cors = require('cors');
 const app = express();

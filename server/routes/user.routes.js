@@ -1,24 +1,32 @@
 const express = require('express');
-const mccRouter = express.Router();
+const userRouter = express.Router();
 
 const {
-  list,
-  add,
-  update,
-  deleteMcc,
-  findById,
-  findByCode,
-  findByNumber,
-  findByStatus,
-} = require('../controllers/mcc.controllers');
+    list,
+    deleteAccount,
+    findByDistrict,
+    findById, 
+    findByMccId,
+    findByStatus, 
+    findByUserRole, 
+    forgotPassword,
+    resetPassword,
+    signin,
+    signup,
+    updateAccount
+ } = require('../controllers/user.controllers');
 
-mccRouter.get('/list', list);
-mccRouter.post('/add', add);
-mccRouter.put('/update/:id', update);
-mccRouter.delete('/delete/:id', deleteMcc);
-mccRouter.get('/findById/:id', findById);
-mccRouter.get('/findByCode', findByCode);
-mccRouter.get('/findByNumber', findByNumber);
-mccRouter.get('/findByStatus', findByStatus);
+userRouter.post('/signin', signin);
+userRouter.post('/signup', signup);
+userRouter.post('/forgotPassword', forgotPassword);
+userRouter.post('/resetPassword', resetPassword);
+userRouter.put('/update', updateAccount);
+userRouter.delete('/delete', deleteAccount);
+userRouter.get('/list', list);
+userRouter.get('/findById', findById);
+userRouter.get('/findByDistrict', findByDistrict);
+userRouter.get('/findByMccId', findByMccId);
+userRouter.get('/findByStatus', findByStatus);
+userRouter.get('/findByUserRole', findByUserRole);
 
-module.exports = mccRouter;
+module.exports = userRouter;
