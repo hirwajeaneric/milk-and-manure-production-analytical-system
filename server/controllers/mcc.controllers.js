@@ -2,7 +2,7 @@ const pool = require('../database/db');
 const { default: statusCodes } = require('http-status-codes');
 const { addMccValidationSchema: mccValidation } = require('../utils/validations/validateMCC');
 const CustomError = require('../errors');
-const Joi = require('joi');
+const { v4: uuidv4 } = require('uuid');
 const asyncWrapper = require('../middleware/async');
 
 
@@ -36,10 +36,13 @@ const add = asyncWrapper(async (req, res, next) => {
     const codeNumber = String(number).padStart(2, '0');
     const codeValue = `${district.toLowerCase()}${codeNumber}`;
 
+    // MCC Id
+    const id = uuidv4();
+
     // Insert the new MCC into the database.
     const newMcc = await pool.query(
-        'INSERT INTO mccs (name, number, province, district, sector, code, status, registrationDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-        [name, number, province, district, sector, codeValue, status, registrationDate]
+        'INSERT INTO mccs (id, name, number, province, district, sector, code, status, registrationDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+        [id, name, number, province, district, sector, codeValue, status, registrationDate]
     );
 
     res.status(statusCodes.CREATED).json(newMcc.rows[0]);
