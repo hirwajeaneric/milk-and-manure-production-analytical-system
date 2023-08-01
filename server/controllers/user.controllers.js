@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { userAccountSignUpValidationSchema:userAccountSignUpVal, } = require('../utils/validations/validateUserAccount');
+const { userAccountSignUpValidationSchema:userAccountSignUpVal } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -349,6 +349,7 @@ const deleteAccount = asyncWrapper(async (req, res, next) => {
     res.status(statusCodes.OK).json({ message: 'User account deleted' });
 });
   
+
 const findById = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
@@ -360,7 +361,8 @@ const findById = asyncWrapper(async (req, res, next) => {
   
     res.status(statusCodes.OK).json(user.rows[0]);
 });
-  
+
+
 const findByUserRole = asyncWrapper(async (req, res, next) => {
     const { role } = req.query;
   
@@ -368,7 +370,8 @@ const findByUserRole = asyncWrapper(async (req, res, next) => {
   
     res.status(statusCodes.OK).json(users.rows);
 });
-  
+
+
 const findByStatus = asyncWrapper(async (req, res, next) => {
     const { status } = req.query;
   
@@ -376,6 +379,7 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
   
     res.status(statusCodes.OK).json(users.rows);
 });
+
 
 const findByMccId = asyncWrapper(async(req, res, next) => {
     const { mccId } = req.query;
@@ -393,6 +397,7 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
   
     res.status(statusCodes.OK).json(users.rows);
 })
+
 
 module.exports = { 
     list,

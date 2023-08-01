@@ -9,6 +9,6 @@ const manureProduction = require('./milkProduction.routes');
 router.use('/user', user);
 router.use('/mcc', mcc);
 router.use('/manure', manureProduction);
-router.use('/milk', manureProduction);
+router.use('/milk', milkProduction);
 
 module.exports = router;
