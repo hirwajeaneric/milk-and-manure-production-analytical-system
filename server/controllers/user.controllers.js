@@ -17,15 +17,50 @@ const list = asyncWrapper(async (req, res, next) => {
 
 
 const signin = asyncWrapper(async (req, res, next) => {
-    const { email, password, role } = req.body;
+    const { mcc: mccId, role, province, district } = req.query;
+
+    const { email, password } = req.body;
     
     if (!email || !password || !role) {
-        throw new CustomError.BadRequestError('Please provide required credentials');
+        throw new CustomError.BadRequestError('Please provide all required credentials');
     }   
     
-    const response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role= $2', [email, role]);
-    if (response.rowCount === 0) {
-        throw new CustomError.UnauthenticatedError('Invalid credentials')
+    const response = {};
+
+    // MCC LOGIN
+    if (role === 'mcc' && !mccId) {
+        throw new CustomError.BadRequestError('Please provide all required credentials');
+    } else if (role === 'mcc' && mccId) {
+        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, mccId]);
+        if (response.rowCount === 0) {
+            throw new CustomError.UnauthenticatedError('User account unrecognized');
+        }    
+    }
+
+    // VETERINARY LOGIN
+    if (role === 'veterinary' && (!province || !district)) {
+        throw new CustomError.BadRequestError('Signin failed. Please make sure you are using the appropriate login link.');
+    } else if (role === 'veterinary' && province && district) {
+        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role = $2 AND province = $3 AND district = $4', [email, role, province, district]);
+        if (response.rowCount === 0) {
+            throw new CustomError.UnauthenticatedError('User account unrecognized');
+        }    
+    }
+
+    // FARMER LOGIN
+    if (role === 'farmer') {
+        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role= $2', [email, role]);
+        if (response.rowCount === 0) {
+            throw new CustomError.UnauthenticatedError('Invalid credentials')
+        }    
+    }
+
+    // ADMIN/RAB LEVEL LOGIN
+    if (role === 'rab') {
+        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role= $2', [email, role]);
+        if (response.rowCount === 0) {
+            throw new CustomError.UnauthenticatedError('Invalid credentials')
+        }    
     }
 
     const isPasswordCorrect = await comparePassword(password, response.rows[0].password)
@@ -94,7 +129,7 @@ const signin = asyncWrapper(async (req, res, next) => {
 
 
 const signup = asyncWrapper(async (req, res, next) => {
-    const { fullName, email, phone, gender, dateOfBirth, nationalId, state, city, province, district, sector, cell, village, role, password, status } = req.body;
+    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
     
     const response = await pool.query('SELECT email FROM useraccounts WHERE email = $1', [email])
     if (response.rowCount > 0) {
@@ -108,23 +143,27 @@ const signup = asyncWrapper(async (req, res, next) => {
     }
     
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt); 
 
+    const hashedPassword = await bcrypt.hash(req.body.password, salt); 
     var id = uuidv4(); 
+    var joinDate = Date.now();
+    var status = 'active';
 
     const user = await pool.query(
-        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', 
-        [id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate]
+        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)', 
+        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
     );   
+
+    console.log(user);
 
     const recordedUser = await pool.query('SELECT * FROM useraccounts WHERE email= $1', [email])
 
-    const token = generateToken({id: user.id, role: user.role, email: user.email});
+    const token = generateToken({id: recordedUser.id, role: recordedUser.role, email: recordedUser.email});
 
     const createdAccount = {};
 
     if (role === 'farmer') {
-        user = {
+        createdAccount = {
             id: response.rows[0].id,
             fullName: response.rows[0].fullName,
             email: response.rows[0].email,
@@ -136,7 +175,7 @@ const signup = asyncWrapper(async (req, res, next) => {
             token: token,
         }
     } else if (role === 'mcc') {
-        user = {
+        createdAccount = {
             id: response.rows[0].id,
             fullName: response.rows[0].fullName,
             email: response.rows[0].email,
@@ -147,7 +186,7 @@ const signup = asyncWrapper(async (req, res, next) => {
             token: token,
         }
     } else if (role === 'veterinary') {
-        user = {
+        createdAccount = {
             id: response.rows[0].id,
             fullName: response.rows[0].fullName,
             email: response.rows[0].email,
@@ -158,7 +197,7 @@ const signup = asyncWrapper(async (req, res, next) => {
             token: token,
         }
     } else if (role === 'rab') {
-        user = {
+        createdAccount = {
             id: response.rows[0].id,
             fullName: response.rows[0].fullName,
             email: response.rows[0].email,
@@ -198,54 +237,87 @@ const comparePassword = async (candidatePassword, existingUserPassword) => {
 
 
 const createAccountForUser = asyncWrapper(async (req, res, next) => {
-    const { fullName, email, phone, gender, dateOfBirth, nationalId, state, city, province, district, sector, cell, village, role, password, status } = req.body;
+    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
     
-    // checking if the user is not already registered?
     const response = await pool.query('SELECT email FROM useraccounts WHERE email = $1', [email])
     if (response.rowCount > 0) {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
     }
 
-    // Validate signin info
-    const { error } = empSignUpVal.validate({ fullName, email, phone, gender, dateOfBirth, nationalId, role, status, password });
+    const { error } = userAccountSignUpVal.validate({ fullName, email, phone, nationalId, role, status, password });
 
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
-
-    // Create Id using UUID
-    var randomEmployeePassword = uuidv4(); 
     
-    // Harshing the password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(randomEmployeePassword, salt); 
 
-    // Create Id using UUID
+    const hashedPassword = await bcrypt.hash(req.body.password, salt); 
     var id = uuidv4(); 
+    var joinDate = Date.now();
+    var status = 'active';
 
-    // Registering the user
     const user = await pool.query(
-        'INSERT INTO useraccounts (id, fullName, email, phone, gender, dateOfBirth, nationalId, state, city, province, district, sector, cell, village, role, password, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', 
-        [id, fullName, email, phone, gender, dateOfBirth, nationalId, state, city, province, district, sector, cell, village, role, hashedPassword, status]
+        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)', 
+        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
     );   
+
+    console.log(user);
 
     const recordedUser = await pool.query('SELECT * FROM useraccounts WHERE email= $1', [email])
 
-    // Generating auth token
-    const token = generateToken({id: user.id, role: user.role, email: user.email});
+    const token = generateToken({id: recordedUser.id, role: recordedUser.role, email: recordedUser.email});
 
-    // Returning response
-    res.status(statusCodes.CREATED).json({
-        message: 'Account created',
-        user: {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            password: randomEmployeePassword,
+    const createdAccount = {};
+
+    if (role === 'farmer') {
+        createdAccount = {
+            id: response.rows[0].id,
+            fullName: response.rows[0].fullName,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            status: response.rows[0].status,
+            province: response.rows[0].province,
+            district: response.rows[0].district,
+            sector: response.rows[0].sector,
             token: token,
         }
+    } else if (role === 'mcc') {
+        createdAccount = {
+            id: response.rows[0].id,
+            fullName: response.rows[0].fullName,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            mccId: response.rows[0].mccId,
+            mccName: response.rows[0].mccName,
+            status: response.rows[0].status,
+            token: token,
+        }
+    } else if (role === 'veterinary') {
+        createdAccount = {
+            id: response.rows[0].id,
+            fullName: response.rows[0].fullName,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            status: response.rows[0].status,
+            province: response.rows[0].province,
+            district: response.rows[0].district,
+            token: token,
+        }
+    } else if (role === 'rab') {
+        createdAccount = {
+            id: response.rows[0].id,
+            fullName: response.rows[0].fullName,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            status: response.rows[0].status,
+            token: token,
+        }
+    }
+
+    res.status(statusCodes.OK).json({
+        message: 'Account created',
+        createdAccount
     })
 })
 
