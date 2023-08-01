@@ -1,6 +1,6 @@
 CREATE DATABASE milk_and_manure;
 
-CREATE TABLE mcc (
+CREATE TABLE mccs (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
     name VARCHAR(80) NOT NULL,
     number VARCHAR(80) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE mcc (
 -- code is made of district name and mcc number: 
 -- Ex: gasabo01 
 
-CREATE TABLE useraccount (
+CREATE TABLE useraccounts (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
     fullName VARCHAR(80) NOT NULL,
     email VARCHAR(80) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE useraccount (
     province VARCHAR(80),
     district VARCHAR(80),
     sector VARCHAR(80),
-    userRole VARCHAR(10),
+    role VARCHAR(10),
     password VARCHAR(255),
     status VARCHAR(10),
     mccId VARCHAR(255),
