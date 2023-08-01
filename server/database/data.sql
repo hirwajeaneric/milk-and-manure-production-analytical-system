@@ -27,7 +27,7 @@ CREATE TABLE useraccounts (
     mccId VARCHAR(80),
     mccName VARCHAR(80),
     joinDate DATE NOT NULL,
-    FOREIGN KEY (mccId) REFERENCES mcc(id)
+    FOREIGN KEY (mccId) REFERENCES mccs(id)
 );
 
 CREATE TABLE milk_production (
@@ -41,8 +41,8 @@ CREATE TABLE milk_production (
     district VARCHAR(80),
     sector VARCHAR(80),
     quantity INT,
-    FOREIGN KEY (farmerId) REFERENCES userAccount(id),
-    FOREIGN KEY (mccId) REFERENCES mcc(id)
+    FOREIGN KEY (farmerId) REFERENCES useraccounts(id),
+    FOREIGN KEY (mccId) REFERENCES mccs(id)
 );
 
 CREATE TABLE manure_production (
@@ -56,6 +56,6 @@ CREATE TABLE manure_production (
     district VARCHAR(80),
     sector VARCHAR(80),
     quantity INT,
-    FOREIGN KEY (farmerId) REFERENCES userAccount(id),
-    FOREIGN KEY (mccId) REFERENCES mcc(id)
+    FOREIGN KEY (farmerId) REFERENCES useraccounts(id),
+    FOREIGN KEY (mccId) REFERENCES mccs(id)
 );
