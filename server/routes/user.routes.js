@@ -3,7 +3,6 @@ const userRouter = express.Router();
 
 const {
     list,
-    createAccountForUser,
     deleteAccount,
     findByDistrict,
     findById, 
@@ -19,7 +18,6 @@ const {
 
 userRouter.post('/signin', signin);
 userRouter.post('/signup', signup);
-userRouter.post('/add', createAccountForUser);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.post('/resetPassword', resetPassword);
 userRouter.put('/update', updateAccount);
