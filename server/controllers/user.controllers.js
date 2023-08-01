@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { userAccountSignUpValidationSchema:userAccountSignUpVal } = require('../utils/validations/validateUserAccount');
+const { userAccountSignInValidationSchema, userAccountSignUpValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -25,6 +25,11 @@ const signin = asyncWrapper(async (req, res, next) => {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     }   
     
+    const { error } = userAccountSignInValidationSchema.validate({ email, password });
+    if (error) { 
+        return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
+    }
+
     const response = {};
 
     // MCC LOGIN
@@ -136,8 +141,7 @@ const signup = asyncWrapper(async (req, res, next) => {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
     }
 
-    const { error } = userAccountSignUpVal.validate({ fullName, email, phone, nationalId, role, status, password });
-
+    const { error } = userAccountSignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
@@ -146,7 +150,7 @@ const signup = asyncWrapper(async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(req.body.password, salt); 
     var id = uuidv4(); 
-    var joinDate = Date.now();
+    var joinDate = new Date().toISOString();
     var status = 'active';
 
     const user = await pool.query(

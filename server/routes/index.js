@@ -3,12 +3,12 @@ const router = express.Router();
 
 const user = require('./user.routes');
 const mcc = require('./mcc.routes');
-const milkProduction = require('./manureProduction.routes');
-const manureProduction = require('./milkProduction.routes');
+// const milkProduction = require('./manureProduction.routes');
+// const manureProduction = require('./milkProduction.routes');
 
 router.use('/user', user);
 router.use('/mcc', mcc);
-router.use('/manure', manureProduction);
-router.use('/milk', milkProduction);
+// router.use('/manure', manureProduction);
+// router.use('/milk', milkProduction);
 
 module.exports = router;
