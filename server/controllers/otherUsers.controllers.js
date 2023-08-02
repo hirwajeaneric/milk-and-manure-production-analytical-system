@@ -143,46 +143,63 @@ const signup = asyncWrapper(async (req, res, next) => {
         email: recordedUser.rows[0].email
     });
 
-    var createdAccount = {};
-
-    if (role === 'farmer') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            province: recordedUser.rows[0].province,
-            district: recordedUser.rows[0].district,
-            sector: recordedUser.rows[0].sector,
-            token: token,
-        }
-    } else if (role === 'veterinary') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            province: recordedUser.rows[0].province,
-            district: recordedUser.rows[0].district,
-            token: token,
-        }
-    } else if (role === 'rab') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            token: token,
-        }
-    }
+    var createdAccount = {
+        id: recordedUser.rows[0].id,
+        fullName: recordedUser.rows[0].fullName,
+        email: recordedUser.rows[0].email,
+        role: recordedUser.rows[0].role,
+        status: recordedUser.rows[0].status,
+        token: token,
+    };
 
     res.status(statusCodes.OK).json({
         message: 'Account created',
         user: createdAccount
     })
+})
+
+
+const createAccountForUser = asyncWrapper(async (req, res, next) => {
+    const { fullName, email, phone, nationalId, province, district, sector, role, password } = req.body;
+    
+    const response = await pool.query('SELECT email FROM other_users WHERE email = $1', [email])
+    if (response.rowCount > 0) {
+        return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
+    }
+
+    const { error } = other_usersignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
+    if (error) { 
+        return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(req.body.password, salt); 
+    var id = uuidv4(); 
+    var joinDate = new Date().toISOString();
+    var status = 'active';
+
+    await pool.query(
+        'INSERT INTO other_users (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *', 
+        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, joinDate]
+    );   
+        
+    var accessLink = '';
+    var text = '';
+    var subject='Your new account credentials for MMPAS';
+
+    if (role === 'veterinary') {
+        accessLink = `${process.env.CLIENT_ADDRESS}/vet/${district}/auth/signin`;
+        text = `Dear ${fullName},\n\nHere are your credentials for for access to MMPAS:\n\nAccess link: ${accessLink}\nEmail: ${email}\nPassword: ${password} \n\nBest Regards, \n\nMMPAS`;
+    } else if (role === 'farmer') {
+        accessLink = `${process.env.CLIENT_ADDRESS}/${district}/auth/signin`;
+        text = `Dear ${fullName},\n\nHere are your credentials for for access to MMPAS:\n\nAccess link: ${accessLink}\nEmail: ${email}\nPassword: ${password} \n\nBest Regards, \n\nMMPAS`;
+    }
+
+    // Sending an email notifying a user that an account was created for them.
+    await sendEmail(email, subject, text);
+
+    res.status(statusCodes.OK).json({ message: 'Account created' })
 })
 
 
@@ -367,6 +384,7 @@ module.exports = {
     signin, 
     signup, 
     deleteAccount, 
+    createAccountForUser,
     updateAccount, 
     forgotPassword, 
     resetPassword, 

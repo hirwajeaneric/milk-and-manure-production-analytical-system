@@ -70,7 +70,7 @@ const signin = asyncWrapper(async (req, res, next) => {
 });
 
 
-const signup = asyncWrapper(async (req, res, next) => {
+const add = asyncWrapper(async (req, res, next) => {
     const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
     
     const response = await pool.query('SELECT email FROM mcc_users WHERE email = $1', [email])
@@ -95,27 +95,17 @@ const signup = asyncWrapper(async (req, res, next) => {
         [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
     );   
 
-    const token = generateToken({
-        id: recordedUser.rows[0].id, 
-        role: recordedUser.rows[0].role, 
-        email: recordedUser.rows[0].email
-    });
+    // Fetching the mcc information to get the mcc code
+    const mcc = await pool.query('SELECT * FROM mmcs WHERE id= $1', [mccId]);
 
-    var createdAccount = {
-        id: recordedUser.rows[0].id,
-        fullName: recordedUser.rows[0].fullName,
-        email: recordedUser.rows[0].email,
-        role: recordedUser.rows[0].role,
-        mccId: recordedUser.rows[0].mccId,
-        mccName: recordedUser.rows[0].mccName,
-        status: recordedUser.rows[0].status,
-        token: token,
-    };
+    var accessLink = `${process.env.CLIENT_ADDRESS}/mcc/${mcc.rows[0].code}/auth/sign`;
+    var subject='Your new account credentials for MMPAS';
+    var text = `Dear ${fullName},\n\nHere are your credentials for for access to MMPAS:\n\nMCC Access link: ${accessLink}\nEmail: ${email}\nPassword: ${password} \n\nBest Regards, \n\nMMPAS`;
 
-    res.status(statusCodes.OK).json({
-        message: 'Account created',
-        user: createdAccount
-    })
+    // Sending an email notifying a user that an account was created for them.
+    await sendEmail(email, subject, text);
+
+    res.status(statusCodes.OK).json({ message: 'Account created' })
 })
 
 
@@ -298,7 +288,7 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
 module.exports = { 
     list,
     signin, 
-    signup, 
+    add, 
     deleteAccount, 
     updateAccount, 
     forgotPassword, 
