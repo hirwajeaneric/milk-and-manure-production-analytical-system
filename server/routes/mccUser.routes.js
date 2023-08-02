@@ -8,16 +8,15 @@ const {
     findById, 
     findByMccId,
     findByStatus, 
-    findByUserRole, 
     forgotPassword,
     resetPassword,
     signin,
-    signup,
+    add,
     updateAccount
- } = require('../controllers/user.controllers');
+ } = require('../controllers/mccUser.controllers');
 
 userRouter.post('/signin', signin);
-userRouter.post('/signup', signup);
+userRouter.post('/add', add);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.post('/resetPassword', resetPassword);
 userRouter.put('/update', updateAccount);
@@ -27,6 +26,5 @@ userRouter.get('/findById', findById);
 userRouter.get('/findByDistrict', findByDistrict);
 userRouter.get('/findByMccId', findByMccId);
 userRouter.get('/findByStatus', findByStatus);
-userRouter.get('/findByUserRole', findByUserRole);
 
 module.exports = userRouter;
