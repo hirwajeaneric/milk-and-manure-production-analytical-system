@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { userAccountSignInValidationSchema, userAccountSignUpValidationSchema } = require('../utils/validations/validateUserAccount');
+const { mcc_usersignInValidationSchema, mcc_usersignUpValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -11,13 +11,13 @@ const passwordComplexity = require('joi-password-complexity');
 const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
-    const useraccounts = await pool.query('SELECT * FROM useraccounts');
-    res.json(useraccounts.rows);
+    const mcc_users = await pool.query('SELECT * FROM mcc_users');
+    res.json(mcc_users.rows);
 });
 
 
 const signin = asyncWrapper(async (req, res, next) => {
-    const { mcc: mccId, role, province, district } = req.query;
+    const { mcc: mccId, province, district } = req.query;
 
     const { email, password } = req.body;
     
@@ -25,46 +25,19 @@ const signin = asyncWrapper(async (req, res, next) => {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     }   
     
-    const { error } = userAccountSignInValidationSchema.validate({ email, password });
+    const { error } = mcc_usersignInValidationSchema.validate({ email, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
 
     const response = {};
 
-    // MCC LOGIN
-    if (role === 'mcc' && !mccId) {
+    if (!mccId) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
-    } else if (role === 'mcc' && mccId) {
-        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, mccId]);
+    } else if (mccId) {
+        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, 'mcc', mccId]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
-        }    
-    }
-
-    // VETERINARY LOGIN
-    if (role === 'veterinary' && (!province || !district)) {
-        throw new CustomError.BadRequestError('Signin failed. Please make sure you are using the appropriate login link.');
-    } else if (role === 'veterinary' && province && district) {
-        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role = $2 AND province = $3 AND district = $4', [email, role, province, district]);
-        if (response.rowCount === 0) {
-            throw new CustomError.UnauthenticatedError('User account unrecognized');
-        }    
-    }
-
-    // FARMER LOGIN
-    if (role === 'farmer') {
-        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role= $2', [email, role]);
-        if (response.rowCount === 0) {
-            throw new CustomError.UnauthenticatedError('Invalid credentials')
-        }    
-    }
-
-    // ADMIN/RAB LEVEL LOGIN
-    if (role === 'rab') {
-        response = await pool.query('SELECT * FROM useraccounts WHERE email = $1 AND role= $2', [email, role]);
-        if (response.rowCount === 0) {
-            throw new CustomError.UnauthenticatedError('Invalid credentials')
         }    
     }
 
@@ -79,52 +52,16 @@ const signin = asyncWrapper(async (req, res, next) => {
         role: response.rows[0].role,
     })
 
-    const user = {};
-
-    if (role === 'farmer') {
-        user = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            province: response.rows[0].province,
-            district: response.rows[0].district,
-            sector: response.rows[0].sector,
-            token: token,
-        }
-    } else if (role === 'mcc') {
-        user = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            mccId: response.rows[0].mccId,
-            mccName: response.rows[0].mccName,
-            status: response.rows[0].status,
-            token: token,
-        }
-    } else if (role === 'veterinary') {
-        user = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            province: response.rows[0].province,
-            district: response.rows[0].district,
-            token: token,
-        }
-    } else if (role === 'rab') {
-        user = {
-            id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            status: response.rows[0].status,
-            token: token,
-        }
-    }
+    const user = {
+        id: response.rows[0].id,
+        fullName: response.rows[0].fullName,
+        email: response.rows[0].email,
+        role: response.rows[0].role,
+        mccId: response.rows[0].mccId,
+        mccName: response.rows[0].mccName,
+        status: response.rows[0].status,
+        token: token,
+    };
 
     res.status(statusCodes.OK).json({
         message: 'Logged in',
@@ -136,12 +73,12 @@ const signin = asyncWrapper(async (req, res, next) => {
 const signup = asyncWrapper(async (req, res, next) => {
     const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
     
-    const response = await pool.query('SELECT email FROM useraccounts WHERE email = $1', [email])
+    const response = await pool.query('SELECT email FROM mcc_users WHERE email = $1', [email])
     if (response.rowCount > 0) {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
     }
 
-    const { error } = userAccountSignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
+    const { error } = mcc_usersignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
@@ -154,58 +91,26 @@ const signup = asyncWrapper(async (req, res, next) => {
     var status = 'active';
 
     const recordedUser = await pool.query(
-        'INSERT INTO useraccounts (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
+        'INSERT INTO mcc_users (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
         [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
     );   
 
-    const token = generateToken({id: recordedUser.rows[0].id, role: recordedUser.rows[0].role, email: recordedUser.rows[0].email});
+    const token = generateToken({
+        id: recordedUser.rows[0].id, 
+        role: recordedUser.rows[0].role, 
+        email: recordedUser.rows[0].email
+    });
 
-    var createdAccount = {};
-
-    if (role === 'farmer') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            province: recordedUser.rows[0].province,
-            district: recordedUser.rows[0].district,
-            sector: recordedUser.rows[0].sector,
-            token: token,
-        }
-    } else if (role === 'mcc') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            mccId: recordedUser.rows[0].mccId,
-            mccName: recordedUser.rows[0].mccName,
-            status: recordedUser.rows[0].status,
-            token: token,
-        }
-    } else if (role === 'veterinary') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            province: recordedUser.rows[0].province,
-            district: recordedUser.rows[0].district,
-            token: token,
-        }
-    } else if (role === 'rab') {
-        createdAccount = {
-            id: recordedUser.rows[0].id,
-            fullName: recordedUser.rows[0].fullName,
-            email: recordedUser.rows[0].email,
-            role: recordedUser.rows[0].role,
-            status: recordedUser.rows[0].status,
-            token: token,
-        }
-    }
+    var createdAccount = {
+        id: recordedUser.rows[0].id,
+        fullName: recordedUser.rows[0].fullName,
+        email: recordedUser.rows[0].email,
+        role: recordedUser.rows[0].role,
+        mccId: recordedUser.rows[0].mccId,
+        mccName: recordedUser.rows[0].mccName,
+        status: recordedUser.rows[0].status,
+        token: token,
+    };
 
     res.status(statusCodes.OK).json({
         message: 'Account created',
@@ -261,7 +166,7 @@ const forgotPassword = asyncWrapper(async(req, res, next) => {
 const resetPassword = asyncWrapper(async(req, res, next) => {
     const password = req.body.password;
 
-    const user = await pool.query('SELECT * FROM useraccounts WHERE id = $1', [req.query.id]);
+    const user = await pool.query('SELECT * FROM mcc_users WHERE id = $1', [req.query.id]);
     if (user.rowCount === 0) {
         throw new CustomError.BadRequestError('Invalid or expired link');
     }
@@ -289,7 +194,7 @@ const resetPassword = asyncWrapper(async(req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const newHashedPassword = await bcrypt.hash(password, salt);
 
-    const updateUserAccount = await pool.query('UPDATE useraccounts SET password = $1 WHERE id = $2', [newHashedPassword, req.query.id]);
+    const updateUserAccount = await pool.query('UPDATE mcc_users SET password = $1 WHERE id = $2', [newHashedPassword, req.query.id]);
 
     if (!updateUserAccount) {
         throw new CustomError.UnauthenticatedError('Unable to change password');
@@ -322,7 +227,7 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
     const values = Object.values(changes);
 
     const query = {
-      text: `UPDATE useraccounts SET ${setExpressions.join(', ')} WHERE id = $${values.length + 1}`,
+      text: `UPDATE mcc_users SET ${setExpressions.join(', ')} WHERE id = $${values.length + 1}`,
       values: [...values, req.query.id],
     };
 
@@ -340,7 +245,7 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
 const deleteAccount = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
-    const deleteUserAccount = await pool.query('DELETE FROM useraccounts WHERE id = $1', [id]);
+    const deleteUserAccount = await pool.query('DELETE FROM mcc_users WHERE id = $1', [id]);
   
     if (deleteUserAccount.rowCount === 0) {
       throw new CustomError.NotFoundError('User not found');
@@ -353,7 +258,7 @@ const deleteAccount = asyncWrapper(async (req, res, next) => {
 const findById = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
-    const user = await pool.query('SELECT * FROM useraccounts WHERE id = $1', [id]);
+    const user = await pool.query('SELECT * FROM mcc_users WHERE id = $1', [id]);
   
     if (user.rowCount === 0) {
       throw new CustomError.NotFoundError('User not found');
@@ -363,19 +268,10 @@ const findById = asyncWrapper(async (req, res, next) => {
 });
 
 
-const findByUserRole = asyncWrapper(async (req, res, next) => {
-    const { role } = req.query;
-  
-    const users = await pool.query('SELECT * FROM useraccounts WHERE role = $1', [role]);
-  
-    res.status(statusCodes.OK).json(users.rows);
-});
-
-
 const findByStatus = asyncWrapper(async (req, res, next) => {
     const { status } = req.query;
   
-    const users = await pool.query('SELECT * FROM useraccounts WHERE status = $1', [status]);
+    const users = await pool.query('SELECT * FROM mcc_users WHERE status = $1', [status]);
   
     res.status(statusCodes.OK).json(users.rows);
 });
@@ -384,7 +280,7 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
 const findByMccId = asyncWrapper(async(req, res, next) => {
     const { mccId } = req.query;
   
-    const users = await pool.query('SELECT * FROM useraccounts WHERE mccId = $1', [mccId]);
+    const users = await pool.query('SELECT * FROM mcc_users WHERE mccId = $1', [mccId]);
   
     res.status(statusCodes.OK).json(users.rows);
 });
@@ -393,7 +289,7 @@ const findByMccId = asyncWrapper(async(req, res, next) => {
 const findByDistrict = asyncWrapper(async(req, res, next) => {
     const { district } = req.query;
   
-    const users = await pool.query('SELECT * FROM useraccounts WHERE district = $1', [district]);
+    const users = await pool.query('SELECT * FROM mcc_users WHERE district = $1', [district]);
   
     res.status(statusCodes.OK).json(users.rows);
 })
@@ -412,5 +308,4 @@ module.exports = {
     findByMccId, 
     findByStatus, 
     findByStatus,
-    findByUserRole
 };

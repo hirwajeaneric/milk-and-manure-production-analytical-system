@@ -6,7 +6,6 @@ const {
     deleteAccount,
     findByDistrict,
     findById, 
-    findByMccId,
     findByStatus, 
     findByUserRole, 
     forgotPassword,
@@ -14,7 +13,7 @@ const {
     signin,
     signup,
     updateAccount
- } = require('../controllers/user.controllers');
+ } = require('../controllers/otherUsers.controllers');
 
 userRouter.post('/signin', signin);
 userRouter.post('/signup', signup);
@@ -25,7 +24,6 @@ userRouter.delete('/delete', deleteAccount);
 userRouter.get('/list', list);
 userRouter.get('/findById', findById);
 userRouter.get('/findByDistrict', findByDistrict);
-userRouter.get('/findByMccId', findByMccId);
 userRouter.get('/findByStatus', findByStatus);
 userRouter.get('/findByUserRole', findByUserRole);
 
