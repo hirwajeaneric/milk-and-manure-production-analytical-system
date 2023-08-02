@@ -22,12 +22,12 @@ CREATE TABLE mcc_users (
     district VARCHAR(80),
     sector VARCHAR(80),
     role VARCHAR(10),
-    mccId VARCHAR(80),
+    mccCode VARCHAR(80),
     mccName VARCHAR(80),
     password VARCHAR(80),
     status VARCHAR(10),
     joinDate DATE NOT NULL,
-    FOREIGN KEY (mccId) REFERENCES mccs(id)
+    FOREIGN KEY (mccCode) REFERENCES mccs(id)
 );
 
 CREATE TABLE other_users (
