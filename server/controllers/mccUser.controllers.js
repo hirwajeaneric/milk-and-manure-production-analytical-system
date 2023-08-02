@@ -252,7 +252,7 @@ const findById = asyncWrapper(async (req, res, next) => {
       throw new CustomError.NotFoundError('User not found');
     }
   
-    res.status(statusCodes.OK).json(user.rows[0]);
+    res.status(statusCodes.OK).json({ user: user.rows[0] });
 });
 
 
@@ -261,7 +261,7 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
   
     const users = await pool.query('SELECT * FROM mcc_users WHERE status = $1', [status]);
   
-    res.status(statusCodes.OK).json(users.rows);
+    res.status(statusCodes.OK).json({ users: users.rows });
 });
 
 
@@ -270,7 +270,7 @@ const findByMccId = asyncWrapper(async(req, res, next) => {
   
     const users = await pool.query('SELECT * FROM mcc_users WHERE mccId = $1', [mccId]);
   
-    res.status(statusCodes.OK).json(users.rows);
+    res.status(statusCodes.OK).json({ users: users.rows });
 });
 
 
@@ -279,7 +279,7 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
   
     const users = await pool.query('SELECT * FROM mcc_users WHERE district = $1', [district]);
   
-    res.status(statusCodes.OK).json(users.rows);
+    res.status(statusCodes.OK).json({ users: users.rows });
 })
 
 

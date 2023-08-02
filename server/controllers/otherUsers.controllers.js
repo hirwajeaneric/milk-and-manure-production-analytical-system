@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { other_usersignInValidationSchema, other_usersignUpValidationSchema } = require('../utils/validations/validateUserAccount');
+const { other_usersignInValidationSchema, other_usersignUpValidationSchema, userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -25,7 +25,7 @@ const signin = asyncWrapper(async (req, res, next) => {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     }   
     
-    const { error } = other_usersignInValidationSchema.validate({ email, password });
+    const { error } = userAccountSignInValidationSchema.validate({ email, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
@@ -120,7 +120,7 @@ const signup = asyncWrapper(async (req, res, next) => {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
     }
 
-    const { error } = other_usersignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
+    const { error } = userAccountSignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
@@ -167,7 +167,7 @@ const add = asyncWrapper(async (req, res, next) => {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
     }
 
-    const { error } = other_usersignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
+    const { error } = userAccountSignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
@@ -311,7 +311,7 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
     const values = Object.values(changes);
 
     const query = {
-      text: `UPDATE other_users SET ${setExpressions.join(', ')} WHERE id = $${values.length + 1}`,
+      text: `UPDATE other_users SET ${setExpressions.join(', ')} WHERE id = $${values.length + 1} RETURNING *`,
       values: [...values, req.query.id],
     };
 
@@ -322,7 +322,7 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
       throw new CustomError.NotFoundError('User not found');
     }
 
-    res.status(statusCodes.OK).json({ message: 'User data updated successfully' });
+    res.status(statusCodes.OK).json({ message: 'User data updated successfully', user: result.rows[0] });
 })
 
 
@@ -348,7 +348,7 @@ const findById = asyncWrapper(async (req, res, next) => {
       throw new CustomError.NotFoundError('User not found');
     }
   
-    res.status(statusCodes.OK).json(user.rows[0]);
+    res.status(statusCodes.OK).json({ user: user.rows[0] });
 });
 
 
@@ -357,7 +357,7 @@ const findByUserRole = asyncWrapper(async (req, res, next) => {
   
     const users = await pool.query('SELECT * FROM other_users WHERE role = $1', [role]);
   
-    res.status(statusCodes.OK).json(users.rows);
+    res.status(statusCodes.OK).json({ users: users.rows });
 });
 
 
@@ -366,7 +366,7 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
   
     const users = await pool.query('SELECT * FROM other_users WHERE status = $1', [status]);
   
-    res.status(statusCodes.OK).json(users.rows);
+    res.status(statusCodes.OK).json({ users: users.rows });
 });
 
 
@@ -375,7 +375,7 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
   
     const users = await pool.query('SELECT * FROM other_users WHERE district = $1', [district]);
   
-    res.status(statusCodes.OK).json(users.rows);
+    res.status(statusCodes.OK).json({ users: users.rows });
 })
 
 
