@@ -17,9 +17,9 @@ const list = asyncWrapper(async (req, res, next) => {
 
 
 const signin = asyncWrapper(async (req, res, next) => {
-    const { email, password, role, mccId  } = req.body;
+    const { email, password, role, mccCode  } = req.body;
     
-    if (!email || !password || !role || !mccId ) {
+    if (!email || !password || !role || !mccCode ) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     }   
     
@@ -30,10 +30,10 @@ const signin = asyncWrapper(async (req, res, next) => {
 
     var response = {};
 
-    if (!mccId) {
+    if (!mccCode) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
-    } else if (mccId) {
-        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, mccId]);
+    } else if (mccCode) {
+        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccCode = $3', [email, role, mccCode]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
         }    
@@ -55,7 +55,7 @@ const signin = asyncWrapper(async (req, res, next) => {
         fullName: response.rows[0].fullName,
         email: response.rows[0].email,
         role: response.rows[0].role,
-        mccId: response.rows[0].mccId,
+        mccCode: response.rows[0].mccCode,
         mccName: response.rows[0].mccName,
         status: response.rows[0].status,
         token: token,
@@ -69,7 +69,7 @@ const signin = asyncWrapper(async (req, res, next) => {
 
 
 const add = asyncWrapper(async (req, res, next) => {
-    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
+    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccCode, mccName } = req.body;
     
     const response = await pool.query('SELECT email FROM mcc_users WHERE email = $1', [email])
     if (response.rowCount > 0) {
@@ -89,12 +89,12 @@ const add = asyncWrapper(async (req, res, next) => {
     var status = 'active';
 
     const recordedUser = await pool.query(
-        'INSERT INTO mcc_users (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
-        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
+        'INSERT INTO mcc_users (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccCode, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
+        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccCode, mccName, joinDate]
     );   
 
     // Fetching the mcc information to get the mcc code
-    const mcc = await pool.query('SELECT * FROM mccs WHERE id= $1', [mccId]);
+    const mcc = await pool.query('SELECT * FROM mccs WHERE id= $1', [mccCode]);
 
     var accessLink = `${process.env.CLIENT_ADDRESS}/mcc/${mcc.rows[0].code}/auth/sign`;
     var subject='Your new account credentials for MMPAS';
@@ -104,7 +104,7 @@ const add = asyncWrapper(async (req, res, next) => {
     await sendEmail(email, subject, text);
 
     res.status(statusCodes.OK).json({ message: 'Account created' })
-})
+});
 
 
 const generateToken = function (parameters) {
@@ -215,7 +215,7 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
     const values = Object.values(changes);
 
     const query = {
-      text: `UPDATE mcc_users SET ${setExpressions.join(', ')} WHERE id = $${values.length + 1}`,
+      text: `UPDATE mcc_users SET ${setExpressions.join(', ')} WHERE id = $${values.length + 1} RETURNING *`,
       values: [...values, req.query.id],
     };
 
