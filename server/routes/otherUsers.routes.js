@@ -12,13 +12,13 @@ const {
     resetPassword,
     signin,
     signup,
-    createAccountForUser,
+    add,
     updateAccount
  } = require('../controllers/otherUsers.controllers');
 
 userRouter.post('/signin', signin);
 userRouter.post('/signup', signup);
-userRouter.post('/add', createAccountForUser);
+userRouter.post('/add', add);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.post('/resetPassword', resetPassword);
 userRouter.put('/update', updateAccount);

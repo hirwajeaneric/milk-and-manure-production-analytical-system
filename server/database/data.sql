@@ -22,6 +22,8 @@ CREATE TABLE mcc_users (
     district VARCHAR(80),
     sector VARCHAR(80),
     role VARCHAR(10),
+    mccId VARCHAR(80),
+    mccName VARCHAR(80),
     password VARCHAR(80),
     status VARCHAR(10),
     joinDate DATE NOT NULL,
@@ -40,8 +42,6 @@ CREATE TABLE other_users (
     role VARCHAR(10),
     password VARCHAR(80),
     status VARCHAR(10),
-    mccId VARCHAR(80),
-    mccName VARCHAR(80),
     joinDate DATE NOT NULL
 );
 
@@ -56,7 +56,7 @@ CREATE TABLE milk_production (
     district VARCHAR(80),
     sector VARCHAR(80),
     quantity INT,
-    FOREIGN KEY (farmerId) REFERENCES useraccounts(id),
+    FOREIGN KEY (farmerId) REFERENCES other_users(id),
     FOREIGN KEY (mccId) REFERENCES mccs(id)
 );
 
@@ -71,6 +71,6 @@ CREATE TABLE manure_production (
     district VARCHAR(80),
     sector VARCHAR(80),
     quantity INT,
-    FOREIGN KEY (farmerId) REFERENCES useraccounts(id),
+    FOREIGN KEY (farmerId) REFERENCES other_users(id),
     FOREIGN KEY (mccId) REFERENCES mccs(id)
 );

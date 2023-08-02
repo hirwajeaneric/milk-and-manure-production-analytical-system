@@ -159,7 +159,7 @@ const signup = asyncWrapper(async (req, res, next) => {
 })
 
 
-const createAccountForUser = asyncWrapper(async (req, res, next) => {
+const add = asyncWrapper(async (req, res, next) => {
     const { fullName, email, phone, nationalId, province, district, sector, role, password } = req.body;
     
     const response = await pool.query('SELECT email FROM other_users WHERE email = $1', [email])
@@ -384,7 +384,7 @@ module.exports = {
     signin, 
     signup, 
     deleteAccount, 
-    createAccountForUser,
+    add,
     updateAccount, 
     forgotPassword, 
     resetPassword, 

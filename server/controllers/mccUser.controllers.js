@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { mcc_usersignInValidationSchema, mcc_usersignUpValidationSchema } = require('../utils/validations/validateUserAccount');
+const { mcc_usersignInValidationSchema, mcc_usersignUpValidationSchema, userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -17,25 +17,23 @@ const list = asyncWrapper(async (req, res, next) => {
 
 
 const signin = asyncWrapper(async (req, res, next) => {
-    const { mcc: mccId, province, district } = req.query;
-
-    const { email, password } = req.body;
+    const { email, password, role, mccId  } = req.body;
     
-    if (!email || !password || !role) {
+    if (!email || !password || !role || !mccId ) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     }   
     
-    const { error } = mcc_usersignInValidationSchema.validate({ email, password });
+    const { error } = userAccountSignInValidationSchema.validate({ email, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
 
-    const response = {};
+    var response = {};
 
     if (!mccId) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     } else if (mccId) {
-        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, 'mcc', mccId]);
+        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, mccId]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
         }    
@@ -78,7 +76,7 @@ const add = asyncWrapper(async (req, res, next) => {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: `User with provided email is already registered`})
     }
 
-    const { error } = mcc_usersignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
+    const { error } = userAccountSignUpValidationSchema.validate({ fullName, email, phone, nationalId, role, password });
     if (error) { 
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
@@ -96,7 +94,7 @@ const add = asyncWrapper(async (req, res, next) => {
     );   
 
     // Fetching the mcc information to get the mcc code
-    const mcc = await pool.query('SELECT * FROM mmcs WHERE id= $1', [mccId]);
+    const mcc = await pool.query('SELECT * FROM mccs WHERE id= $1', [mccId]);
 
     var accessLink = `${process.env.CLIENT_ADDRESS}/mcc/${mcc.rows[0].code}/auth/sign`;
     var subject='Your new account credentials for MMPAS';
@@ -228,7 +226,7 @@ const updateAccount = asyncWrapper(async(req, res, next) => {
       throw new CustomError.NotFoundError('User not found');
     }
 
-    res.status(statusCodes.OK).json({ message: 'User data updated successfully' });
+    res.status(statusCodes.OK).json({ message: 'User data updated successfully', user: result.rows[0] });
 })
 
 
