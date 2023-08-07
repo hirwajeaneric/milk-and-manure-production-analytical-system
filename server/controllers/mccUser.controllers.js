@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { mcc_usersignInValidationSchema, mcc_usersignUpValidationSchema, userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
+const { userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -12,7 +12,7 @@ const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
     const mcc_users = await pool.query('SELECT * FROM mcc_users');
-    res.json(mcc_users.rows);
+    res.status(statusCodes.OK).json({ users: mcc_users.rows });
 });
 
 
