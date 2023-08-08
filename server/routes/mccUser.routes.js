@@ -1,5 +1,5 @@
 const express = require('express');
-const userRouter = express.Router();
+const mccUserRouter = express.Router();
 
 const {
     list,
@@ -15,16 +15,16 @@ const {
     updateAccount
  } = require('../controllers/mccUser.controllers');
 
-userRouter.post('/signin', signin);
-userRouter.post('/add', add);
-userRouter.post('/forgotPassword', forgotPassword);
-userRouter.post('/resetPassword', resetPassword);
-userRouter.put('/update', updateAccount);
-userRouter.delete('/delete', deleteAccount);
-userRouter.get('/list', list);
-userRouter.get('/findById', findById);
-userRouter.get('/findByDistrict', findByDistrict);
-userRouter.get('/findByMccId', findByMccId);
-userRouter.get('/findByStatus', findByStatus);
+mccUserRouter.post('/signin', signin);
+mccUserRouter.post('/add', add);
+mccUserRouter.post('/forgotPassword', forgotPassword);
+mccUserRouter.post('/resetPassword', resetPassword);
+mccUserRouter.put('/update', updateAccount);
+mccUserRouter.delete('/delete', deleteAccount);
+mccUserRouter.get('/list', list);
+mccUserRouter.get('/findById', findById);
+mccUserRouter.get('/findByDistrict', findByDistrict);
+mccUserRouter.get('/findByMccId', findByMccId);
+mccUserRouter.get('/findByStatus', findByStatus);
 
-module.exports = userRouter;
+module.exports = mccUserRouter;

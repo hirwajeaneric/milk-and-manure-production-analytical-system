@@ -5,12 +5,16 @@ const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 const initialState = {
     manureProductionOnCountryLevel: [],
     amountOfManureProductionOnCountryLevel: 0,
+
     manureProductionOnDistrictLevel: [],
     amountOfManureProductionOnDistrictLevel: 0,
+    
     manureProductionOnMccLevel: [],
     amountOfManureProductionOnDistrictLevel: 0,
+    
     manureProductionForFarmer: [],
     amountOfManureProductionForFarmer: 0,
+    
     isLoading: false,
 }
 
@@ -21,9 +25,6 @@ export const getManureProductionOnCountryLevel = createAsyncThunk(
             const { period } = filter;
             const response = await axios.get(serverUrl+`/api/v1/mmpas/manure/list`);
             response.data.manureProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return {manureProduction: response.data.manureProduction, period: period}
@@ -40,9 +41,6 @@ export const getManureProductionOnDistrictLevel = createAsyncThunk(
         try { 
             const response = await axios.get(serverUrl+`/api/v1/mmpas/manure/findByDistrict?district=${district}`);
             response.data.manureProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return { manureProduction: response.data.manureProduction, period: period }
@@ -59,9 +57,6 @@ export const getManureProductionOnMCCLevel = createAsyncThunk(
         try {
             const response = await axios.get(serverUrl+`/api/v1/mmpas/manure/findByMccId?id=${mccId}`);
             response.data.manureProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return { manureProduction: response.data.manureProduction, period: period }
@@ -78,9 +73,6 @@ export const getManureProductionForFarmer = createAsyncThunk(
         try {
             const response = await axios.get(serverUrl+`/api/v1/mmpas/manure/findByFarmerId?farmerId=${farmerId}`);
             response.data.manureProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return { manureProduction: response.data.manureProduction, period: period }

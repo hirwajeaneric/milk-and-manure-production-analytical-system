@@ -21,9 +21,6 @@ export const getMilkProductionOnCountryLevel = createAsyncThunk(
         try {
             const response = await axios.get(serverUrl+`/api/v1/mmpas/milk/list`);
             response.data.milkProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return {milkProduction: response.data.milkProduction, period: period}
@@ -40,9 +37,6 @@ export const getMilkProductionOnDistrictLevel = createAsyncThunk(
         try { 
             const response = await axios.get(serverUrl+`/api/v1/mmpas/milk/findByDistrict?district=${district}`);
             response.data.milkProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return { milkProduction: response.data.milkProduction, period: period }
@@ -59,9 +53,6 @@ export const getMilkProductionOnMCCLevel = createAsyncThunk(
         try {
             const response = await axios.get(serverUrl+`/api/v1/mmpas/milk/findByMccId?id=${mccId}`);
             response.data.milkProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return { milkProduction: response.data.milkProduction, period: period }
@@ -78,9 +69,6 @@ export const getMilkProductionForFarmer = createAsyncThunk(
         try {
             const response = await axios.get(serverUrl+`/api/v1/mmpas/milk/findByFarmerId?farmerId=${farmerId}`);
             response.data.milkProduction.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
                 element.date = new Date(element.date).toLocaleString();
             });
             return { milkProduction: response.data.milkProduction, period: period }

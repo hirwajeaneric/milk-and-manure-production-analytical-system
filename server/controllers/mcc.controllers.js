@@ -150,7 +150,7 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
 
     const mccs = await pool.query('SELECT * FROM mccs WHERE status = $1', [status]);
 
-    res.status(statusCodes.OK).json({ status: mccs.rows });
+    res.status(statusCodes.OK).json({ mccs: mccs.rows });
 });
 
 

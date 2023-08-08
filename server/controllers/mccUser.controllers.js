@@ -12,6 +12,9 @@ const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
     const mcc_users = await pool.query('SELECT * FROM mcc_users');
+    mcc_users.rows.forEach(element => {
+        delete element.password;
+    });
     res.status(statusCodes.OK).json({ users: mcc_users.rows });
 });
 
@@ -247,7 +250,8 @@ const findById = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
     const user = await pool.query('SELECT * FROM mcc_users WHERE id = $1', [id]);
-  
+    delete user.rows[0].password;
+
     if (user.rowCount === 0) {
       throw new CustomError.NotFoundError('User not found');
     }

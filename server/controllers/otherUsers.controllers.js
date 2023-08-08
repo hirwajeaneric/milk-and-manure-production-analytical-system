@@ -12,7 +12,10 @@ const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
     const other_users = await pool.query('SELECT * FROM other_users');
-    res.json(other_users.rows);
+    other_users.rows.forEach(element => {
+        delete element.password;
+    });
+    res.json({ users: other_users.rows });
 });
 
 
@@ -69,7 +72,7 @@ const signin = asyncWrapper(async (req, res, next) => {
         role: response.rows[0].role,
     })
 
-    const user = {};
+    var user = {};
 
     if (role === 'farmer') {
         user = {
@@ -343,7 +346,8 @@ const findById = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
     const user = await pool.query('SELECT * FROM other_users WHERE id = $1', [id]);
-  
+    delete user.rows[0].password;
+    
     if (user.rowCount === 0) {
       throw new CustomError.NotFoundError('User not found');
     }
@@ -378,6 +382,14 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
     res.status(statusCodes.OK).json({ users: users.rows });
 })
 
+const findFarmersByDistrict = asyncWrapper(async(req, res, next) => {
+    const { district } = req.query;
+  
+    const users = await pool.query('SELECT * FROM other_users WHERE district = $1 AND role = "farmer"', [district]);
+  
+    res.status(statusCodes.OK).json({ users: users.rows });
+})
+
 
 module.exports = { 
     list,
@@ -392,5 +404,6 @@ module.exports = {
     findById,  
     findByStatus, 
     findByStatus,
-    findByUserRole
+    findByUserRole,
+    findFarmersByDistrict
 };

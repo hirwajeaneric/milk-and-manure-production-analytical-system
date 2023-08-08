@@ -3,44 +3,53 @@ import axios from "axios";
 const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 
 const initialState = {
-    allMCCs: [],
-    numberOfAllMCCs: 0,
+    selectedMcc: {},
+    allmccs: [],
+    numberOfAllmccs: 0,
     mccForSelectedDistrict: [],
-    numberOfMCCsForSelectedDistrict: 0,
+    numberOfmccsForSelectedDistrict: 0,
     isLoading: false,
 }
 
-export const getAllMCCs = createAsyncThunk(
-    'mcc/getAllMCCs',
-    async (thunkAPI) => {
+export const getMccDetails = createAsyncThunk(
+    'mcc/getMccDetails',
+    async (filter, thunkAPI) => {
+        const { id } = filter;
         try {
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/mcc/list`);
-            response.data.MCCs.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
-                element.registrationDate = new Date(element.registrationDate).toLocaleString();
-            });
-            return response.data.MCCs
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findById?id=${id}`);
+            response.data.mcc.registrationDate = new Date(response.data.mcc.registrationDate).toLocaleString();
+            return response.data.mcc;
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
         }
     }
 );
 
-export const getMCCsForSelectedDistrict = createAsyncThunk(
-    'mcc/getMCCsForSelectedDistrict',
+export const getAllmccs = createAsyncThunk(
+    'mcc/getAllmccs',
+    async (thunkAPI) => {
+        try {
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/mcc/list`);
+            response.data.mccs.forEach(element => {
+                element.registrationDate = new Date(element.registrationDate).toLocaleString();
+            });
+            return response.data.mccs
+        } catch (error) {
+            return thunkAPI.rejectWithValue('Something went wrong!!');
+        }
+    }
+);
+
+export const getmccsForSelectedDistrict = createAsyncThunk(
+    'mcc/getmccsForSelectedDistrict',
     async (filter, thunkAPI) => {
         const { district } = filter;
         try { 
             const response = await axios.get(serverUrl+`/api/v1/mmpas/mcc/findByDistrict?district=${district}`);
-            response.data.MCCs.forEach(element => {
-                element.id = element._id;
-                delete element._id;
-                delete element.__v;
+            response.data.mccs.forEach(element => {
                 element.registrationDate = new Date(registrationDate.date).toLocaleString();
             });
-            return response.data.MCCs
+            return response.data.mccs;
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
         }
@@ -51,22 +60,34 @@ const mccSlice = createSlice({
     name: 'mcc',
     initialState,
     extraReducers: {
-        [getAllMCCs.pending] : (state) => {
+        [getMccDetails.pending] : (state) => {
             state.isLoading = true;
         },
-        [getAllMCCs.fulfilled] : (state, action) => {
+        [getMccDetails.fulfilled] : (state, action) => {
+            state.isLoading = false;
+            state.selectedMcc = action.payload;
+        },
+        [getMccDetails.rejected] : (state) => {
             state.isLoading = false;
         },
-        [getAllMCCs.rejected] : (state) => {
-            state.isLoading = false;
-        },
-        [getMCCsForSelectedDistrict.pending] : (state) => {
+        [getAllmccs.pending] : (state) => {
             state.isLoading = true;
         },
-        [getMCCsForSelectedDistrict.fulfilled] : (state, action) => {
+        [getAllmccs.fulfilled] : (state, action) => {
+            state.isLoading = false;
+            state.allmccs = action.payload;
+        },
+        [getAllmccs.rejected] : (state) => {
             state.isLoading = false;
         },
-        [getMCCsForSelectedDistrict.rejected] : (state) => {
+        [getmccsForSelectedDistrict.pending] : (state) => {
+            state.isLoading = true;
+        },
+        [getmccsForSelectedDistrict.fulfilled] : (state, action) => {
+            state.isLoading = false;
+            state.mccForSelectedDistrict = action.payload;
+        },
+        [getmccsForSelectedDistrict.rejected] : (state) => {
             state.isLoading = false;
         }
     }
