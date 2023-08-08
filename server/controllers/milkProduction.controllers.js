@@ -3,21 +3,25 @@ const { default: statusCodes } = require('http-status-codes');
 const { v4: uuidv4 } = require('uuid');
 const asyncWrapper = require('../middleware/async');
 const CustomError = require('../errors');
+const { productionValidationSchema } = require('../utils/validations/validateProductionRecord')
 
 const list = asyncWrapper(async (req, res, next) => {
   const milkProductions = await pool.query('SELECT * FROM milk_production');
-  res.json(milkProductions.rows);
+  res.json({ milkProduction: milkProductions.rows});
 });
 
 const add = asyncWrapper(async (req, res, next) => {
   const { farmerId, farmerName, farmerPhone, mccId, mccName, district, sector, quantity } = req.body;
 
   // Validate the milk production request body (You can create a validation schema similar to 'mccValidation' if needed).
-  // You can also check for the existence of farmerId and mccId in their respective tables before adding the milk production entry.
+  const { error } = productionValidationSchema.validate({ farmerName, farmerPhone, quantity })
+  if (error) { 
+    return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
+  }
 
   // Generate a unique ID for the milk production entry.
   const id = uuidv4();
-  const date = new Date().toUTCString()
+  const date = new Date().toUTCString();
 
   // Insert the new milk production entry into the database.
   const newMilkProduction = await pool.query(
@@ -29,7 +33,7 @@ const add = asyncWrapper(async (req, res, next) => {
 });
 
 const update = asyncWrapper(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.query;
   const changes = req.body;
 
   // Remove the 'id' field from the changes object to prevent updating the primary key.
@@ -48,7 +52,7 @@ const update = asyncWrapper(async (req, res, next) => {
   values.push(id);
 
   const query = {
-    text: `UPDATE milk_production SET ${setExpressions.join(', ')} WHERE id = $1`,
+    text: `UPDATE milk_production SET ${setExpressions.join(', ')} WHERE id = $1 RETURNING *`,
     values: values,
   };
 
@@ -58,11 +62,11 @@ const update = asyncWrapper(async (req, res, next) => {
     throw new CustomError.NotFoundError('Milk production entry not found');
   }
 
-  res.status(statusCodes.OK).json({ message: 'Milk production data updated successfully' });
+  res.status(statusCodes.OK).json({ milkProduction: updatedMilkProduction, message: 'Milk production data updated successfully' });
 });
 
 const remove = asyncWrapper(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.query;
 
   const result = await pool.query('DELETE FROM milk_production WHERE id = $1', [id]);
 
@@ -74,7 +78,7 @@ const remove = asyncWrapper(async (req, res, next) => {
 });
 
 const findById = asyncWrapper(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.query;
 
   const milkProduction = await pool.query('SELECT * FROM milk_production WHERE id = $1', [id]);
 
@@ -82,39 +86,39 @@ const findById = asyncWrapper(async (req, res, next) => {
     throw new CustomError.NotFoundError('Milk production entry not found');
   }
 
-  res.json(milkProduction.rows[0]);
+  res.json({ milkProduction: milkProduction.rows[0] });
 });
 
 const findByFarmerId = asyncWrapper(async (req, res, next) => {
-  const { farmerId } = req.params;
+  const { farmerId } = req.query;
 
   const milkProductions = await pool.query('SELECT * FROM milk_production WHERE farmerId = $1', [farmerId]);
 
-  res.json(milkProductions.rows);
+  res.json({ milkProduction: milkProductions.rows });
 });
 
 const findByMccId = asyncWrapper(async (req, res, next) => {
-  const { mccId } = req.params;
+  const { mccId } = req.query;
 
   const milkProductions = await pool.query('SELECT * FROM milk_production WHERE mccId = $1', [mccId]);
 
-  res.json(milkProductions.rows);
+  res.json({ milkProductions: milkProductions.rows });
 });
 
 const findByDistrict = asyncWrapper(async (req, res, next) => {
-  const { district } = req.params;
+  const { district } = req.query;
 
   const milkProductions = await pool.query('SELECT * FROM milk_production WHERE district = $1', [district]);
 
-  res.json(milkProductions.rows);
+  res.json({ milkProductions: milkProductions.rows });
 });
 
 const findBySector = asyncWrapper(async (req, res, next) => {
-  const { sector } = req.params;
+  const { sector } = req.query;
 
   const milkProductions = await pool.query('SELECT * FROM milk_production WHERE sector = $1', [sector]);
 
-  res.json(milkProductions.rows);
+  res.json({ milkProductions: milkProductions.rows });
 });
 
 module.exports = {
