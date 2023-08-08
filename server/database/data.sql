@@ -56,6 +56,8 @@ CREATE TABLE milk_production (
     district VARCHAR(80),
     sector VARCHAR(80),
     quantity INT,
+    month VARCHAR(10),
+    year VARCHAR(4),
     FOREIGN KEY (farmerId) REFERENCES other_users(id),
     FOREIGN KEY (mccId) REFERENCES mccs(id)
 );
@@ -71,6 +73,8 @@ CREATE TABLE manure_production (
     district VARCHAR(80),
     sector VARCHAR(80),
     quantity INT,
+    month VARCHAR(10),
+    year VARCHAR(4),
     FOREIGN KEY (farmerId) REFERENCES other_users(id),
     FOREIGN KEY (mccId) REFERENCES mccs(id)
 );
