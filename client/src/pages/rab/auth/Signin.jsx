@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { FormElement, HeaderOne, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer, VerticallyFlexGapForm, VerticallyFlexSpaceBetweenContainer } from "../../../components/styles/GenericStyles"
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
@@ -11,23 +11,26 @@ import { AuthenticationFormContainer } from "../../../components/styles/Authenti
 import { Helmet } from "react-helmet-async";
 
 const Signin = () => {
-  const [ cookies, setCookie, removeCookie ] = useCookies(null);
+  const navigate = useNavigate();
+  const [ cookies, setCookie ] = useCookies(null);
   const { setOpen, setResponseMessage } = useContext(GeneralContext);
-    
   const [isProcessing, setIsProcessing] = useState(false);
+  
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = data => {
-    
+
+    data.role = 'rab';
     setIsProcessing(true);
-    axios.post(serverUrl+'/api/v1/mmpas/otheruser/signin', data)
+    
+    axios.post(serverUrl+'/api/v1/mmpas/otheruser/signin?role=rab', data)
     .then(response => {
       setTimeout(() => {
         if (response.status === 200) {
           setIsProcessing(false);
           setCookie('AuthToken', response.data.user.token);
           setCookie('UserData', JSON.stringify(response.data.user));
-          window.location.replace('/rab/');
+          navigate('/rab/');
         }
       }, 3000)
     })

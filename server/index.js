@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('express-async-errors');
-const PORT = process.env.PORT || 6000
+const PORT = process.env.PORT || 5050
 const CLIENT_ADDRESS = process.env.CLIENT_ADDRESS;
 const express = require('express');
 const cors = require('cors');
@@ -17,6 +17,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+// app.use(cors());
 app.use(express.json());
 
 app.use('/api/v1/mmpas/', allRoutes);

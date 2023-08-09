@@ -33,7 +33,7 @@ const signin = asyncWrapper(async (req, res, next) => {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
 
-    const response = {};
+    var response = {};
 
     // VETERINARY LOGIN
     if (role === 'veterinary' && (!province || !district)) {
