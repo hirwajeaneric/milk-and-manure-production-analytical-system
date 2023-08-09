@@ -315,7 +315,7 @@ export const FormElement = styled.div`
 
     input, textarea, select, option {
         width: 100%;
-        padding: 12px 12px;
+        padding: 8px 12px;
         border: 1px solid #b3cccc;
         border-radius: 3px;
         font-size: 100%;

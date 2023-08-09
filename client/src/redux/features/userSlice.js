@@ -65,7 +65,7 @@ export const getEmployeesForMcc = createAsyncThunk(
     async (filter, thunkAPI) => {
         const { mccId } = filter;
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByMccId=${mccId}`);
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByMccId?mccId=${mccId}`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });
@@ -81,7 +81,7 @@ export const getEmployeesInDistrict = createAsyncThunk(
     async (filter, thunkAPI) => {
         const { district } = filter;
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByDistrict=${district}`);
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByDistrict?district=${district}`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });
@@ -97,7 +97,7 @@ export const getFarmersInDistrict = createAsyncThunk(
     async (filter, thunkAPI) => {
         const { district } = filter;
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/otheruser/findFarmersByDistrict=${district}`);
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/otheruser/findFarmersByDistrict?district=${district}`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });
@@ -112,10 +112,12 @@ export const getVeterinaries = createAsyncThunk(
     'user/getVeterinaries',
     async (thunkAPI) => {
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/otheruser/findByUserRole=veterinary}`);
+            console.log();
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/otheruser/findByUserRole?role=veterinary`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });
+            console.log(response.data.users);
             return response.data.users;
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
@@ -127,7 +129,7 @@ export const getFarmers = createAsyncThunk(
     'user/getFarmers',
     async (thunkAPI) => {
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/otheruser/findByUserRole=farmer}`);
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/otheruser/findByUserRole?role=farmer}`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });
@@ -191,7 +193,7 @@ const user = createSlice({
         [getVeterinaries.fulfilled] : (state, action) => {
             state.isLoading = false;
             state.allVeterinaries = action.payload;
-            state.numberOfAllVeterinaries = state.numberOfAllVeterinaries.length;
+            state.numberOfAllVeterinaries = state.allVeterinaries.length;
         },
         [getVeterinaries.rejected] : (state) => {
             state.isLoading = false;

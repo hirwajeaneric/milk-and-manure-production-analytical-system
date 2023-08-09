@@ -1,18 +1,18 @@
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Preview } from '@mui/icons-material';
+import { MoreHoriz, Preview } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const columns = [
   {
-    field: 'fullName',
+    field: 'fullname',
     headerName: 'Name',
     width: 200,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 130,
+    width: 200,
   },
   {
     field: 'email',
@@ -22,12 +22,12 @@ const columns = [
   {
     field: 'district',
     headerName: 'District',
-    width: 120,
+    width: 200,
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 80,
+    width: 120,
   },
   {
     field: 'actions',
@@ -49,9 +49,8 @@ function CustomToolbar() {
 export const TableStyles = {
   padding: '0px',
   width: '100%',
-  height: '500px',
-  background: 'white',
-  // marginTop: '20px' 
+  height: '270px',
+  background: 'white'
 }
 
 var rows = [];
@@ -84,7 +83,7 @@ const TableActions = ({parameters}) => {
     <Box>
       <Tooltip title='View / Edit'>
         <IconButton onClick={() => {navigate(parameters.row.id)}}>
-          <Preview />
+          <MoreHoriz />
         </IconButton>
       </Tooltip>
     </Box>

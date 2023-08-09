@@ -111,22 +111,22 @@ function App() {
   };
   
   useEffect(() => {  
-    if (user !== undefined && user.userRole === 'rab-admin') {
+    if (user !== undefined && user.role === 'rab') {
       dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getAllMCCs());
+      dispatch(getAllmccs());
       dispatch(getAllMccEmployees());
       dispatch(getVeterinaries());
-    } else if (user !== undefined && user.userRole === 'veterinary') {
+    } else if (user !== undefined && user.role === 'veterinary') {
       dispatch(getManureProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getMilkProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getEmployeesInDistrict({ district: user.district }));
       dispatch(getMCCsForSelectedDistrict({ district: user.district }))
-    } else if (user !== undefined && user.userRole === 'mcc-register') {
+    } else if (user !== undefined && user.role === 'mcc') {
       dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getEmployeesForMcc({ mccId: user.mccId }))
-    } else if (user !== undefined && user.userRole === 'farmer') {
+    } else if (user !== undefined && user.role === 'farmer') {
       dispatch(getManureProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getMilkProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
     }
