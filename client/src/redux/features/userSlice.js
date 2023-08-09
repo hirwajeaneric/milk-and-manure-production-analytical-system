@@ -45,6 +45,21 @@ export const getUserInfo = createAsyncThunk(
     }
 );
 
+export const getAllMccEmployees = createAsyncThunk(
+    'user/getEmployeesForMcc',
+    async (thunkAPI) => {
+        try { 
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/list`);
+            response.data.users.forEach(element => {
+                element.joinDate = new Date(element.joinDate).toLocaleString();
+            });
+            return response.data.users;
+        } catch (error) {
+            return thunkAPI.rejectWithValue('Something went wrong!!');
+        }
+    }
+);
+
 export const getEmployeesForMcc = createAsyncThunk(
     'user/getEmployeesForMcc',
     async (filter, thunkAPI) => {
@@ -137,13 +152,24 @@ const user = createSlice({
         [getUserInfo.rejected] : (state) => {
             state.isLoading = false;
         },
+        [getAllMccEmployees.pending] : (state) => {
+            state.isLoading = true;
+        },
+        [getAllMccEmployees.fulfilled] : (state, action) => {
+            state.isLoading = false;
+            state.allMccEmployees = action.payload;
+            state.numberOfAllMccEmployees = state.allMccEmployees.length;
+        },
+        [getAllMccEmployees.rejected] : (state) => {
+            state.isLoading = false;
+        },
         [getEmployeesForMcc.pending] : (state) => {
             state.isLoading = true;
         },
         [getEmployeesForMcc.fulfilled] : (state, action) => {
             state.isLoading = false;
-            state.allMccEmployees = action.payload;
-            state.numberOfAllMccEmployees = state.allMccEmployees.length;
+            state.employeesOfSelectedMcc = action.payload;
+            state.numberOfEmployeesOfSelectedMcc = state.employeesOfSelectedMcc.length;
         },
         [getEmployeesForMcc.rejected] : (state) => {
             state.isLoading = false;

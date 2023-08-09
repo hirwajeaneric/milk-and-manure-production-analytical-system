@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { other_usersignInValidationSchema, other_usersignUpValidationSchema, userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
+const { userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -116,6 +116,7 @@ const signin = asyncWrapper(async (req, res, next) => {
 
 
 const signup = asyncWrapper(async (req, res, next) => {
+    console.log(req.body);
     const { fullName, email, phone, nationalId, province, district, sector, role, password } = req.body;
     
     const response = await pool.query('SELECT email FROM other_users WHERE email = $1', [email])
@@ -155,7 +156,7 @@ const signup = asyncWrapper(async (req, res, next) => {
         token: token,
     };
 
-    res.status(statusCodes.OK).json({
+    res.status(statusCodes.CREATED).json({
         message: 'Account created',
         user: createdAccount
     })

@@ -8,8 +8,14 @@ const allRoutes = require('./routes/index');
 const notFound = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+const corsOptions = {
+    origin: ['http://192.168.43.16:4040', 'http://127.0.0.1:4040', 'http://localhost:4040'],
+    methods: 'GET, POST, PUT, DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/v1/mmpas/', allRoutes);

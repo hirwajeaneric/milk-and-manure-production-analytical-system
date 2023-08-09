@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     
     
     setIsProcessing(true);
-    axios.post(serverUrl+'/api/v1/mmpas/user/requestPasswordReset', data)
+    axios.post(serverUrl+'/api/v1/mmpas/otheruser/requestPasswordReset', data)
     .then(response => {
       setTimeout(() => {
         if (response.status === 200) {

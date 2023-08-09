@@ -20,7 +20,7 @@ const Signin = () => {
   const onSubmit = data => {
     
     setIsProcessing(true);
-    axios.post(serverUrl+'/api/v1/mmpas/user/signin', data)
+    axios.post(serverUrl+'/api/v1/mmpas/otheruser/signin', data)
     .then(response => {
       setTimeout(() => {
         if (response.status === 200) {

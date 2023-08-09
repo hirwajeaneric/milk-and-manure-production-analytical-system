@@ -89,7 +89,7 @@ import FarmerMilkProduction from './pages/farmer/MilkProduction';
 import FarmerProduction from './pages/farmer/Production';
 import FarmerProductionDetails from './pages/farmer/ProductionDetails';
 import { getManureProductionForFarmer, getManureProductionOnCountryLevel, getManureProductionOnDistrictLevel, getManureProductionOnMCCLevel } from './redux/features/manureProductionSlice';
-import { getAllMCCs, getMCCsForSelectedDistrict } from './redux/features/mccSlice';
+import { getAllmccs, getmccsForSelectedDistrict } from './redux/features/mccSlice';
 import { getAllMccEmployees, getEmployeesForMcc, getEmployeesInDistrict, getVeterinaries } from './redux/features/userSlice';
 
 export const GeneralContext = createContext();
@@ -112,23 +112,23 @@ function App() {
   
   useEffect(() => {  
     if (user !== undefined && user.userRole === 'rab-admin') {
-      dispatch(getManureProductionOnCountryLevel({ period: 'Week'}));
-      dispatch(getMilkProductionOnCountryLevel({ period: 'Week'}));
+      dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+      dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getAllMCCs());
       dispatch(getAllMccEmployees());
       dispatch(getVeterinaries());
     } else if (user !== undefined && user.userRole === 'veterinary') {
-      dispatch(getManureProductionOnDistrictLevel({ district: user.district, period: 'week'}));
-      dispatch(getMilkProductionOnDistrictLevel({ district: user.district, period: 'week'}));
+      dispatch(getManureProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
+      dispatch(getMilkProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getEmployeesInDistrict({ district: user.district }));
       dispatch(getMCCsForSelectedDistrict({ district: user.district }))
     } else if (user !== undefined && user.userRole === 'mcc-register') {
-      dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, period: 'week'}));
-      dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, period: 'week'}));
+      dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
+      dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getEmployeesForMcc({ mccId: user.mccId }))
     } else if (user !== undefined && user.userRole === 'farmer') {
-      dispatch(getManureProductionForFarmer({ farmerId: user.id, period: 'week'}));
-      dispatch(getMilkProductionForFarmer({ farmerId: user.id, period: 'week'}));
+      dispatch(getManureProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
+      dispatch(getMilkProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
     }
   },[dispatch]);
 
@@ -148,8 +148,7 @@ function App() {
             <Route path='forgot-password' element={<RabForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<RabResetPassword />} />
           </Route>
-          <Route path='/rab/' element={<RabDashboardMain />}>
-          {/* <Route path='/rab/' element={authToken ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}> */}
+          <Route path='/rab/' element={authToken ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}>
             <Route path='dashboard' element={<RabStats />} />
             <Route path='production' element={<RabProduction />} >
               <Route path='' element={<RabMilkProduction />}>
