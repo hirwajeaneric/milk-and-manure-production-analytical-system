@@ -153,6 +153,14 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
     res.status(statusCodes.OK).json({ mccs: mccs.rows });
 });
 
+const findByDistrict = asyncWrapper(async (req, res, next) => {
+    const { district } = req.query;
+
+    const mccs = await pool.query('SELECT * FROM mccs WHERE district = $1', [district]);
+
+    res.status(statusCodes.OK).json({ mccs: mccs.rows });
+});
+
 
 module.exports = {
     list,
@@ -163,4 +171,5 @@ module.exports = {
     findByCode,
     findByNumber,
     findByStatus,
+    findByDistrict
 };

@@ -10,7 +10,7 @@ import { useContext, useState } from "react";
 import { AuthenticationFormContainer } from "../../../components/styles/AuthenticationPagesStyles";
 import { Helmet } from "react-helmet-async";
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
   const params = useParams();
   const [ cookies, setCookie, removeCookie ] = useCookies(null);
   const { setOpen, setResponseMessage } = useContext(GeneralContext);
@@ -31,7 +31,7 @@ const ForgotPassword = () => {
       }
 
       setIsProcessing(true);
-      axios.put(serverUrl+'/api/v1/mmpas/user/resetPassword?id='+params.userId, {password: data.password}, config)
+      axios.put(serverUrl+'/api/v1/mmpas/otheruser/resetPassword?id='+params.userId, {password: data.password}, config)
       .then(response => {
         setTimeout(() => {
           if (response.status === 200) {
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
             setResponseMessage({message: 'Password changed' , severity: 'success'});
             setOpen(true);
             setTimeout(() => {
-              window.location.replace('/vet/auth/signin');
+              window.location.replace('/rab/auth/signin');
             },2000);
           }
         }, 3000)
@@ -62,10 +62,10 @@ const ForgotPassword = () => {
       </Helmet>
       <AuthenticationFormContainer style={{ position: 'relative', boxShadow: 'rgba(0, 0, 0, 0.05) 0 6px 24px, rgba(0, 0, 0, 0.08) 0 5px 12px 1px' }}>
 
-        <VerticallyFlexSpaceBetweenContainer className="left" style={{ position: 'absolute', left: '0', top: '0', bottom: '0', background: "rgba(26, 140, 255, 1)", height: '100%', gap: '50px' }}>
+        <VerticallyFlexSpaceBetweenContainer className="left" style={{ position: 'absolute', left: '0', top: '0', bottom: '0', background: "#339966", height: '100%', gap: '50px', color: 'white' }}>
           <VerticallyFlexGapContainer style={{ gap: '30px', textAlign:'center', color:'white' }}>
-            <h1 style={{ fontWeight: '900' }}>MMPAS</h1>
-            <p style={{ lineHeight:'2rem', color: '#cce6ff' }}>With the power of construc, you can now organize, manage, track, share, maintain all you construct project work load in one place. </p>
+            <img src="/RAB_Logo2.png" alt="RAB Rwanda logo" style={{ width: '40%', border: '2px solid white', borderRadius: '50%', background:'white' }}/>
+            <h1 style={{ fontWeight: '900' }}>Welcome to MMPAS</h1>
           </VerticallyFlexGapContainer>
           <VerticallyFlexGapContainer style={{ gap: '30px',color:'white' }}>
             <p>&copy; All rights reserved. MMPAS 2023</p>
@@ -74,6 +74,7 @@ const ForgotPassword = () => {
 
         <VerticallyFlexGapForm className="right" style={{ position: 'absolute', right: '0', top: '0', bottom: '0' }} onSubmit={handleSubmit(onSubmit)}>
           <div>
+            <span>RAB&nbsp;Admin</span>
             <HeaderOne>Reset password</HeaderOne>
           </div>
           <FormElement style={{ color: 'gray' }}>
@@ -108,7 +109,7 @@ const ForgotPassword = () => {
               : <Button variant="contained" color="primary" size="medium" type="submit">Set password</Button>
             }
           </FormElement>
-          <Link style={{ color: 'gray', fontSize:'90%', textAlign: 'center', textDecoration: 'none' }} to={'/vet/auth/signin'}>I can't recover my account using this page</Link>
+          <Link style={{ color: 'gray', fontSize:'90%', textAlign: 'center', textDecoration: 'none' }} to={'/rab/auth/signin'}>I can't recover my account using this page</Link>
         </VerticallyFlexGapForm>
         
       </AuthenticationFormContainer>
@@ -116,4 +117,4 @@ const ForgotPassword = () => {
   )
 }
 
-export default ForgotPassword
+export default ResetPassword

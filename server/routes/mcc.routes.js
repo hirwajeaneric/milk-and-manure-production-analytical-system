@@ -10,6 +10,7 @@ const {
   findByCode,
   findByNumber,
   findByStatus,
+  findByDistrict,
 } = require('../controllers/mcc.controllers');
 
 mccRouter.get('/list', list);
@@ -20,5 +21,6 @@ mccRouter.get('/findById/:id', findById);
 mccRouter.get('/findByCode', findByCode);
 mccRouter.get('/findByNumber', findByNumber);
 mccRouter.get('/findByStatus', findByStatus);
+mccRouter.get('/findByDistrict', findByDistrict);
 
 module.exports = mccRouter;

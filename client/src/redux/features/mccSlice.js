@@ -45,9 +45,10 @@ export const getmccsForSelectedDistrict = createAsyncThunk(
     async (filter, thunkAPI) => {
         const { district } = filter;
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/mcc/findByDistrict?district=${district}`);
+            console.log(`${serverUrl}/api/v1/mmpas/mcc/findByDistrict?district=${district}`)
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findByDistrict?district=${district}`);
             response.data.mccs.forEach(element => {
-                element.registrationDate = new Date(registrationDate.date).toLocaleString();
+                element.registrationdate = new Date(element.registrationdate).toLocaleString();
             });
             return response.data.mccs;
         } catch (error) {

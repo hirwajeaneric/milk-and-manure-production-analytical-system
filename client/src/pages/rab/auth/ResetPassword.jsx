@@ -13,7 +13,7 @@ import { Helmet } from "react-helmet-async";
 const ResetPassword = () => {
   const params = useParams();
   const [ cookies, setCookie, removeCookie ] = useCookies(null);
-  const { setOpen, setResponseMessage } = useContext(GeneralContext);
+  const { setResponseMessage, setOpen } = useContext(GeneralContext);
     
   const [isProcessing, setIsProcessing] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();

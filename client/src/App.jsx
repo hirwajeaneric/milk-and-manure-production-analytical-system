@@ -112,16 +112,16 @@ function App() {
   
   useEffect(() => {  
     if (user !== undefined && user.role === 'rab') {
-      dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getAllmccs());
-      dispatch(getAllMccEmployees());
-      dispatch(getVeterinaries());
+      // dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+      // dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+      // dispatch(getAllmccs());
+      // dispatch(getAllMccEmployees());
+      // dispatch(getVeterinaries());
     } else if (user !== undefined && user.role === 'veterinary') {
-      dispatch(getManureProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getMilkProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getEmployeesInDistrict({ district: user.district }));
-      dispatch(getMCCsForSelectedDistrict({ district: user.district }))
+      // dispatch(getManureProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
+      // dispatch(getMilkProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
+      // dispatch(getEmployeesInDistrict({ district: user.district }));
+      // dispatch(getmccsForSelectedDistrict({ district: user.district }))
     } else if (user !== undefined && user.role === 'mcc') {
       dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
       dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
@@ -136,7 +136,8 @@ function App() {
     <GeneralContext.Provider 
       value={{
         responseMessage, 
-        setResponseMessage, 
+        setResponseMessage,
+        setOpen 
       }}>
       <BrowserRouter>
         <Routes>
@@ -176,6 +177,7 @@ function App() {
 
 
 
+
           {/* VETERINARY pages //////////////////////////////////////////////////////////////////////////////////////////////////////// */}
           <Route path='/vet/:district/auth/' element={<VetAuth />}>
             <Route path='signin' element={<VetSignin />} />
@@ -183,7 +185,8 @@ function App() {
             <Route path='forgot-password' element={<VetForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<VetResetPassword />} />
           </Route>
-          <Route path='/vet/:district/' element={authToken ? <VetDashboardMain /> : <Navigate replace to={'/vet/auth/signin'} />}>
+
+          <Route path='/vet/:district/' element={authToken ? <VetDashboardMain /> : <Navigate replace to={'/vet/:district/auth/signin'} />}>
             <Route path='dashboard' element={<VetStats />} />
             <Route path='production' element={<VetProduction />} >
               <Route path='milk' element={<VetMilkProduction />}>

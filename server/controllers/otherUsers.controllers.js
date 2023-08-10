@@ -20,7 +20,7 @@ const list = asyncWrapper(async (req, res, next) => {
 
 
 const signin = asyncWrapper(async (req, res, next) => {
-    const { role, province, district } = req.query;
+    const { role, district } = req.query;
 
     const { email, password } = req.body;
     
@@ -36,10 +36,10 @@ const signin = asyncWrapper(async (req, res, next) => {
     var response = {};
 
     // VETERINARY LOGIN
-    if (role === 'veterinary' && (!province || !district)) {
+    if (role === 'veterinary' && !district) {
         throw new CustomError.BadRequestError('Signin failed. Please make sure you are using the appropriate login link.');
-    } else if (role === 'veterinary' && province && district) {
-        response = await pool.query('SELECT * FROM other_users WHERE email = $1 AND role = $2 AND province = $3 AND district = $4', [email, role, province, district]);
+    } else if (role === 'veterinary' && district) {
+        response = await pool.query('SELECT * FROM other_users WHERE email = $1 AND role = $2 AND LOWER(district) = LOWER($3)', [email, role, district]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
         }    
@@ -77,7 +77,7 @@ const signin = asyncWrapper(async (req, res, next) => {
     if (role === 'farmer') {
         user = {
             id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
+            fullName: response.rows[0].fullname,
             email: response.rows[0].email,
             role: response.rows[0].role,
             status: response.rows[0].status,
@@ -89,7 +89,7 @@ const signin = asyncWrapper(async (req, res, next) => {
     } else if (role === 'veterinary') {
         user = {
             id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
+            fullName: response.rows[0].fullname,
             email: response.rows[0].email,
             role: response.rows[0].role,
             status: response.rows[0].status,
@@ -100,7 +100,7 @@ const signin = asyncWrapper(async (req, res, next) => {
     } else if (role === 'rab') {
         user = {
             id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
+            fullName: response.rows[0].fullname,
             email: response.rows[0].email,
             role: response.rows[0].role,
             status: response.rows[0].status,

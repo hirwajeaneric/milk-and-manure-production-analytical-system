@@ -11,15 +11,20 @@ import Avatar from "@mui/material/Avatar";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Divider, IconButton, ListItemIcon, Tooltip } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Logout, PersonAdd, Settings } from "@mui/icons-material";
 import { useCookies } from "react-cookie";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSimpleCapitalizedChars } from "../../utils/HelperFunctions";
+import { getManureProductionOnCountryLevel } from "../../redux/features/manureProductionSlice";
+import { getMilkProductionOnCountryLevel } from "../../redux/features/milkProductionSlice";
+import { getAllmccs } from "../../redux/features/mccSlice";
+import { getAllMccEmployees, getVeterinaries } from "../../redux/features/userSlice";
 
 const DashboardMain = () => {
     const [ cookies, setCookie, removeCookie ] = useCookies(null);
     const [anchorEl, setAnchorEl] = useState(null);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [fullSize, setFullSize] = useState(false);
     const open = Boolean(anchorEl);
@@ -30,12 +35,15 @@ const DashboardMain = () => {
         setAnchorEl(null);
     };
 
-    // const user = cookies.UserData;      
-    const user = {
-        fullName: 'Impuhwe Stella',
-        userRole: 'rab-admin',
-        email: 'impuhwe@gmail.com'
-    }
+    const user = cookies.UserData;
+    
+    useEffect(() => {
+        dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+        dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+        dispatch(getAllmccs());
+        dispatch(getAllMccEmployees());
+        dispatch(getVeterinaries());
+    }, [])
 
     const signout = () => {
         removeCookie('AuthToken');
@@ -43,18 +51,12 @@ const DashboardMain = () => {
         navigate('/rab/auth/signin')
     }
 
-    const { isLoading: loadingManure, manureProductionOnCountryLevel, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
-    const { isLoading: loadingMilk, milkProductionOnCountryLevel, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
-    const { isLoading: loadingMccs, allMCCs, numberOfAllMCCs } = useSelector(state => state.mcc);
-    const { isLoading: loadingUsers, allMccEmployees, numberOfAllMccEmployees } = useSelector(state => state.user);
-    
-
     return (
         <VerticallyFlexSpaceBetweenContainer style={{ backgroundColor: '#e0ebeb' }}>
             <TopNavigationBar>
                 <div className="left">
                     <MdMenu style={{ cursor: 'pointer' }} onClick={() => setFullSize(!fullSize)}/>
-                    <Link to='/'>MMPAs</Link>
+                    <Link to={`/rab}`}>MMPAs</Link>
                     <h3>RAB Official</h3>
                 </div>    
                 <div className="right">
@@ -111,7 +113,7 @@ const DashboardMain = () => {
                     <Avatar sx={{ width: 32, height: 32 }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
                         <VerticallyFlexGapContainer style={{ justifyContent:'flex-start', alignItems:'flex-start', gap: '5px' }}>
                             <p>{user.fullName}</p>
-                            <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.userRole}</p>
+                            <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.role}</p>
                             <p style={{ color: 'gray', fontSize:'90%' }}>{user.email}</p>
                         </VerticallyFlexGapContainer>
                     </MenuItem>
@@ -182,12 +184,12 @@ const DashboardMain = () => {
                             {!fullSize && <><span className="text">Veterinaries</span></>}
                             </div>
                         </SideBarMenuItem>
-                        <SideBarMenuItem to={'farmers'}>
+                        {/* <SideBarMenuItem to={'farmers'}>
                             <GiFarmer style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <><span className="text">Farmers</span></>}
                             </div>
-                        </SideBarMenuItem>
+                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'settings'}>
                             <RiUser4Fill style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
