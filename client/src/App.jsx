@@ -42,6 +42,7 @@ import VetMilkProduction from './pages/veterinary/MilkProduction';
 import VetMCCEmployeeInfo from './pages/veterinary/MCCEmployeeInfo';
 import VetMCCEmployees from './pages/veterinary/MCCEmployees';
 import VetMCCInfo from './pages/veterinary/MCCInfo';
+import VetListAddMCCs from './pages/veterinary/ListAddMCCs';
 import VetMCCs from './pages/veterinary/MCCs';
 import VetProduction from './pages/veterinary/Production';
 import VetProductionDetails from './pages/veterinary/ProductionDetails';
@@ -174,6 +175,7 @@ function App() {
               </Route>
             </Route>
             <Route path='mccs' element={<VetMCCs />}>
+              <Route path='' element={<VetListAddMCCs />} />
               <Route path=':mccId' element={<VetMCCInfo />} />
             </Route>
             <Route path='employees' element={<VetMCCEmployees />}>
