@@ -37,8 +37,7 @@ const DashboardMain = () => {
     };
     
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('rabUser'));
-        console.log(user);
+        var user = JSON.parse(localStorage.getItem('rabUser'));
         setUser(user);
 
         dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
@@ -65,18 +64,8 @@ const DashboardMain = () => {
                 <div className="right">
                     <MdNotifications style={{ fontSize: '150%', color: 'gray'}} />
                     <Tooltip title="Account settings">
-                        <IconButton
-                            onClick={handleClick}
-                            size="small"
-                            sx={{ ml: 2, background: 'white' }}
-                            aria-controls={open ? 'account-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                        >
+                        <IconButton onClick={handleClick} size="small" sx={{ ml: 2, background: 'white' }} aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
                             <Avatar sx={{ width: 32, height: 32, background: 'black' }}></Avatar>
-                                {/* {getSimpleCapitalizedChars(user.fullName)} */}
-                                {/* {user.fullName} */}
-                            {/* </Avatar> */}
                         </IconButton>
                     </Tooltip>
                 </div>
@@ -87,39 +76,36 @@ const DashboardMain = () => {
                     onClose={handleClose}
                     onClick={handleClose}
                     PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
+                        elevation: 0,
+                        sx: {
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            '& .MuiAvatar-root': {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                            },
+                            '&:before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            },
                         },
-                        '&:before': {
-                        content: '""',
-                        display: 'block',
-                        position: 'absolute',
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: 'background.paper',
-                        transform: 'translateY(-50%) rotate(45deg)',
-                        zIndex: 0,
-                        },
-                    },
                     }}
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                     <MenuItem onClick={handleClose} style={{ display:'flex', flexDirection:'row', alignItems:'flex-start' }}>
-                    <Avatar sx={{ width: 32, height: 32 }}></Avatar>
-                        {/* {getSimpleCapitalizedChars(user.fullName)}
-                        {user.fullName} */}
-                        {/* </Avatar> */}
+                        <Avatar sx={{ width: 32, height: 32 }}></Avatar>
                         <VerticallyFlexGapContainer style={{ justifyContent:'flex-start', alignItems:'flex-start', gap: '5px' }}>
                             <p>{user.fullName}</p>
                             <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.role}</p>

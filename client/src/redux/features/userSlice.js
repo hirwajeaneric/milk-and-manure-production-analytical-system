@@ -117,7 +117,6 @@ export const getVeterinaries = createAsyncThunk(
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });
-            console.log(response.data.users);
             return response.data.users;
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');

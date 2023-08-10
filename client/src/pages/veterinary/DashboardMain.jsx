@@ -29,16 +29,20 @@ const DashboardMain = () => {
     const navigate = useNavigate();
     const [fullSize, setFullSize] = useState(false);
     const open = Boolean(anchorEl);
+    const [user, setUser] = useState({});
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    const user = cookies.UserData;
-    
     useEffect(() => {
+        var user = JSON.parse(localStorage.getItem('veterinary'));
+        setUser(user);
+
         dispatch(getManureProductionOnDistrictLevel({ district: params.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
         dispatch(getMilkProductionOnDistrictLevel({ district: params.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
         dispatch(getmccsForSelectedDistrict({ district: user.district }));
@@ -46,8 +50,8 @@ const DashboardMain = () => {
     }, [])
 
     const signout = () => {
-        removeCookie('AuthToken');
-        removeCookie('UserData');
+        localStorage.removeItem('vetToken');
+        localStorage.removeItem('veterinary');
         navigate(`/vet/${params.district}/auth/signin`)
     }
 
@@ -70,7 +74,7 @@ const DashboardMain = () => {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                         >
-                            <Avatar sx={{ width: 32, height: 32, background: 'black' }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
+                            <Avatar sx={{ width: 32, height: 32, background: 'black' }}></Avatar>
                         </IconButton>
                     </Tooltip>
                 </div>
@@ -110,7 +114,7 @@ const DashboardMain = () => {
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                     <MenuItem onClick={handleClose} style={{ display:'flex', flexDirection:'row', alignItems:'flex-start' }}>
-                    <Avatar sx={{ width: 32, height: 32 }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
+                        <Avatar sx={{ width: 32, height: 32 }}></Avatar>
                         <VerticallyFlexGapContainer style={{ justifyContent:'flex-start', alignItems:'flex-start', gap: '5px' }}>
                             <p>{user.fullName}</p>
                             <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.role}</p>

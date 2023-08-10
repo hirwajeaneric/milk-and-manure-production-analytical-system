@@ -3,17 +3,15 @@ import { HeaderTwo, VerticallyFlexGapContainer } from '../../components/styles/G
 import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import MCCEmployeeInDistrictTable from '../../components/tables/MCCEmployeeInDistrictTable';
 import AddMCCEmployeeForm from '../../components/forms/AddMCCEmployeeForm';
 import { getEmployeesInDistrict } from '../../redux/features/userSlice';
 
 const MCCEmployees = () => {
   const params = useParams();
-  const [ cookies, setCookie ] = useCookies(null);
-  const user = cookies.UserData;
 
   useEffect(() => {
+    var user = JSON.parse(localStorage.getItem('veterinary'));
     getEmployeesInDistrict(user.district);
   }, [])
 

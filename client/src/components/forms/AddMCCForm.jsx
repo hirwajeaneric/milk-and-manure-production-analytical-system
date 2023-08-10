@@ -4,18 +4,19 @@ import axios from 'axios';
 const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 import { GeneralContext } from "../../App";
 import { Button } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getmccsForSelectedDistrict } from "../../redux/features/mccSlice";
-import { useCookies } from "react-cookie";
 
 export default function AddMCCForm() {
     const dispatch = useDispatch();
     const { setOpen, setResponseMessage } = useContext(GeneralContext);
     const [ isProcessing, setIsProcessing ] = useState(false);
-    const [ cookies, setCookie ] = useCookies(null);
+    const [ user, setUser ] = useState({})
 
-    const user = cookies.UserData;
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('veterinary')));
+    },[])
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
