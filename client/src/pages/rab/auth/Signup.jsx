@@ -3,7 +3,6 @@ import { FormElement, HeaderOne, HorizontallyFlexGapContainer, HorizontallyFlexS
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
-import { useCookies } from 'react-cookie';
 import { GeneralContext } from "../../../App";
 import { Button } from "@mui/material";
 import { useContext, useState } from "react";
@@ -12,7 +11,6 @@ import { Helmet } from "react-helmet-async";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(null);
   const { setResponseMessage, setOpen } = useContext(GeneralContext);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -34,8 +32,8 @@ const Signup = () => {
       const response = await axios.post(`${serverUrl}/api/v1/mmpas/otheruser/signup`, data);
       if (response.status === 201) {
         setIsProcessing(false);
-        setCookie('AuthToken', response.data.user.token);
-        setCookie('UserData', JSON.stringify(response.data.user));
+        localStorage.setItem('rabToken', response.data.user.token);
+        localStorage.setItem('rabUser', JSON.stringify(response.data.user));
         navigate('/rab/');
       }
     } catch (error) {

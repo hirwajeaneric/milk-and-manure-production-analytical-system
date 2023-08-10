@@ -13,8 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Divider, IconButton, ListItemIcon, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Logout, PersonAdd, Settings } from "@mui/icons-material";
-import { useCookies } from "react-cookie";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getSimpleCapitalizedChars } from "../../utils/HelperFunctions";
 import { getManureProductionOnCountryLevel } from "../../redux/features/manureProductionSlice";
 import { getMilkProductionOnCountryLevel } from "../../redux/features/milkProductionSlice";
@@ -22,22 +21,26 @@ import { getAllmccs } from "../../redux/features/mccSlice";
 import { getAllMccEmployees, getVeterinaries } from "../../redux/features/userSlice";
 
 const DashboardMain = () => {
-    const [ cookies, setCookie, removeCookie ] = useCookies(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [fullSize, setFullSize] = useState(false);
     const open = Boolean(anchorEl);
+    const [user, setUser] = useState({});
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const user = cookies.UserData;
     
     useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('rabUser'));
+        console.log(user);
+        setUser(user);
+
         dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
         dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
         dispatch(getAllmccs());
@@ -46,9 +49,9 @@ const DashboardMain = () => {
     }, [])
 
     const signout = () => {
-        removeCookie('AuthToken');
-        removeCookie('UserData');
-        navigate('/rab/auth/signin')
+        localStorage.removeItem('rabToken');
+        localStorage.removeItem('rabUser');
+        navigate('/rab/auth/signin');
     }
 
     return (
@@ -56,7 +59,7 @@ const DashboardMain = () => {
             <TopNavigationBar>
                 <div className="left">
                     <MdMenu style={{ cursor: 'pointer' }} onClick={() => setFullSize(!fullSize)}/>
-                    <Link to={`/rab}`}>MMPAs</Link>
+                    <Link to={`/rab}`} style={{ color: '#339966' }}>MMPAs</Link>
                     <h3>RAB Official</h3>
                 </div>    
                 <div className="right">
@@ -70,7 +73,10 @@ const DashboardMain = () => {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                         >
-                            <Avatar sx={{ width: 32, height: 32, background: 'black' }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
+                            <Avatar sx={{ width: 32, height: 32, background: 'black' }}></Avatar>
+                                {/* {getSimpleCapitalizedChars(user.fullName)} */}
+                                {/* {user.fullName} */}
+                            {/* </Avatar> */}
                         </IconButton>
                     </Tooltip>
                 </div>
@@ -110,23 +116,17 @@ const DashboardMain = () => {
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                     <MenuItem onClick={handleClose} style={{ display:'flex', flexDirection:'row', alignItems:'flex-start' }}>
-                    <Avatar sx={{ width: 32, height: 32 }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
+                    <Avatar sx={{ width: 32, height: 32 }}></Avatar>
+                        {/* {getSimpleCapitalizedChars(user.fullName)}
+                        {user.fullName} */}
+                        {/* </Avatar> */}
                         <VerticallyFlexGapContainer style={{ justifyContent:'flex-start', alignItems:'flex-start', gap: '5px' }}>
                             <p>{user.fullName}</p>
                             <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.role}</p>
                             <p style={{ color: 'gray', fontSize:'90%' }}>{user.email}</p>
                         </VerticallyFlexGapContainer>
                     </MenuItem>
-                    {/* <MenuItem onClick={handleClose}>
-                        <Avatar /> My account
-                    </MenuItem> */}
                     <Divider />
-                    {/* <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            <PersonAdd fontSize="small" />
-                        </ListItemIcon>
-                        Add another account
-                    </MenuItem> */}
                     <MenuItem onClick={() => {navigate('/rab/settings'); handleClose();}}>
                         <ListItemIcon>
                             <Settings fontSize="small" />
@@ -143,7 +143,7 @@ const DashboardMain = () => {
 
             <HorizontallyFlexGapContainer style={{ position: 'relative' }}>                
                 <SideNavigationBar style={{ width: fullSize ? '5%' : '20%' }}>
-                    <SideBarMenueContainer>
+                    <SideBarMenueContainer style={{ background: '#339966' }}>
                         <SideBarMenuItem to={'dashboard'}>
                             <MdHome style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
@@ -160,12 +160,6 @@ const DashboardMain = () => {
                             }
                             </div>
                         </SideBarMenuItem>
-                        {/* <SideBarMenuItem to={'resources'}>
-                            <RiPlantFill style={{ width: fullSize ? '100%' : '20%'}}/>
-                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
-                            {!fullSize && <><span className="text">Manure</span></>}
-                            </div>
-                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'mccs'}>
                             <HiOfficeBuilding style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">

@@ -3,7 +3,6 @@ import { FormElement, HeaderOne, HorizontallyFlexSpaceBetweenContainer, Vertical
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
-import { useCookies } from 'react-cookie';
 import { GeneralContext } from "../../../App";
 import { Button } from "@mui/material";
 import { useContext, useState } from "react";
@@ -12,7 +11,6 @@ import { Helmet } from "react-helmet-async";
 
 const Signin = () => {
   const navigate = useNavigate();
-  const [ cookies, setCookie ] = useCookies(null);
   const { setResponseMessage, setOpen } = useContext(GeneralContext);
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -28,8 +26,8 @@ const Signin = () => {
       setTimeout(() => {
         if (response.status === 200) {
           setIsProcessing(false);
-          setCookie('AuthToken', response.data.user.token);
-          setCookie('UserData', JSON.stringify(response.data.user));
+          localStorage.setItem('rabToken', response.data.user.token);
+          localStorage.setItem('rabUser', JSON.stringify(response.data.user));
           navigate('/rab/');
         }
       }, 3000)

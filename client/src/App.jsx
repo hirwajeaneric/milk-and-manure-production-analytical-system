@@ -1,9 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { getMilkProductionForFarmer, getMilkProductionOnCountryLevel, getMilkProductionOnDistrictLevel, getMilkProductionOnMCCLevel } from './redux/features/milkProductionSlice';
 import { createContext, useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 import ResponseComponent from './components/ResponseComponent';
 
 // PAGES 
@@ -88,9 +85,6 @@ import FarmerManureProduction from './pages/farmer/ManureProduction';
 import FarmerMilkProduction from './pages/farmer/MilkProduction';
 import FarmerProduction from './pages/farmer/Production';
 import FarmerProductionDetails from './pages/farmer/ProductionDetails';
-import { getManureProductionForFarmer, getManureProductionOnCountryLevel, getManureProductionOnDistrictLevel, getManureProductionOnMCCLevel } from './redux/features/manureProductionSlice';
-import { getAllmccs, getmccsForSelectedDistrict } from './redux/features/mccSlice';
-import { getAllMccEmployees, getEmployeesForMcc, getEmployeesInDistrict, getVeterinaries } from './redux/features/userSlice';
 
 export const GeneralContext = createContext();
 
@@ -98,10 +92,6 @@ function App() {
   const dispatch = useDispatch();
   const [ open, setOpen ] = useState(false);
   const [ responseMessage, setResponseMessage ] = useState({ message: '', severity: ''});
-  const [ cookies, setCookie, removeCookie ] = useCookies(null);
-  
-  const authToken = cookies.AuthToken;
-  const user = cookies.UserData;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -110,26 +100,13 @@ function App() {
     setOpen(false);
   };
   
-  useEffect(() => {  
-    if (user !== undefined && user.role === 'rab') {
-      // dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-      // dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-      // dispatch(getAllmccs());
-      // dispatch(getAllMccEmployees());
-      // dispatch(getVeterinaries());
-    } else if (user !== undefined && user.role === 'veterinary') {
-      // dispatch(getManureProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      // dispatch(getMilkProductionOnDistrictLevel({ district: user.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      // dispatch(getEmployeesInDistrict({ district: user.district }));
-      // dispatch(getmccsForSelectedDistrict({ district: user.district }))
-    } else if (user !== undefined && user.role === 'mcc') {
-      dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getEmployeesForMcc({ mccId: user.mccId }))
-    } else if (user !== undefined && user.role === 'farmer') {
-      dispatch(getManureProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
-      dispatch(getMilkProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
-    }
+  useEffect(() => {   
+    // dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
+    // dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
+    // dispatch(getEmployeesForMcc({ mccId: user.mccId }))
+  
+    // dispatch(getManureProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
+    // dispatch(getMilkProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
   },[dispatch]);
 
   return (
@@ -149,7 +126,7 @@ function App() {
             <Route path='forgot-password' element={<RabForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<RabResetPassword />} />
           </Route>
-          <Route path='/rab/' element={authToken ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}>
+          <Route path='/rab/' element={localStorage.getItem('rabToken') ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}>
             <Route path='dashboard' element={<RabStats />} />
             <Route path='production' element={<RabProduction />} >
               <Route path='' element={<RabMilkProduction />}>
@@ -186,7 +163,7 @@ function App() {
             <Route path='reset-password/:token/:userId' element={<VetResetPassword />} />
           </Route>
 
-          <Route path='/vet/:district/' element={authToken ? <VetDashboardMain /> : <Navigate replace to={'/vet/:district/auth/signin'} />}>
+          <Route path='/vet/:district/' element={localStorage.getItem('vetToken') ? <VetDashboardMain /> : <Navigate replace to={'/vet/:district/auth/signin'} />}>
             <Route path='dashboard' element={<VetStats />} />
             <Route path='production' element={<VetProduction />} >
               <Route path='milk' element={<VetMilkProduction />}>
@@ -215,8 +192,8 @@ function App() {
             <Route path='forgot-password' element={<MCCForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<MCCResetPassword />} />
           </Route>
-          {/* <Route path='/mcc/:code/' element={authToken ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}> */}
-          <Route path='/mcc/:code/' element={<MCCDashboardMain />}>
+          <Route path='/mcc/:code/' element={localStorage.getItem('mccToken') ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}>
+          {/* <Route path='/mcc/:code/' element={<MCCDashboardMain />}> */}
             <Route path='dashboard' element={<MCCStats />} />
             <Route path='production' element={<MCCProduction />} >
               <Route path='milk' element={<MCCMilkProduction />}>
@@ -246,7 +223,7 @@ function App() {
             <Route path='forgot-password' element={<FarmerForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<FarmerResetPassword />} />
           </Route>
-          <Route path='/' element={authToken ? <FarmerDashboardMain /> : <Navigate replace to={'/auth/signin'} />}>
+          <Route path='/' element={localStorage.getItem('farToken') ? <FarmerDashboardMain /> : <Navigate replace to={'/auth/signin'} />}>
             <Route path='dashboard' element={<FarmerStats />} />
             <Route path='production' element={<FarmerProduction />} >
               <Route path='milk' element={<FarmerMilkProduction />}>
