@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const a = styled.div`
+export const DetailElement = styled.div`
     width: 100%;    
     display: flex;
     flex-direction: row;

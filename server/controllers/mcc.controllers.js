@@ -51,7 +51,7 @@ const add = asyncWrapper(async (req, res, next) => {
 
 
 const update = asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.query;
     const changes = req.body;
 
     // Remove the 'id' field from the changes object to prevent updating the primary key.
@@ -92,7 +92,7 @@ const update = asyncWrapper(async (req, res, next) => {
 
 
 const deleteMcc = asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.query;
 
     const deleteMcc = await pool.query('DELETE FROM mccs WHERE id = $1', [id]);
 
@@ -106,7 +106,7 @@ const deleteMcc = asyncWrapper(async (req, res, next) => {
 
 
 const findById = asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.query;
 
     const mcc = await pool.query('SELECT * FROM mccs WHERE id = $1', [id]);
 
