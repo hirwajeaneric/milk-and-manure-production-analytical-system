@@ -1,28 +1,27 @@
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Preview } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const columns = [
   {
-    field: 'name',
+    field: 'fullName',
     headerName: 'Name',
-    width: 350,
+    width: 250,
   },
   {
-    field: 'number',
-    headerName: 'Number',
-    width: 80,
-  },
-  {
-    field: 'code',
-    headerName: 'Code',
+    field: 'phone',
+    headerName: 'Phone',
     width: 150,
   },
   {
-    field: 'registrationdate',
-    headerName: 'Registration Date',
+    field: 'email',
+    headerName: 'Email',
+    width: 180,
+  },
+  {
+    field: 'district',
+    headerName: 'District',
     width: 250,
   },
   {
@@ -57,7 +56,7 @@ export const TableStyles = {
 
 var rows = [];
 
-export default function DistrictLevelMCCTable({data}) {
+export default function MCCEmployeeInDistrictTable({data}) {
   rows = data;
 
   return (

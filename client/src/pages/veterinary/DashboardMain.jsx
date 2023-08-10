@@ -56,7 +56,7 @@ const DashboardMain = () => {
             <TopNavigationBar>
                 <div className="left">
                     <MdMenu style={{ cursor: 'pointer' }} onClick={() => setFullSize(!fullSize)}/>
-                    <Link to={`/vet/${params.district}`}>MMPAs</Link>
+                    <Link to={`/vet/${params.district}`}>MMPAS</Link>
                     <h3>{`${params.district.toUpperCase()} District Veterinary`}</h3>
                 </div>    
                 <div className="right">
