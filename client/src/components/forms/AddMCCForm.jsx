@@ -34,6 +34,9 @@ export default function AddMCCForm() {
                 setResponseMessage({ message: response.data.message, severity: 'success' });
                 setOpen(true);
                 dispatch(getmccsForSelectedDistrict({ district: user.district}));
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000)
             }
         } catch (error) {
             if (error.response && error.response.status >= 400 && error.response.status <= 500) {

@@ -63,9 +63,9 @@ export const getAllMccEmployees = createAsyncThunk(
 export const getEmployeesForMcc = createAsyncThunk(
     'user/getEmployeesForMcc',
     async (filter, thunkAPI) => {
-        const { mccCode } = filter;
+        const { mccId } = filter;
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByMccCode?mccCode=${mccCode}`);
+            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByMccId?mccId=${mccId}`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });

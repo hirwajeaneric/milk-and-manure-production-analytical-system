@@ -5,14 +5,14 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const columns = [
   {
-    field: 'fullName',
+    field: 'fullname',
     headerName: 'Name',
-    // width: 250,
+    width: 350,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    // width: 150,
+    width: 150,
   },
   {
     field: 'status',

@@ -14,9 +14,9 @@ const initialState = {
 export const getMccDetails = createAsyncThunk(
     'mcc/getMccDetails',
     async (filter, thunkAPI) => {
-        const { code } = filter;
+        const { id } = filter;
         try {
-            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findByCode?code=${code}`);
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findById?id=${id}`);
             response.data.mcc.registrationDate = new Date(response.data.mcc.registrationDate).toLocaleString();
             return response.data.mcc;
         } catch (error) {

@@ -16,8 +16,8 @@ export default function MCCInfo() {
   
   useEffect(() => {
     var user = JSON.parse(localStorage.getItem('veterinary'));
-    dispatch(getEmployeesForMcc({mccCode: params.mccCode}));
-    dispatch(getMccDetails({code: params.mccCode}));
+    dispatch(getEmployeesForMcc({mccId: params.mccId}));
+    dispatch(getMccDetails({id: params.mccId}));
   }, [])
 
   const { employeesOfSelectedMcc } = useSelector(state => state.user);

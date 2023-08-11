@@ -45,7 +45,7 @@ const add = asyncWrapper(async (req, res, next) => {
         [id, name, number, province, district, sector, codeValue, status, registrationDate]
     );
 
-    res.status(statusCodes.CREATED).json({ mcc: newMcc.rows[0] });
+    res.status(statusCodes.CREATED).json({ message: 'MCC Recorded', mcc: newMcc.rows[0] });
 });
 
 

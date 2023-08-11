@@ -50,7 +50,7 @@ function CustomToolbar() {
 export const TableStyles = {
   padding: '0px',
   width: '100%',
-  height: '250px',
+  height: '300px',
   background: 'white',
   marginTop: '20px' 
 }
@@ -84,7 +84,7 @@ const TableActions = ({parameters}) => {
   return (
     <Box>
       <Tooltip title='View / Edit'>
-        <IconButton onClick={() => {navigate(`../mccs/${parameters.row.code}`)}}>
+        <IconButton onClick={() => {navigate(`../mccs/${parameters.row.id}`)}}>
           <MoreHorizIcon />
         </IconButton>
       </Tooltip>

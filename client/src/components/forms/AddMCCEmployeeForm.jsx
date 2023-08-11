@@ -21,7 +21,7 @@ export default function AddMCCEmployeeForm() {
         data.province = selectedMcc.province;
         data.district = selectedMcc.district;
         data.sector = selectedMcc.sector;
-        data.mccCode = selectedMcc.code;
+        data.mccId = selectedMcc.id;
         data.mccName = selectedMcc.name;
         data.role = 'mcc';
 
@@ -35,7 +35,10 @@ export default function AddMCCEmployeeForm() {
                 setIsProcessing(false);
                 setResponseMessage({ message: response.data.message, severity: 'success' });
                 setOpen(true);
-                dispatch(getEmployeesForMcc({ mccCode: response.data.user.mccCode}));
+                dispatch(getEmployeesForMcc({ mccId: response.data.user.mccId }));
+                setTimeout(() => {
+                    window.location.reload();
+                },2000)
             }
         } catch (error) {
             if (error.response && error.response.status >= 400 && error.response.status <= 500) {
