@@ -7,33 +7,23 @@ const columns = [
   {
     field: 'fullName',
     headerName: 'Name',
-    width: 250,
+    // width: 250,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 150,
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    width: 180,
-  },
-  {
-    field: 'district',
-    headerName: 'District',
-    width: 250,
+    // width: 150,
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 150,
+    // width: 150,
   },
   {
     field: 'actions',
     headerName: 'Actions',
     type: 'actions',
-    width: 70,
+    // width: 70,
     renderCell: (params) => <TableActions parameters= {params} />
   },
 ]
@@ -50,8 +40,7 @@ export const TableStyles = {
   padding: '0px',
   width: '100%',
   height: '250px',
-  background: 'white',
-  marginTop: '20px' 
+  background: 'white', 
 }
 
 var rows = [];
@@ -69,7 +58,7 @@ export default function MCCEmployeeInDistrictTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        components={{Toolbar: CustomToolbar}}
+        // components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );

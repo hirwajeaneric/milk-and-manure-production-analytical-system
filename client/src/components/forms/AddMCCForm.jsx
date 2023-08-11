@@ -31,8 +31,9 @@ export default function AddMCCForm() {
             const response = await axios.post(`${serverUrl}/api/v1/mmpas/mcc/add`, data);
             if (response.status === 201) {
                 setIsProcessing(false);
+                setResponseMessage({ message: response.data.message, severity: 'success' });
+                setOpen(true);
                 dispatch(getmccsForSelectedDistrict({ district: user.district}));
-                // window.location.reload();
             }
         } catch (error) {
             if (error.response && error.response.status >= 400 && error.response.status <= 500) {

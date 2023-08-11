@@ -5,22 +5,25 @@ const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 import { GeneralContext } from "../../App";
 import { Button } from "@mui/material";
 import { useContext, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getmccsForSelectedDistrict } from "../../redux/features/mccSlice";
-import { useCookies } from "react-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { getEmployeesForMcc } from "../../redux/features/userSlice";
 
 export default function AddMCCEmployeeForm() {
     const dispatch = useDispatch();
     const { setOpen, setResponseMessage } = useContext(GeneralContext);
     const [ isProcessing, setIsProcessing ] = useState(false);
-    const [ cookies, setCookie ] = useCookies(null);
-
-    const user = cookies.UserData;
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
+    const { loading, selectedMcc } = useSelector(state => state.mcc)
+
     const onSubmit = async (data) => {
-        data.district = user.district;
+        data.province = selectedMcc.province;
+        data.district = selectedMcc.district;
+        data.sector = selectedMcc.sector;
+        data.mccCode = selectedMcc.code;
+        data.mccName = selectedMcc.name;
+        data.role = 'mcc';
 
         console.log(data);
 
@@ -30,7 +33,9 @@ export default function AddMCCEmployeeForm() {
             const response = await axios.post(`${serverUrl}/api/v1/mmpas/mccuser/add`, data);
             if (response.status === 201) {
                 setIsProcessing(false);
-                dispatch(getmccsForSelectedDistrict({ district: user.district}));
+                setResponseMessage({ message: response.data.message, severity: 'success' });
+                setOpen(true);
+                dispatch(getEmployeesForMcc({ mccCode: response.data.user.mccCode}));
             }
         } catch (error) {
             if (error.response && error.response.status >= 400 && error.response.status <= 500) {
@@ -52,7 +57,7 @@ export default function AddMCCEmployeeForm() {
                             type="text" 
                             id="fullName"
                             minLength='4'
-                            placeholder="fullName" 
+                            placeholder="Name" 
                             {...register("fullName", 
                             {required: true})} 
                             aria-invalid={errors.fullName ? "true" : "false"}
@@ -67,7 +72,7 @@ export default function AddMCCEmployeeForm() {
                             type="email" 
                             id="email"
                             minLength='8'
-                            placeholder="email" 
+                            placeholder="Email" 
                             {...register("email", 
                             {required: true})} 
                             aria-invalid={errors.email ? "true" : "false"}
@@ -82,7 +87,7 @@ export default function AddMCCEmployeeForm() {
                             type="text" 
                             id="phone"
                             minLength='8'
-                            placeholder="phone" 
+                            placeholder="Phone" 
                             {...register("phone", 
                             {required: true})} 
                             aria-invalid={errors.phone ? "true" : "false"}
@@ -91,6 +96,8 @@ export default function AddMCCEmployeeForm() {
                             <p role="alert">Phone number is required</p>
                         )}
                     </FormElement>
+                </HorizontallyFlexGapContainer>
+                <HorizontallyFlexGapContainer style={{ gap: '10px' }}>
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="nationalId">National Id</label>
                         <input 
@@ -98,7 +105,7 @@ export default function AddMCCEmployeeForm() {
                             id="nationalId"
                             minLength='16'
                             maxLength='16'
-                            placeholder="nationalId" 
+                            placeholder="National id" 
                             {...register("nationalId", 
                             {required: true})} 
                             aria-invalid={errors.nationalId ? "true" : "false"}
@@ -108,52 +115,12 @@ export default function AddMCCEmployeeForm() {
                         )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="province">Province</label>
-                        <select {...register("province", { required: true })}>
-                            <option value="">Choose province</option>
-                            <option value="Kigali City">Kigali City</option>
-                            <option value="Northern province">Northern province</option>
-                            <option value="Southern province">Southern province</option>
-                            <option value="Eastern province">Eastern province</option>
-                            <option value="Western province">Western province</option>
-                        </select>
-                        {errors.confirmPassword?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
-                    </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="district">District</label>
-                        <input 
-                            type="district"
-                            id="district"
-                            placeholder="district" 
-                            {...register("district", {required: true})} 
-                            aria-invalid={errors.district ? "true" : "false"}
-                        />
-                        {errors.district?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
-                    </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="sector">Sector</label>
-                        <input 
-                            type="sector"
-                            id="sector"
-                            placeholder="sector" 
-                            {...register("sector", {required: true})} 
-                            aria-invalid={errors.sector ? "true" : "false"}
-                        />
-                        {errors.sector?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
-                    </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="password">Password</label>
                         <input 
-                            type="password"
+                            type="text"
                             id="password" 
                             minLength='8'
-                            placeholder="password" 
+                            placeholder="Password" 
                             {...register("password", {required: true})} 
                             aria-invalid={errors.password ? "true" : "false"}
                         />

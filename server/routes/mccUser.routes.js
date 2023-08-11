@@ -6,7 +6,7 @@ const {
     deleteAccount,
     findByDistrict,
     findById, 
-    findByMccId,
+    findByMccCode,
     findByStatus, 
     forgotPassword,
     resetPassword,
@@ -24,7 +24,7 @@ mccUserRouter.delete('/delete', deleteAccount);
 mccUserRouter.get('/list', list);
 mccUserRouter.get('/findById', findById);
 mccUserRouter.get('/findByDistrict', findByDistrict);
-mccUserRouter.get('/findByMccId', findByMccId);
+mccUserRouter.get('/findByMccCode', findByMccCode);
 mccUserRouter.get('/findByStatus', findByStatus);
 
 module.exports = mccUserRouter;

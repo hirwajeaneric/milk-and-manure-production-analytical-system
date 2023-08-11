@@ -269,10 +269,10 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
 });
 
 
-const findByMccId = asyncWrapper(async(req, res, next) => {
-    const { mccId } = req.query;
+const findByMccCode = asyncWrapper(async(req, res, next) => {
+    const { mccCode } = req.query;
   
-    const users = await pool.query('SELECT * FROM mcc_users WHERE mccId = $1', [mccId]);
+    const users = await pool.query('SELECT * FROM mcc_users WHERE mccCode = $1', [mccCode]);
   
     res.status(statusCodes.OK).json({ users: users.rows });
 });
@@ -297,7 +297,7 @@ module.exports = {
     resetPassword, 
     findByDistrict, 
     findById, 
-    findByMccId, 
+    findByMccCode, 
     findByStatus, 
     findByStatus,
 };

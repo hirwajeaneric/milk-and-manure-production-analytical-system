@@ -84,7 +84,7 @@ const TableActions = ({parameters}) => {
   return (
     <Box>
       <Tooltip title='View / Edit'>
-        <IconButton onClick={() => {navigate(`../mccs/${parameters.row.id}`)}}>
+        <IconButton onClick={() => {navigate(`../mccs/${parameters.row.code}`)}}>
           <MoreHorizIcon />
         </IconButton>
       </Tooltip>

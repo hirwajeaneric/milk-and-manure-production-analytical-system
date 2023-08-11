@@ -27,7 +27,7 @@ CREATE TABLE mcc_users (
     password VARCHAR(80),
     status VARCHAR(10),
     joinDate DATE NOT NULL,
-    FOREIGN KEY (mccCode) REFERENCES mccs(id)
+    FOREIGN KEY (mccCode) REFERENCES mccs(code)
 );
 
 CREATE TABLE other_users (

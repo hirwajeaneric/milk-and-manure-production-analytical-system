@@ -176,7 +176,7 @@ function App() {
             </Route>
             <Route path='mccs' element={<VetMCCs />}>
               <Route path='' element={<VetListAddMCCs />} />
-              <Route path=':mccId' element={<VetMCCInfo />} />
+              <Route path=':mccCode' element={<VetMCCInfo />} />
             </Route>
             <Route path='employees' element={<VetMCCEmployees />}>
               <Route path=':employeeId' element={<VetMCCEmployeeInfo />} />

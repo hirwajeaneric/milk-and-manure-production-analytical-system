@@ -14,9 +14,9 @@ const initialState = {
 export const getMccDetails = createAsyncThunk(
     'mcc/getMccDetails',
     async (filter, thunkAPI) => {
-        const { id } = filter;
+        const { code } = filter;
         try {
-            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findById?id=${id}`);
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findByCode?code=${code}`);
             response.data.mcc.registrationDate = new Date(response.data.mcc.registrationDate).toLocaleString();
             return response.data.mcc;
         } catch (error) {
@@ -45,7 +45,6 @@ export const getmccsForSelectedDistrict = createAsyncThunk(
     async (filter, thunkAPI) => {
         const { district } = filter;
         try { 
-            console.log(`${serverUrl}/api/v1/mmpas/mcc/findByDistrict?district=${district}`)
             const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findByDistrict?district=${district}`);
             response.data.mccs.forEach(element => {
                 element.registrationdate = new Date(element.registrationdate).toLocaleString();
