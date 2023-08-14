@@ -128,7 +128,7 @@ export default function AddVeterinaryForm() {
                             <option value="Eastern province">Eastern province</option>
                             <option value="Western province">Western province</option>
                         </select>
-                        {errors.confirmPassword?.type === "required" && (
+                        {errors.province?.type === "required" && (
                             <p role="alert">Required</p>
                         )}
                     </FormElement>

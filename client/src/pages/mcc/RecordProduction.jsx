@@ -1,8 +1,8 @@
 import React from 'react'
-import { HeaderTwo, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles'
-import { useSelector } from 'react-redux';
+import { HeaderTwo, HorizontallyFlexGapContainer, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles'
 import { Helmet } from 'react-helmet-async';
-import AddFarmersForm from '../../components/forms/AddFarmersForm';
+import AddMilkProductionForm from '../../components/forms/AddMilkProductionForm';
+import AddManureProductionForm from '../../components/forms/AddManureProductionForm';
 
 const RecordProduction = () => {
   return (
@@ -13,9 +13,10 @@ const RecordProduction = () => {
       </Helmet>
       
       <HeaderTwo style={{ width: '100%', textAlign: 'left' }}><strong>Record Production</strong></HeaderTwo>
-      <VerticallyFlexGapContainer style={{ gap: '20px', alignItems: 'flex-start' }}>
-        <AddFarmersForm />
-      </VerticallyFlexGapContainer>
+      <HorizontallyFlexGapContainer style={{ gap: '20px', alignItems: 'flex-start' }}>
+        <AddMilkProductionForm />
+        <AddManureProductionForm />
+      </HorizontallyFlexGapContainer>
     </VerticallyFlexGapContainer>
   )
 }

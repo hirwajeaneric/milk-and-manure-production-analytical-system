@@ -152,12 +152,12 @@ const DashboardMain = () => {
                             }
                             </div>
                         </SideBarMenuItem>
-                        <SideBarMenuItem to={'employees'}>
+                        {/* <SideBarMenuItem to={'employees'}>
                             <RiUser2Fill style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <><span className="text">MCC Registers</span></>}
                             </div>
-                        </SideBarMenuItem>
+                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'farmers'}>
                             <FaHatCowboy style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
