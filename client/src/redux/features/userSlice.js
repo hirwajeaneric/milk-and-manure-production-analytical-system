@@ -81,7 +81,7 @@ export const getEmployeesInDistrict = createAsyncThunk(
     async (filter, thunkAPI) => {
         const { district } = filter;
         try { 
-            const response = await axios.get(serverUrl+`/api/v1/mmpas/mccuser/findByDistrict?district=${district}`);
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mccuser/findByDistrict?district=${district}`);
             response.data.users.forEach(element => {
                 element.joinDate = new Date(element.joinDate).toLocaleString();
             });

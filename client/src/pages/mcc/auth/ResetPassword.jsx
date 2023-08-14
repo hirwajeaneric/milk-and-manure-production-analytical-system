@@ -60,7 +60,7 @@ const ForgotPassword = () => {
       </Helmet>
       <AuthenticationFormContainer style={{ position: 'relative', boxShadow: 'rgba(0, 0, 0, 0.05) 0 6px 24px, rgba(0, 0, 0, 0.08) 0 5px 12px 1px' }}>
 
-        <VerticallyFlexSpaceBetweenContainer className="left" style={{ position: 'absolute', left: '0', top: '0', bottom: '0', background: "rgba(26, 140, 255, 1)", height: '100%', gap: '50px' }}>
+        <VerticallyFlexSpaceBetweenContainer className="left" style={{ position: 'absolute', left: '0', top: '0', bottom: '0', background: "#0055ff", height: '100%', gap: '50px' }}>
           <VerticallyFlexGapContainer style={{ gap: '30px', textAlign:'center', color:'white' }}>
             <h1 style={{ fontWeight: '900' }}>MMPAS</h1>
           </VerticallyFlexGapContainer>

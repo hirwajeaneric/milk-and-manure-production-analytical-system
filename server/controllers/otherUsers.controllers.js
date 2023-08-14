@@ -386,7 +386,7 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
 const findFarmersByDistrict = asyncWrapper(async(req, res, next) => {
     const { district } = req.query;
   
-    const users = await pool.query('SELECT * FROM other_users WHERE district = $1 AND role = "farmer"', [district]);
+    const users = await pool.query('SELECT * FROM other_users WHERE district = $1 AND role = $2', [district, "farmer"]);
   
     res.status(statusCodes.OK).json({ users: users.rows });
 })

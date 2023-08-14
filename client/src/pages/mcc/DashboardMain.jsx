@@ -16,7 +16,7 @@ import { Logout, PersonAdd, Settings } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { getManureProductionOnMCCLevel } from "../../redux/features/manureProductionSlice";
 import { getMilkProductionOnMCCLevel } from "../../redux/features/milkProductionSlice";
-import { getEmployeesForMcc } from "../../redux/features/userSlice";
+import { getEmployeesForMcc, getFarmersInDistrict } from "../../redux/features/userSlice";
 
 const DashboardMain = () => {
     const params = useParams();
@@ -41,7 +41,8 @@ const DashboardMain = () => {
 
         // dispatch(getManureProductionOnMCCLevel({ mccId: ,periodType: 'Year', periodValue: new Date().getFullYear()}));
         // dispatch(getMilkProductionOnMCCLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-        // dispatch(getEmployeesForMcc());
+        dispatch(getEmployeesForMcc({ mccId: user.mccId }));
+        dispatch(getFarmersInDistrict({ district: user.district }))
     }, [])
 
     const signout = () => {
@@ -133,11 +134,20 @@ const DashboardMain = () => {
                                 {!fullSize && <span className="text">Dashboard</span>}
                             </div>
                         </SideBarMenuItem>
+                        <SideBarMenuItem to={'record'}>
+                            <MdPropaneTank style={{ width: fullSize ? '100%' : '20%'}}/>
+                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
+                            {!fullSize && <>
+                                <span className="text">Record production</span>
+                                </>
+                            }
+                            </div>
+                        </SideBarMenuItem>
                         <SideBarMenuItem to={'production/milk'}>
                             <MdPropaneTank style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <>
-                                <span className="text">Production</span>
+                                <span className="text">Metrics/Data</span>
                                 </>
                             }
                             </div>

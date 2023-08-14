@@ -64,6 +64,7 @@ const signin = asyncWrapper(async (req, res, next) => {
         role: response.rows[0].role,
         mccId: userMcc.rows[0].id,
         mccName: userMcc.rows[0].name,
+        district: userMcc.rows[0].district,
         status: response.rows[0].status,
         token: token,
     };

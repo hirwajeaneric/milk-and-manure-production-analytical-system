@@ -86,6 +86,7 @@ import FarmerManureProduction from './pages/farmer/ManureProduction';
 import FarmerMilkProduction from './pages/farmer/MilkProduction';
 import FarmerProduction from './pages/farmer/Production';
 import FarmerProductionDetails from './pages/farmer/ProductionDetails';
+import RecordProduction from './pages/mcc/RecordProduction';
 
 export const GeneralContext = createContext();
 
@@ -199,6 +200,7 @@ function App() {
           <Route path='/mcc/:code/' element={localStorage.getItem('mccToken') ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/:code/auth/signin'} />}>
             <Route path='' element={<MCCStats />} />
             <Route path='dashboard' element={<MCCStats />} />
+            <Route path='record' element={<RecordProduction />} />
             <Route path='production' element={<MCCProduction />} >
               <Route path='milk' element={<MCCMilkProduction />}>
                 <Route path=':productionId' element={<MCCProductionDetails />} />
