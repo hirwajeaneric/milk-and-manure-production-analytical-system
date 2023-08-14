@@ -1,168 +1,108 @@
+import { FormElement, HeaderTwo, HorizontallyFlexGapContainer, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer, VerticallyFlexGapForm } from "../styles/GenericStyles"
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
+import { GeneralContext } from "../../App";
 import { Button } from "@mui/material";
 import { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
-import { GeneralContext } from "../../App";
-import { FormElement, HorizontallyFlexGapContainer, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer, VerticallyFlexGapForm } from "../styles/GenericStyles";
-const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { getProjectResources } from "../../redux/features/manureProductionSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getFarmers } from "../../redux/features/userSlice";
 
-export default function AddMilkProductionForm({projectId}) {
-    const [isProcessing, setIsProcessing] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const { setOpen, setResponseMessage } = useContext(GeneralContext);
+export default function AddMilkProductionForm() {
     const dispatch = useDispatch();
-    const [openForm, setOpenForm] = useState(true);
+    const { setOpen, setResponseMessage } = useContext(GeneralContext);
+    const [ isProcessing, setIsProcessing ] = useState(false);
 
-    const onSubmit = data => {
-        data.project = projectId;
-        data.quantity = Number(data.quantity); 
-        data.unitPrice = Number(data.unitPrice);
+    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    const onSubmit = async (data) => {
+        data.role = 'farmer';
+        data.district = JSON.parse(localStorage.getItem('mccUser')).district;
 
         setIsProcessing(true);
-        
-        console.log(data);
 
-        axios.post(serverUrl+'/api/v1/mmpas/milk/add', data)
-        .then(response => {
-            setTimeout(() => {
-                if (response.status === 201) {
-                    setIsProcessing(false);
-                    setResponseMessage({ message: response.data.message, severity: 'success' });
-                    setOpen(true);
-                    dispatch(getProjectResources(projectId));
-                }
-            }, 3000)
-        })
-        .catch(error => {
+        try {
+            const response = await axios.post(`${serverUrl}/api/v1/mmpas/otheruser/signup`, data);
+            if (response.status === 201) {
+                setIsProcessing(false);
+                dispatch(getFarmers());
+                window.location.reload();
+            }
+        } catch (error) {
             if (error.response && error.response.status >= 400 && error.response.status <= 500) {
                 setIsProcessing(false);
-                setResponseMessage({ message: error.response.data.msg, severity:'error'})
+                setResponseMessage({ message: error.response.data.msg, severity: 'error' });
                 setOpen(true);
             }
-        })
-      };
+        }
+    };
+
+    const { isLoading, farmersForSelectedDistrict } = useSelector(state => state.user);
 
     return (
-        <VerticallyFlexGapForm onSubmit={handleSubmit(onSubmit)} style={{ gap: '20px', backgroundColor: 'white', padding: '20px', borderRadius: '5px', boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)' }}>
-            <HorizontallyFlexSpaceBetweenContainer>
-                <p style={{ width: '100%', fontWeight: '600', textAlign:'left' }}>Add</p>
-            </HorizontallyFlexSpaceBetweenContainer>
-            {openForm && 
-            <VerticallyFlexGapContainer style={{ gap: '15px' }}>
-                <HorizontallyFlexGapContainer style={{ gap: '20px' }}>
+        <VerticallyFlexGapContainer style={{ gap: '10px', padding: '15px', borderRadius: '5px', background: 'white' }}>
+            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Register milk production</HeaderTwo>
+            <VerticallyFlexGapForm className="right" style={{ gap: '10px' }} onSubmit={handleSubmit(onSubmit)}>
+                <VerticallyFlexGapContainer style={{ gap: '15px' }}>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="name">Name *</label>
-                        <input 
-                            type="text" 
-                            id="name"
-                            placeholder="Resource name" 
-                            {...register("name", 
-                            {required: true})} 
-                            aria-invalid={errors.name ? "true" : "false"}
-                        />
-                        {errors.name?.type === "required" && (
-                        <p role="alert">Material name is required</p>
+                        <label htmlFor="confirmPassword">Farmer</label>
+                        <select {...register("farmer", { required: true })}>
+                            <option value="">Select Farmer</option>
+                            {farmersForSelectedDistrict.length !== 0 && 
+                                farmersForSelectedDistrict.map((element, index) => {
+                                    return (
+                                        <option key={index} value={element.fullname+"--"+element.id}>{element.fullname}</option>
+                                    )
+                                })}
+                        </select>
+                        {errors.farmer?.type === "required" && (
+                            <p role="alert">Required</p>
                         )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="type">Type *</label>
+                        <label htmlFor="phone">Phone number</label>
                         <input 
-                            type="text" 
-                            id="type"
-                            placeholder="Material type" 
-                            {...register("type", 
+                            type="phone" 
+                            id="phone"
+                            maxLength='10'
+                            placeholder="Phone number" 
+                            {...register("phone", 
                             {required: true})} 
-                            aria-invalid={errors.type ? "true" : "false"}
+                            aria-invalid={errors.phone ? "true" : "false"}
                         />
-                        {errors.type?.type === "required" && (
-                            <p role="alert">Material type must be provided</p>
+                        {errors.phone?.type === "required" && (
+                            <p role="alert">Phone</p>
                         )}
                     </FormElement>
-                </HorizontallyFlexGapContainer>
-                
-                <FormElement style={{ color: 'gray' }}>
-                    <label htmlFor="description">Description</label>
-                    <textarea 
-                        rows={3}
-                        type="text" 
-                        id="description"
-                        placeholder="Provide a short description of the material if necessary" 
-                        {...register("description", 
-                        {required: true})} 
-                        aria-invalid={errors.description ? "true" : "false"}
-                    ></textarea>
-                </FormElement>
-
-                <HorizontallyFlexGapContainer style={{ gap: '20px' }}>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="quantity">Quantity *</label>
+                        <label htmlFor="quantity">Milk quantity in Litlers</label>
                         <input 
                             type="number" 
                             id="quantity"
-                            placeholder="Quantity" 
+                            maxLength='10'
+                            placeholder="Milk quantity" 
                             {...register("quantity", 
                             {required: true})} 
-                            aria-invalid={errors.quantity ? "true" : "false"}
+                            aria-invalid={errors.phone ? "true" : "false"}
                         />
                         {errors.quantity?.type === "required" && (
-                            <p role="alert">The quantity must be provided</p>
+                            <p role="alert">Quantity</p>
                         )}
                     </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="measurementUnit">Measurement unit *</label>
-                        <select 
-                            {...register("measurementUnit", { required: true })}
-                            aria-invalid={errors.measurementUnit ? "true" : "false"}
-                        >
-                            <option value="">Select unit</option>
-                            {measurementUnits.map((measurementUnit, index) => (
-                                <option key={index} value={measurementUnit}>{measurementUnit}</option>
-                            ))}
-                        </select>
-                        {errors.measurementUnit?.type === "required" && (
-                        <p role="alert">Provide a measurement unit</p>
-                        )}
-                    </FormElement>
-                </HorizontallyFlexGapContainer>
-                
-                <HorizontallyFlexGapContainer style={{ gap: '20px' }}>
-                    <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="unitPrice">Unit price *</label>
-                        <input 
-                            type="number" 
-                            id="unitPrice"
-                            placeholder="Price per unit" 
-                            {...register("unitPrice", 
-                            {required: false})} 
-                        />
-                    </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="currency">Currency *</label>
-                        <select 
-                            {...register("currency", { required: true })}
-                            aria-invalid={errors.currency ? "true" : "false"}
-                        >
-                            <option value="">Choose currency</option>
-                            {currencies.map((currency, index) => (
-                                <option key={index} value={currency}>{currency}</option>
-                            ))}
-                        </select>
-                        {errors.currency?.type === "required" && (
-                        <p role="alert">Choose currency</p>
-                        )}
-                    </FormElement>
-                </HorizontallyFlexGapContainer>
+                </VerticallyFlexGapContainer>
 
-                <FormElement style={{ flexDirection: 'row', gap: '40%' }}>
+                <HorizontallyFlexSpaceBetweenContainer style={{ gap: '10px' }}>  
                     {isProcessing 
                     ? <Button disabled variant="contained" color="primary" size="small">PROCESSING...</Button> 
-                    : <Button variant="contained" color="primary" size="small" type="submit">Add</Button>
+                    : <Button variant="contained" color="primary" size="small" type="submit">Register</Button>
                     }
-                    <Button variant="contained" color="secondary" size="small" type="button" onClick={() => {window.location.reload()}}>Cancel</Button>
-                </FormElement>
-            </VerticallyFlexGapContainer>}
-        </VerticallyFlexGapForm>
+                    
+                    {isProcessing 
+                    ? <Button disabled variant="contained" color="primary" size="small">Updating...</Button> 
+                    : <Button variant="contained" color="secondary" size="small" type="submit">Update</Button>
+                    }
+                </HorizontallyFlexSpaceBetweenContainer>
+            </VerticallyFlexGapForm>
+        </VerticallyFlexGapContainer>
     )
 }

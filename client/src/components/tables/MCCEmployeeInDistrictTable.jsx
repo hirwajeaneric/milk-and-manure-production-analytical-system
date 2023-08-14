@@ -1,39 +1,29 @@
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { MoreHoriz, Preview } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const columns = [
   {
     field: 'fullname',
     headerName: 'Name',
-    width: 200,
+    width: 350,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 200,
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    width: 200,
-  },
-  {
-    field: 'district',
-    headerName: 'District',
-    width: 200,
+    width: 150,
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 120,
+    // width: 150,
   },
   {
     field: 'actions',
     headerName: 'Actions',
     type: 'actions',
-    width: 70,
+    // width: 70,
     renderCell: (params) => <TableActions parameters= {params} />
   },
 ]
@@ -49,13 +39,13 @@ function CustomToolbar() {
 export const TableStyles = {
   padding: '0px',
   width: '100%',
-  height: '270px',
-  background: 'white'
+  height: '250px',
+  background: 'white', 
 }
 
 var rows = [];
 
-export default function VeterinaryTable({data}) {
+export default function MCCEmployeeInDistrictTable({data}) {
   rows = data;
 
   return (
@@ -68,7 +58,7 @@ export default function VeterinaryTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        components={{Toolbar: CustomToolbar}}
+        // components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );
@@ -83,7 +73,7 @@ const TableActions = ({parameters}) => {
     <Box>
       <Tooltip title='View / Edit'>
         <IconButton onClick={() => {navigate(parameters.row.id)}}>
-          <MoreHoriz />
+          <MoreHorizIcon />
         </IconButton>
       </Tooltip>
     </Box>

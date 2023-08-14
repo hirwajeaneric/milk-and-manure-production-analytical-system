@@ -1,5 +1,5 @@
 const express = require('express');
-const userRouter = express.Router();
+const otherUserRouter = express.Router();
 
 const {
     list,
@@ -13,20 +13,22 @@ const {
     signin,
     signup,
     add,
-    updateAccount
+    updateAccount,
+    findFarmersByDistrict
  } = require('../controllers/otherUsers.controllers');
 
-userRouter.post('/signin', signin);
-userRouter.post('/signup', signup);
-userRouter.post('/add', add);
-userRouter.post('/forgotPassword', forgotPassword);
-userRouter.post('/resetPassword', resetPassword);
-userRouter.put('/update', updateAccount);
-userRouter.delete('/delete', deleteAccount);
-userRouter.get('/list', list);
-userRouter.get('/findById', findById);
-userRouter.get('/findByDistrict', findByDistrict);
-userRouter.get('/findByStatus', findByStatus);
-userRouter.get('/findByUserRole', findByUserRole);
+otherUserRouter.post('/signin', signin);
+otherUserRouter.post('/signup', signup);
+otherUserRouter.post('/add', add);
+otherUserRouter.post('/forgotPassword', forgotPassword);
+otherUserRouter.post('/resetPassword', resetPassword);
+otherUserRouter.put('/update', updateAccount);
+otherUserRouter.delete('/delete', deleteAccount);
+otherUserRouter.get('/list', list);
+otherUserRouter.get('/findById', findById);
+otherUserRouter.get('/findByDistrict', findByDistrict);
+otherUserRouter.get('/findByStatus', findByStatus);
+otherUserRouter.get('/findByUserRole', findByUserRole);
+otherUserRouter.get('/findFarmersByDistrict', findFarmersByDistrict);
 
-module.exports = userRouter;
+module.exports = otherUserRouter;

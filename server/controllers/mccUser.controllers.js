@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { mcc_usersignInValidationSchema, mcc_usersignUpValidationSchema, userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
+const { userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -12,7 +12,10 @@ const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
     const mcc_users = await pool.query('SELECT * FROM mcc_users');
-    res.json(mcc_users.rows);
+    mcc_users.rows.forEach(element => {
+        delete element.password;
+    });
+    res.status(statusCodes.OK).json({ users: mcc_users.rows });
 });
 
 
@@ -29,11 +32,15 @@ const signin = asyncWrapper(async (req, res, next) => {
     }
 
     var response = {};
+    var userMcc = {};
 
     if (!mccCode) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     } else if (mccCode) {
-        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccCode = $3', [email, role, mccCode]);
+        
+        userMcc = await pool.query('SELECT * FROM mccs WHERE code = $1', [mccCode]);
+
+        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, userMcc.rows[0].id]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
         }    
@@ -55,13 +62,14 @@ const signin = asyncWrapper(async (req, res, next) => {
         fullName: response.rows[0].fullName,
         email: response.rows[0].email,
         role: response.rows[0].role,
-        mccCode: response.rows[0].mccCode,
-        mccName: response.rows[0].mccName,
+        mccId: userMcc.rows[0].id,
+        mccName: userMcc.rows[0].name,
+        district: userMcc.rows[0].district,
         status: response.rows[0].status,
         token: token,
     };
 
-    res.status(statusCodes.OK).json({
+    res.status(statusCodes.CREATED).json({
         message: 'Logged in',
         user
     })
@@ -69,7 +77,7 @@ const signin = asyncWrapper(async (req, res, next) => {
 
 
 const add = asyncWrapper(async (req, res, next) => {
-    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccCode, mccName } = req.body;
+    const { fullName, email, phone, nationalId, province, district, sector, role, password, mccId, mccName } = req.body;
     
     const response = await pool.query('SELECT email FROM mcc_users WHERE email = $1', [email])
     if (response.rowCount > 0) {
@@ -89,12 +97,12 @@ const add = asyncWrapper(async (req, res, next) => {
     var status = 'active';
 
     const recordedUser = await pool.query(
-        'INSERT INTO mcc_users (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccCode, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
-        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccCode, mccName, joinDate]
+        'INSERT INTO mcc_users (id, fullName, email, phone, nationalId, province, district, sector, role, password, status, mccId, mccName, joinDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *', 
+        [id, fullName, email, phone, nationalId, province, district, sector, role, hashedPassword, status, mccId, mccName, joinDate]
     );   
 
     // Fetching the mcc information to get the mcc code
-    const mcc = await pool.query('SELECT * FROM mccs WHERE id= $1', [mccCode]);
+    const mcc = await pool.query('SELECT * FROM mccs WHERE id= $1', [mccId]);
 
     var accessLink = `${process.env.CLIENT_ADDRESS}/mcc/${mcc.rows[0].code}/auth/sign`;
     var subject='Your new account credentials for MMPAS';
@@ -103,7 +111,7 @@ const add = asyncWrapper(async (req, res, next) => {
     // Sending an email notifying a user that an account was created for them.
     await sendEmail(email, subject, text);
 
-    res.status(statusCodes.OK).json({ message: 'Account created' })
+    res.status(statusCodes.CREATED).json({ message: 'Account created', user: recordedUser.rows[0] })
 });
 
 
@@ -247,7 +255,8 @@ const findById = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
     const user = await pool.query('SELECT * FROM mcc_users WHERE id = $1', [id]);
-  
+    delete user.rows[0].password;
+
     if (user.rowCount === 0) {
       throw new CustomError.NotFoundError('User not found');
     }

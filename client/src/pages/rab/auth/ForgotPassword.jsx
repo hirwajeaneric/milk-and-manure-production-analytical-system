@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet-async";
 
 const ForgotPassword = () => {
   const [ cookies, setCookie, removeCookie ] = useCookies(null);
-  const { setOpen, setResponseMessage } = useContext(GeneralContext);
+  const { setResponseMessage, setOpen } = useContext(GeneralContext);
     
   const [isProcessing, setIsProcessing] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     
     
     setIsProcessing(true);
-    axios.post(serverUrl+'/api/v1/mmpas/user/requestPasswordReset', data)
+    axios.post(serverUrl+'/api/v1/mmpas/otheruser/requestPasswordReset', data)
     .then(response => {
       setTimeout(() => {
         if (response.status === 200) {

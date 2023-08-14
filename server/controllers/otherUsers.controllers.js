@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: statusCodes } = require('http-status-codes');
-const { other_usersignInValidationSchema, other_usersignUpValidationSchema, userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
+const { userAccountSignUpValidationSchema, userAccountSignInValidationSchema } = require('../utils/validations/validateUserAccount');
 const CustomError = require('../errors');
 const sendEmail = require('../utils/email/sendEmail');
 const Joi = require('joi');
@@ -12,12 +12,15 @@ const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
     const other_users = await pool.query('SELECT * FROM other_users');
-    res.json(other_users.rows);
+    other_users.rows.forEach(element => {
+        delete element.password;
+    });
+    res.json({ users: other_users.rows });
 });
 
 
 const signin = asyncWrapper(async (req, res, next) => {
-    const { role, province, district } = req.query;
+    const { role, district } = req.query;
 
     const { email, password } = req.body;
     
@@ -30,13 +33,13 @@ const signin = asyncWrapper(async (req, res, next) => {
         return res.status(statusCodes.BAD_REQUEST).send({ msg: error.details[0].message }) 
     }
 
-    const response = {};
+    var response = {};
 
     // VETERINARY LOGIN
-    if (role === 'veterinary' && (!province || !district)) {
+    if (role === 'veterinary' && !district) {
         throw new CustomError.BadRequestError('Signin failed. Please make sure you are using the appropriate login link.');
-    } else if (role === 'veterinary' && province && district) {
-        response = await pool.query('SELECT * FROM other_users WHERE email = $1 AND role = $2 AND province = $3 AND district = $4', [email, role, province, district]);
+    } else if (role === 'veterinary' && district) {
+        response = await pool.query('SELECT * FROM other_users WHERE email = $1 AND role = $2 AND LOWER(district) = LOWER($3)', [email, role, district]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
         }    
@@ -69,12 +72,12 @@ const signin = asyncWrapper(async (req, res, next) => {
         role: response.rows[0].role,
     })
 
-    const user = {};
+    var user = {};
 
     if (role === 'farmer') {
         user = {
             id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
+            fullName: response.rows[0].fullname,
             email: response.rows[0].email,
             role: response.rows[0].role,
             status: response.rows[0].status,
@@ -86,7 +89,7 @@ const signin = asyncWrapper(async (req, res, next) => {
     } else if (role === 'veterinary') {
         user = {
             id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
+            fullName: response.rows[0].fullname,
             email: response.rows[0].email,
             role: response.rows[0].role,
             status: response.rows[0].status,
@@ -97,7 +100,7 @@ const signin = asyncWrapper(async (req, res, next) => {
     } else if (role === 'rab') {
         user = {
             id: response.rows[0].id,
-            fullName: response.rows[0].fullName,
+            fullName: response.rows[0].fullname,
             email: response.rows[0].email,
             role: response.rows[0].role,
             status: response.rows[0].status,
@@ -113,6 +116,7 @@ const signin = asyncWrapper(async (req, res, next) => {
 
 
 const signup = asyncWrapper(async (req, res, next) => {
+    console.log(req.body);
     const { fullName, email, phone, nationalId, province, district, sector, role, password } = req.body;
     
     const response = await pool.query('SELECT email FROM other_users WHERE email = $1', [email])
@@ -152,7 +156,7 @@ const signup = asyncWrapper(async (req, res, next) => {
         token: token,
     };
 
-    res.status(statusCodes.OK).json({
+    res.status(statusCodes.CREATED).json({
         message: 'Account created',
         user: createdAccount
     })
@@ -343,7 +347,8 @@ const findById = asyncWrapper(async (req, res, next) => {
     const { id } = req.query;
   
     const user = await pool.query('SELECT * FROM other_users WHERE id = $1', [id]);
-  
+    delete user.rows[0].password;
+    
     if (user.rowCount === 0) {
       throw new CustomError.NotFoundError('User not found');
     }
@@ -378,6 +383,14 @@ const findByDistrict = asyncWrapper(async(req, res, next) => {
     res.status(statusCodes.OK).json({ users: users.rows });
 })
 
+const findFarmersByDistrict = asyncWrapper(async(req, res, next) => {
+    const { district } = req.query;
+  
+    const users = await pool.query('SELECT * FROM other_users WHERE district = $1 AND role = $2', [district, "farmer"]);
+  
+    res.status(statusCodes.OK).json({ users: users.rows });
+})
+
 
 module.exports = { 
     list,
@@ -392,5 +405,6 @@ module.exports = {
     findById,  
     findByStatus, 
     findByStatus,
-    findByUserRole
+    findByUserRole,
+    findFarmersByDistrict
 };

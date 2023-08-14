@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet-async'
 import { HeaderTwo, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles'
 import CountryLevelMilkProductionTable from '../../components/tables/CountryLevelMilkProductionTable'
+import { useSelector } from 'react-redux'
 
 const milkProductionDummyData = [
   {
@@ -25,6 +26,11 @@ const milkProductionDummyData = [
 ]
 
 const Stats = () => {
+
+  const { isLoading: loadingManure, manureProductionOnCountryLevel, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
+  const { isLoading: loadingMilk, milkProductionOnCountryLevel, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
+  const { isLoading: loadingMccs, allMCCs, numberOfAllMCCs } = useSelector(state => state.mcc);
+  const { isLoading: loadingUsers, allMccEmployees, numberOfAllMccEmployees } = useSelector(state => state.user);
 
   return (
     <VerticallyFlexGapContainer>

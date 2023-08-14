@@ -11,64 +11,61 @@ import Avatar from "@mui/material/Avatar";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Divider, IconButton, ListItemIcon, Tooltip } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Logout, PersonAdd, Settings } from "@mui/icons-material";
-import { useCookies } from "react-cookie";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getSimpleCapitalizedChars } from "../../utils/HelperFunctions";
+import { getManureProductionOnCountryLevel } from "../../redux/features/manureProductionSlice";
+import { getMilkProductionOnCountryLevel } from "../../redux/features/milkProductionSlice";
+import { getAllmccs } from "../../redux/features/mccSlice";
+import { getAllMccEmployees, getVeterinaries } from "../../redux/features/userSlice";
 
 const DashboardMain = () => {
-    const [ cookies, setCookie, removeCookie ] = useCookies(null);
     const [anchorEl, setAnchorEl] = useState(null);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [fullSize, setFullSize] = useState(false);
     const open = Boolean(anchorEl);
+    const [user, setUser] = useState({});
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+    
+    useEffect(() => {
+        var user = JSON.parse(localStorage.getItem('rabUser'));
+        setUser(user);
 
-    // const user = cookies.UserData;      
-    const user = {
-        fullName: 'Impuhwe Stella',
-        userRole: 'rab-admin',
-        email: 'impuhwe@gmail.com'
-    }
+        dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+        dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+        dispatch(getAllmccs());
+        dispatch(getAllMccEmployees());
+        dispatch(getVeterinaries());
+    }, [])
 
     const signout = () => {
-        removeCookie('AuthToken');
-        removeCookie('UserData');
-        navigate('/rab/auth/signin')
+        localStorage.removeItem('rabToken');
+        localStorage.removeItem('rabUser');
+        navigate('/rab/auth/signin');
     }
-
-    const { isLoading: loadingManure, manureProductionOnCountryLevel, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
-    const { isLoading: loadingMilk, milkProductionOnCountryLevel, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
-    const { isLoading: loadingMccs, allMCCs, numberOfAllMCCs } = useSelector(state => state.mcc);
-    const { isLoading: loadingUsers, allMccEmployees, numberOfAllMccEmployees } = useSelector(state => state.user);
-    
 
     return (
         <VerticallyFlexSpaceBetweenContainer style={{ backgroundColor: '#e0ebeb' }}>
             <TopNavigationBar>
                 <div className="left">
                     <MdMenu style={{ cursor: 'pointer' }} onClick={() => setFullSize(!fullSize)}/>
-                    <Link to='/'>MMPAs</Link>
+                    <Link to={`/rab}`} style={{ color: '#339966' }}>MMPAs</Link>
                     <h3>RAB Official</h3>
                 </div>    
                 <div className="right">
                     <MdNotifications style={{ fontSize: '150%', color: 'gray'}} />
                     <Tooltip title="Account settings">
-                        <IconButton
-                            onClick={handleClick}
-                            size="small"
-                            sx={{ ml: 2, background: 'white' }}
-                            aria-controls={open ? 'account-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                        >
-                            <Avatar sx={{ width: 32, height: 32, background: 'black' }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
+                        <IconButton onClick={handleClick} size="small" sx={{ ml: 2, background: 'white' }} aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
+                            <Avatar sx={{ width: 32, height: 32, background: 'black' }}></Avatar>
                         </IconButton>
                     </Tooltip>
                 </div>
@@ -79,52 +76,43 @@ const DashboardMain = () => {
                     onClose={handleClose}
                     onClick={handleClose}
                     PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
+                        elevation: 0,
+                        sx: {
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            '& .MuiAvatar-root': {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                            },
+                            '&:before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            },
                         },
-                        '&:before': {
-                        content: '""',
-                        display: 'block',
-                        position: 'absolute',
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: 'background.paper',
-                        transform: 'translateY(-50%) rotate(45deg)',
-                        zIndex: 0,
-                        },
-                    },
                     }}
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                     <MenuItem onClick={handleClose} style={{ display:'flex', flexDirection:'row', alignItems:'flex-start' }}>
-                    <Avatar sx={{ width: 32, height: 32 }}>{getSimpleCapitalizedChars(user.fullName)}</Avatar>
+                        <Avatar sx={{ width: 32, height: 32 }}></Avatar>
                         <VerticallyFlexGapContainer style={{ justifyContent:'flex-start', alignItems:'flex-start', gap: '5px' }}>
                             <p>{user.fullName}</p>
-                            <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.userRole}</p>
+                            <p style={{ color: '#26734d', fontWeight:'700', fontSize:'90%' }}>{user.role}</p>
                             <p style={{ color: 'gray', fontSize:'90%' }}>{user.email}</p>
                         </VerticallyFlexGapContainer>
                     </MenuItem>
-                    {/* <MenuItem onClick={handleClose}>
-                        <Avatar /> My account
-                    </MenuItem> */}
                     <Divider />
-                    {/* <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            <PersonAdd fontSize="small" />
-                        </ListItemIcon>
-                        Add another account
-                    </MenuItem> */}
                     <MenuItem onClick={() => {navigate('/rab/settings'); handleClose();}}>
                         <ListItemIcon>
                             <Settings fontSize="small" />
@@ -141,7 +129,7 @@ const DashboardMain = () => {
 
             <HorizontallyFlexGapContainer style={{ position: 'relative' }}>                
                 <SideNavigationBar style={{ width: fullSize ? '5%' : '20%' }}>
-                    <SideBarMenueContainer>
+                    <SideBarMenueContainer style={{ background: '#339966' }}>
                         <SideBarMenuItem to={'dashboard'}>
                             <MdHome style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
@@ -158,12 +146,6 @@ const DashboardMain = () => {
                             }
                             </div>
                         </SideBarMenuItem>
-                        {/* <SideBarMenuItem to={'resources'}>
-                            <RiPlantFill style={{ width: fullSize ? '100%' : '20%'}}/>
-                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
-                            {!fullSize && <><span className="text">Manure</span></>}
-                            </div>
-                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'mccs'}>
                             <HiOfficeBuilding style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
@@ -182,12 +164,12 @@ const DashboardMain = () => {
                             {!fullSize && <><span className="text">Veterinaries</span></>}
                             </div>
                         </SideBarMenuItem>
-                        <SideBarMenuItem to={'farmers'}>
+                        {/* <SideBarMenuItem to={'farmers'}>
                             <GiFarmer style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <><span className="text">Farmers</span></>}
                             </div>
-                        </SideBarMenuItem>
+                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'settings'}>
                             <RiUser4Fill style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">

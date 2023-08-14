@@ -25,9 +25,9 @@ const columns = [
     width: 200,
   },
   {
-    field: 'status',
-    headerName: 'Status',
-    width: 120,
+    field: 'sector',
+    headerName: 'Sector',
+    width: 170,
   },
   {
     field: 'actions',
@@ -55,7 +55,7 @@ export const TableStyles = {
 
 var rows = [];
 
-export default function VeterinaryTable({data}) {
+export default function FarmerTable({data}) {
   rows = data;
 
   return (

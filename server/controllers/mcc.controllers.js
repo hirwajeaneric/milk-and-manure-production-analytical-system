@@ -8,7 +8,7 @@ const asyncWrapper = require('../middleware/async');
 
 const list = asyncWrapper(async (req, res, next) => {
   const mccs = await pool.query('SELECT * FROM mccs');
-  res.json(mccs.rows);
+  res.status(statusCodes.OK).json({ mccs: mccs.rows });
 });
 
 
@@ -45,13 +45,13 @@ const add = asyncWrapper(async (req, res, next) => {
         [id, name, number, province, district, sector, codeValue, status, registrationDate]
     );
 
-    res.status(statusCodes.CREATED).json(newMcc.rows[0]);
+    res.status(statusCodes.CREATED).json({ message: 'MCC Recorded', mcc: newMcc.rows[0] });
 });
 
 
 
 const update = asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.query;
     const changes = req.body;
 
     // Remove the 'id' field from the changes object to prevent updating the primary key.
@@ -76,7 +76,7 @@ const update = asyncWrapper(async (req, res, next) => {
     values.push(id);
 
     const query = {
-        text: `UPDATE mccs SET ${setExpressions.join(', ')} WHERE id = $1`,
+        text: `UPDATE mccs SET ${setExpressions.join(', ')} WHERE id = $1 RETURNING *`,
         values: values,
     };
 
@@ -86,13 +86,13 @@ const update = asyncWrapper(async (req, res, next) => {
         throw new CustomError.NotFoundError('MCC not found');
     }
 
-    res.status(statusCodes.OK).json({ message: 'MCC data updated successfully' });
+    res.status(statusCodes.OK).json({ mcc: updatedMcc.rows[0], message: 'MCC data updated successfully' });
 });
 
 
 
 const deleteMcc = asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.query;
 
     const deleteMcc = await pool.query('DELETE FROM mccs WHERE id = $1', [id]);
 
@@ -106,7 +106,7 @@ const deleteMcc = asyncWrapper(async (req, res, next) => {
 
 
 const findById = asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.query;
 
     const mcc = await pool.query('SELECT * FROM mccs WHERE id = $1', [id]);
 
@@ -114,7 +114,7 @@ const findById = asyncWrapper(async (req, res, next) => {
         throw new CustomError.NotFoundError('MCC not found');
     }
 
-    res.status(statusCodes.OK).json(mcc.rows[0]);
+    res.status(statusCodes.OK).json({ mcc: mcc.rows[0] });
 });
 
 
@@ -128,7 +128,7 @@ const findByCode = asyncWrapper(async (req, res, next) => {
         throw new CustomError.NotFoundError('MCC not found');
     }
 
-    res.status(statusCodes.OK).json(mcc.rows[0]);
+    res.status(statusCodes.OK).json({ mcc: mcc.rows[0] });
 });
 
 
@@ -141,7 +141,7 @@ const findByNumber = asyncWrapper(async (req, res, next) => {
         throw new CustomError.NotFoundError('MCC not found');
     }
 
-    res.status(statusCodes.OK).json(mcc.rows[0]);
+    res.status(statusCodes.OK).json({ mcc: mcc.rows[0] });
 });
 
 
@@ -150,7 +150,15 @@ const findByStatus = asyncWrapper(async (req, res, next) => {
 
     const mccs = await pool.query('SELECT * FROM mccs WHERE status = $1', [status]);
 
-    res.status(statusCodes.OK).json(mccs.rows);
+    res.status(statusCodes.OK).json({ mccs: mccs.rows });
+});
+
+const findByDistrict = asyncWrapper(async (req, res, next) => {
+    const { district } = req.query;
+
+    const mccs = await pool.query('SELECT * FROM mccs WHERE district = $1', [district]);
+
+    res.status(statusCodes.OK).json({ mccs: mccs.rows });
 });
 
 
@@ -163,4 +171,5 @@ module.exports = {
     findByCode,
     findByNumber,
     findByStatus,
+    findByDistrict
 };
