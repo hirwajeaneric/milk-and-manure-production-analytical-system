@@ -29,7 +29,8 @@ const Stats = () => {
   return (
     <VerticallyFlexGapContainer>
       <Helmet>
-        <title>MCC - gasabo02 - Dashboard</title>
+        <title>{`MCC - ${JSON.parse(localStorage.getItem('mccUser')).mccName} - Dashboard`}</title>
+        <meta name="description" content={`MCC - ${JSON.parse(localStorage.getItem('mccUser')).mccName} - Dashboard`} />
       </Helmet>
       
       <HorizontallyFlexSpaceBetweenContainer style={{ flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>

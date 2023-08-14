@@ -32,12 +32,13 @@ const signin = asyncWrapper(async (req, res, next) => {
     }
 
     var response = {};
+    var userMcc = {};
 
     if (!mccCode) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     } else if (mccCode) {
         
-        const userMcc = await pool.query('SELECT * FROM mccs WHERE code = $1', [mccCode]);
+        userMcc = await pool.query('SELECT * FROM mccs WHERE code = $1', [mccCode]);
 
         response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, userMcc.rows[0].id]);
         if (response.rowCount === 0) {
@@ -61,8 +62,8 @@ const signin = asyncWrapper(async (req, res, next) => {
         fullName: response.rows[0].fullName,
         email: response.rows[0].email,
         role: response.rows[0].role,
-        mccId: response.rows[0].mccId,
-        mccName: response.rows[0].mccName,
+        mccId: userMcc.rows[0].id,
+        mccName: userMcc.rows[0].name,
         status: response.rows[0].status,
         token: token,
     };

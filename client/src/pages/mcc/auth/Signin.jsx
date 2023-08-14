@@ -20,8 +20,6 @@ const Signin = () => {
     data.mccCode = params.code;
     data.role = 'mcc';
 
-    console.log(data);
-
     setIsProcessing(true);
     
     axios.post(`${serverUrl}/api/v1/mmpas/mccuser/signin`, data)
@@ -29,7 +27,7 @@ const Signin = () => {
       if (response.status === 201) {
         setIsProcessing(false);
         localStorage.setItem('mccToken', response.data.user.token);
-        localStorage.setItem('mcc', JSON.stringify(response.data.user));
+        localStorage.setItem('mccUser', JSON.stringify(response.data.user));
         window.location.replace(`/mcc/${params.code}`);
       }
     })

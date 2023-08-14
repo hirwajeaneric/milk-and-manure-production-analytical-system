@@ -128,6 +128,7 @@ function App() {
             <Route path='reset-password/:token/:userId' element={<RabResetPassword />} />
           </Route>
           <Route path='/rab/' element={localStorage.getItem('rabToken') ? <RabDashboardMain /> : <Navigate replace to={'/rab/auth/signin'} />}>
+            <Route path='' element={<RabStats />} />
             <Route path='dashboard' element={<RabStats />} />
             <Route path='production' element={<RabProduction />} >
               <Route path='' element={<RabMilkProduction />}>
@@ -165,6 +166,7 @@ function App() {
           </Route>
 
           <Route path='/vet/:district/' element={localStorage.getItem('vetToken') ? <VetDashboardMain /> : <Navigate replace to={'/vet/:district/auth/signin'} />}>
+            <Route path='' element={<VetStats />} />
             <Route path='dashboard' element={<VetStats />} />
             <Route path='production' element={<VetProduction />} >
               <Route path='milk' element={<VetMilkProduction />}>
@@ -194,7 +196,8 @@ function App() {
             <Route path='forgot-password' element={<MCCForgotPassword />} />
             <Route path='reset-password/:token/:userId' element={<MCCResetPassword />} />
           </Route>
-          <Route path='/mcc/:code/' element={localStorage.getItem('mccToken') ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}>
+          <Route path='/mcc/:code/' element={localStorage.getItem('mccToken') ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/:code/auth/signin'} />}>
+            <Route path='' element={<MCCStats />} />
             <Route path='dashboard' element={<MCCStats />} />
             <Route path='production' element={<MCCProduction />} >
               <Route path='milk' element={<MCCMilkProduction />}>

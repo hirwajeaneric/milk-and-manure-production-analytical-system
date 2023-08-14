@@ -150,7 +150,7 @@ export const SideBarMenuItem = styled(NavLink)`
     }
 
     &.active {
-        color: orange;
+        color: yellow;
     }
 
     @media (max-width: 991px) {
