@@ -36,7 +36,10 @@ const signin = asyncWrapper(async (req, res, next) => {
     if (!mccCode) {
         throw new CustomError.BadRequestError('Please provide all required credentials');
     } else if (mccCode) {
-        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccCode = $3', [email, role, mccCode]);
+        
+        const userMcc = await pool.query('SELECT * FROM mccs WHERE code = $1', [mccCode]);
+
+        response = await pool.query('SELECT * FROM mcc_users WHERE email = $1 AND role = $2 AND mccId = $3', [email, role, userMcc.rows[0].id]);
         if (response.rowCount === 0) {
             throw new CustomError.UnauthenticatedError('User account unrecognized');
         }    
@@ -64,7 +67,7 @@ const signin = asyncWrapper(async (req, res, next) => {
         token: token,
     };
 
-    res.status(statusCodes.OK).json({
+    res.status(statusCodes.CREATED).json({
         message: 'Logged in',
         user
     })

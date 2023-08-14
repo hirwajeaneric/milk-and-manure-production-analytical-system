@@ -34,7 +34,7 @@ const Signup = () => {
         setIsProcessing(false);
         localStorage.setItem('rabToken', response.data.user.token);
         localStorage.setItem('rabUser', JSON.stringify(response.data.user));
-        navigate('/rab/');
+        window.location.replace('/rab');
       }
     } catch (error) {
       if (error.response && error.response.status >= 400 && error.response.status <= 500) {

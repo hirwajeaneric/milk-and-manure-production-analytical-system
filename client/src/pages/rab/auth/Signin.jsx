@@ -28,7 +28,7 @@ const Signin = () => {
           setIsProcessing(false);
           localStorage.setItem('rabToken', response.data.user.token);
           localStorage.setItem('rabUser', JSON.stringify(response.data.user));
-          navigate('/rab/');
+          window.location.replace('/rab');
         }
       }, 3000)
     })

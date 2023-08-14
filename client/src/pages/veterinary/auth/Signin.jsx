@@ -27,7 +27,7 @@ const Signin = () => {
           setIsProcessing(false);
           localStorage.setItem('vetToken', response.data.user.token);
           localStorage.setItem('veterinary', JSON.stringify(response.data.user));
-          navigate(`/vet/${params.district}`);
+          window.location.replace(`/vet/${params.district}`);
         }
       }, 3000)
     })

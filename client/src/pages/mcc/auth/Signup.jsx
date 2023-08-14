@@ -36,7 +36,7 @@ const Signup = () => {
             setIsProcessing(false);
             setCookie('AuthToken', response.data.user.token);
             setCookie('UserData', JSON.stringify(response.data.user));
-            window.location.replace('/mcc/');
+            window.location.replace('/mcc');
           }
         }, 3000)
       })

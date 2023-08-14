@@ -195,7 +195,6 @@ function App() {
             <Route path='reset-password/:token/:userId' element={<MCCResetPassword />} />
           </Route>
           <Route path='/mcc/:code/' element={localStorage.getItem('mccToken') ? <MCCDashboardMain /> : <Navigate replace to={'/mcc/auth/signin'} />}>
-          {/* <Route path='/mcc/:code/' element={<MCCDashboardMain />}> */}
             <Route path='dashboard' element={<MCCStats />} />
             <Route path='production' element={<MCCProduction />} >
               <Route path='milk' element={<MCCMilkProduction />}>
