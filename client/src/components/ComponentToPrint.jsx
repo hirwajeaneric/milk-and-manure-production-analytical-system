@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { ReportPaperContainer } from '../styled-components/ReportStyledComponents';
+import { ReportPaperContainer } from './styles/ReportStyledComponents';
 import { useParams } from 'react-router-dom';
-import { HeaderThree, LeftContainer, RightContainer, TenantCard, TwoSidedContainer } from '../styled-components/generalComponents';
 
 export const ComponentToPrint = React.forwardRef((props, ref) => {
     // FORM PROCESSING AND RESPONSE PROVISION
@@ -9,7 +8,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
 
     return (
         <ReportPaperContainer ref={ref}>
-            
+            <h1>Hello world!</h1>
             <p>Copyright {new Date().getFullYear()} &copy; MMPAS. All Rights Reserved. </p>
         </ReportPaperContainer>
     )
