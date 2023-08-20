@@ -103,7 +103,7 @@ const findByMccId = asyncWrapper(async (req, res, next) => {
 
   const manureProductions = await pool.query('SELECT * FROM manure_production WHERE mccId = $1', [mccId]);
 
-  res.json({ manureProductions: manureProductions.rows });
+  res.json({ manureProduction: manureProductions.rows });
 });
 
 const findByDistrict = asyncWrapper(async (req, res, next) => {
@@ -111,7 +111,7 @@ const findByDistrict = asyncWrapper(async (req, res, next) => {
 
   const manureProductions = await pool.query('SELECT * FROM manure_production WHERE district = $1', [district]);
 
-  res.json({ manureProductions: manureProductions.rows });
+  res.json({ manureProduction: manureProductions.rows });
 });
 
 const findBySector = asyncWrapper(async (req, res, next) => {
@@ -119,7 +119,7 @@ const findBySector = asyncWrapper(async (req, res, next) => {
 
   const manureProductions = await pool.query('SELECT * FROM manure_production WHERE sector = $1', [sector]);
 
-  res.json({ manureProductions: manureProductions.rows });
+  res.json({ manureProduction: manureProductions.rows });
 });
 
 module.exports = {

@@ -11,6 +11,8 @@ const initialState = {
     amountOfManureProductionOnMccLevel: 0,
     manureProductionForFarmer: [],
     amountOfManureProductionForFarmer: 0,
+    manureFilterType: 'year',
+    manureFilterValue: new Date().getFullYear(),
     isLoading: false,
 }
 
@@ -55,6 +57,7 @@ export const getManureProductionOnMCCLevel = createAsyncThunk(
             response.data.manureProduction.forEach(element => {
                 element.date = new Date(element.date).toLocaleString();
             });
+            
             return { manureProduction: response.data.manureProduction, periodType: periodType, periodValue: periodValue }
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
@@ -90,14 +93,14 @@ const manureProduction = createSlice({
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.manureProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.manureProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.manureProductionOnCountryLevel = production;
             state.amountOfManureProductionOnCountryLevel = quantity;
@@ -106,18 +109,18 @@ const manureProduction = createSlice({
             state.isLoading = false;
         },
         [getManureProductionOnDistrictLevel.pending] : (state) => {
-            state.isLoading = true;
+            state.isLoading = false;
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.manureProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.manureProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.manureProductionOnDistrictLevel = production;
             state.amountOfManureProductionOnDistrictLevel = quantity;
@@ -136,14 +139,14 @@ const manureProduction = createSlice({
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.manureProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.manureProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.manureProductionOnMccLevel = production;
             state.amountOfManureProductionOnMccLevel = quantity;
@@ -159,14 +162,14 @@ const manureProduction = createSlice({
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.manureProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.manureProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.manureProductionForFarmer = production;
             state.amountOfManureProductionForFarmer = quantity;

@@ -7,12 +7,22 @@ const columns = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 150,
+    width: 200,
   },
   {
-    field: 'farmerName',
+    field: 'farmername',
     headerName: 'Farmer',
-    width: 200,
+    width: 270,
+  },
+  {
+    field: 'mccname',
+    headerName: 'MCC',
+    width: 300,
+  },
+  {
+    field: 'district',
+    headerName: 'District',
+    width: 120,
   },
   {
     field: 'quantity',
@@ -41,7 +51,7 @@ export const TableStyles = {
   width: '100%',
   height: '400px',
   background: 'white',
-  // marginTop: '20px' 
+  marginTop: '20px' 
 }
 
 var rows = [];

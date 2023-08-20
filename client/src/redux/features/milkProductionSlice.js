@@ -11,6 +11,8 @@ const initialState = {
     amountOfMilkProductionOnMccLevel: 0,
     milkProductionForFarmer: [],
     amountOfMilkProductionForFarmer: 0,
+    milkFilterType: 'year',
+    milkFilterValue: new Date().getFullYear(),
     isLoading: false,
 }
 

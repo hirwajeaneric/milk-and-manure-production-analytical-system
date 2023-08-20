@@ -7,22 +7,22 @@ const columns = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 80,
+    width: 200,
   },
   {
-    field: 'farmerName',
+    field: 'farmername',
     headerName: 'Farmer',
-    width: 80,
+    width: 270,
   },
   {
-    field: 'mccName',
+    field: 'mccname',
     headerName: 'MCC',
-    width: 80,
+    width: 300,
   },
   {
     field: 'district',
     headerName: 'District',
-    width: 80,
+    width: 120,
   },
   {
     field: 'quantity',
