@@ -13,7 +13,7 @@ const MilkProduction = () => {
 
   useEffect(() => {
     dispatch(getMilkProductionOnMCCLevel({ mccId: JSON.parse(localStorage.getItem('mccUser')).mccId, periodType: 'year', periodValue: new Date().getFullYear()}))
-  },[])
+  },[dispatch])
 
   const { milkProductionOnMccLevel } = useSelector(state => state.milk);
 

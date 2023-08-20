@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { HeaderTwo, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles'
 import CountryLevelMilkProductionTable from '../../components/tables/CountryLevelMilkProductionTable'
+import { useDispatch, useSelector } from 'react-redux'
+import { getMilkProductionOnMCCLevel } from '../../redux/features/milkProductionSlice'
+import { getManureProductionOnMCCLevel } from '../../redux/features/manureProductionSlice'
 
 const milkProductionDummyData = [
   {
@@ -25,6 +28,15 @@ const milkProductionDummyData = [
 ]
 
 const Stats = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getManureProductionOnMCCLevel({ mccId: JSON.parse(localStorage.getItem('mccUser')).mccId, periodType: 'year', periodValue: new Date().getFullYear()}))
+    dispatch(getMilkProductionOnMCCLevel({ mccId: JSON.parse(localStorage.getItem('mccUser')).mccId, periodType: 'year', periodValue: new Date().getFullYear()}))
+  },[dispatch])
+
+  const { amountOfMilkProductionOnMccLevel, milkProductionOnMccLevel } = useSelector(state => state.milk);
+  const { amountOfManureProductionOnMccLevel, manureProductionOnMccLevel } = useSelector(state => state.manure);
 
   return (
     <VerticallyFlexGapContainer>
@@ -38,7 +50,7 @@ const Stats = () => {
         <VerticallyFlexGapContainer style={{ boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
           <span style={{ textAlign:'left', width: '100%' }}><strong>Milk </strong>- Weekly Records</span>
           <HorizontallyFlexSpaceBetweenContainer style={{ alignItems: 'flex-end' }}>
-            <HeaderTwo style={{ fontSize: '200%' }}>2400 Ltrs</HeaderTwo>
+            <HeaderTwo style={{ fontSize: '200%' }}>{amountOfMilkProductionOnMccLevel} Ltrs</HeaderTwo>
             <img src='/weekly-inputs.png' alt='' />
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
@@ -46,7 +58,7 @@ const Stats = () => {
         <VerticallyFlexGapContainer style={{ boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
           <span style={{ textAlign:'left', width: '100%' }}><strong>Manure </strong>- Weekly Records</span>
           <HorizontallyFlexSpaceBetweenContainer style={{ alignItems: 'flex-end' }}>
-            <HeaderTwo style={{ fontSize: '200%' }}>50 Tones</HeaderTwo>
+            <HeaderTwo style={{ fontSize: '200%' }}>{amountOfManureProductionOnMccLevel} Tones</HeaderTwo>
             <img src='/weekly-inputs.png' alt='' />
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>

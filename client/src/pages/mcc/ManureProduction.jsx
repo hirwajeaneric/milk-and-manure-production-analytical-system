@@ -13,7 +13,7 @@ const ManureProduction = () => {
 
   useEffect(() => {
     dispatch(getManureProductionOnMCCLevel({ mccId: JSON.parse(localStorage.getItem('mccUser')).mccId, periodType: 'year', periodValue: new Date().getFullYear()}))
-  },[])
+  },[dispatch])
 
   const { manureProductionOnMccLevel } = useSelector(state => state.manure);
 

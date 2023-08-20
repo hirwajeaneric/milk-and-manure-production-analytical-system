@@ -102,6 +102,8 @@ const manureProduction = createSlice({
                 quantity = quantity + element.quantity;
             });
 
+            production.sort((a, b) => new Date(a.date) - new Date(b.date));
+
             state.manureProductionOnCountryLevel = production;
             state.amountOfManureProductionOnCountryLevel = quantity;
         },
@@ -117,7 +119,9 @@ const manureProduction = createSlice({
             } else if (action.payload.periodType === 'month') {
                 production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
-            
+
+            production.sort((a, b) => new Date(b.date) - new Date(a.date));
+
             production.forEach(element => {
                 quantity = quantity + element.quantity;
             });
@@ -148,6 +152,8 @@ const manureProduction = createSlice({
                 quantity = quantity + element.quantity;
             });
 
+            production.sort((a, b) => new Date(b.date) - new Date(a.date));
+
             state.manureProductionOnMccLevel = production;
             state.amountOfManureProductionOnMccLevel = quantity;
         },
@@ -170,6 +176,8 @@ const manureProduction = createSlice({
             production.forEach(element => {
                 quantity = quantity + element.quantity;
             });
+
+            production.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             state.manureProductionForFarmer = production;
             state.amountOfManureProductionForFarmer = quantity;
