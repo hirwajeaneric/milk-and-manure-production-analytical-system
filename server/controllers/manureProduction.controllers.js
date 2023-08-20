@@ -20,18 +20,17 @@ const add = asyncWrapper(async (req, res, next) => {
   }
 
   // Generate a unique ID for the manure production entry.
-  const id = uuidv4();
   const date = new Date().toUTCString();
   const month = new Date().getMonth()+1;
   const year = new Date().getFullYear();
 
   // Insert the new manure production entry into the database.
-  const newManureProduction = await pool.query(
-    'INSERT INTO manure_production (id, date, farmerId, farmerName, farmerPhone, mccId, mccName, district, sector, quantity, month, year) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *',
-    [id, date, farmerId, farmerName, farmerPhone, mccId, mccName, district, sector, quantity, month, year]
+  const newMilkProduction = await pool.query(
+    'INSERT INTO manure_production (date, farmerId, farmerName, farmerPhone, mccId, mccName, district, sector, quantity, month, year ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *',
+    [date, farmerId, farmerName, farmerPhone, mccId, mccName, district, sector, quantity, month, year]
   );
 
-  res.status(statusCodes.CREATED).json({ manureProduction: newManureProduction.rows[0] });
+  res.status(statusCodes.CREATED).json({ manureProduction: newMilkProduction.rows[0] });
 });
 
 const update = asyncWrapper(async (req, res, next) => {

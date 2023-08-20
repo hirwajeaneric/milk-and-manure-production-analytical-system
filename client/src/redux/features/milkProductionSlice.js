@@ -55,6 +55,7 @@ export const getMilkProductionOnMCCLevel = createAsyncThunk(
             response.data.milkProduction.forEach(element => {
                 element.date = new Date(element.date).toLocaleString();
             });
+            
             return { milkProduction: response.data.milkProduction, periodType: periodType, periodValue: periodValue }
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
@@ -90,14 +91,14 @@ const milkProduction = createSlice({
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.milkProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.milkProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.milkProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.milkProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.milkProductionOnCountryLevel = production;
             state.amountOfMilkProductionOnCountryLevel = quantity;
@@ -106,18 +107,18 @@ const milkProduction = createSlice({
             state.isLoading = false;
         },
         [getMilkProductionOnDistrictLevel.pending] : (state) => {
-            state.isLoading = true;
+            state.isLoading = false;
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.milkProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.milkProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.milkProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.milkProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.milkProductionOnDistrictLevel = production;
             state.amountOfMilkProductionOnDistrictLevel = quantity;
@@ -136,14 +137,14 @@ const milkProduction = createSlice({
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.milkProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.milkProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.milkProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.milkProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.milkProductionOnMccLevel = production;
             state.amountOfMilkProductionOnMccLevel = quantity;
@@ -159,14 +160,14 @@ const milkProduction = createSlice({
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
-                production = action.payload.milkProduction.filter(element => element.year === action.payload.periodValue);
+                production = action.payload.milkProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
-                production = action.payload.milkProduction.filter(element =>  element.month === action.payload.periodValue || element.year === new Date().getFullYear());
+                production = action.payload.milkProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
             
             production.forEach(element => {
                 quantity = quantity + element.quantity;
-            })
+            });
 
             state.milkProductionForFarmer = production;
             state.amountOfMilkProductionForFarmer = quantity;

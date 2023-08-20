@@ -10,9 +10,8 @@ export const ReportPaperContainer = styled.div`
     padding: 60px;
 `;
 
-export const ReportHeader = styled.div`
+export const TopBar = styled.div`
     width: 100%;
-    padding: 50px 50px 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -22,24 +21,80 @@ export const ReportHeader = styled.div`
         width: 15%;
     }
 
+    h1 {
+        font-size: 150%;
+    }
 
+    h2 {
+        font-size: 120%;
+    }
+`;
 
+export const ReportHeader = styled.div`
+    width: 100%;
+    padding: 20px 0px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    border-bottom: 1px solid gray;
+
+    img {
+        width: 15%;
+    }
+
+    div.report-period {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-size: 85%;
+
+        div.left {
+            display: flex;
+            flex-direction: column;
+            justify-content: fle-start;
+            align-items: flex-start;
+            gap: 20px;
+    
+            h2 {
+                font-size: 140%;
+            } 
+        
+            h3 {
+                font-size: 120%;
+            }   
+        }
+    
+        div.right {
+            display: flex;
+            flex-direction: column;
+            justify-content: fle-start;
+            align-items: flex-start;
+            gap: 20px;
+    
+    
+        }
+    }
 `;
 
 export const ReportFooter = styled.div`
     width: 100%;
-    padding: 50px;
+    // padding: 50px;
     font-size: 85%;
-
+    text-align: left;
 `;
 
 export const ReportBody = styled.div`
     width: 100%;
-    padding: 0 50px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    font-size: 90%;
+    margin: 20px 0;
 
     h1 {
         margin-bottom: 10px;
@@ -97,6 +152,7 @@ export const Table = styled.table`
 export const TableList = styled.table`
     border-collapse: collapse;
     width: 100%;
+    margin-top: 20px;
 
     thead {
         tr {

@@ -1,6 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import ResponseComponent from './components/ResponseComponent';
 
 // PAGES 
@@ -91,7 +90,6 @@ import RecordProduction from './pages/mcc/RecordProduction';
 export const GeneralContext = createContext();
 
 function App() {
-  const dispatch = useDispatch();
   const [ open, setOpen ] = useState(false);
   const [ responseMessage, setResponseMessage ] = useState({ message: '', severity: ''});
 
@@ -101,21 +99,13 @@ function App() {
     }
     setOpen(false);
   };
-  
-  useEffect(() => {   
-    // dispatch(getManureProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
-    // dispatch(getMilkProductionOnMCCLevel({ mccId: user.mccId, periodType: 'Year', periodValue: new Date().getFullYear()}));
-    // dispatch(getEmployeesForMcc({ mccId: user.mccId }))
-  
-    // dispatch(getManureProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
-    // dispatch(getMilkProductionForFarmer({ farmerId: user.id, periodType: 'Year', periodValue: new Date().getFullYear()}));
-  },[dispatch]);
 
   return (
     <GeneralContext.Provider 
       value={{
         responseMessage, 
         setResponseMessage,
+        open,
         setOpen 
       }}>
       <BrowserRouter>

@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { getManureProductionOnMCCLevel } from "../../redux/features/manureProductionSlice";
 import { getMilkProductionOnMCCLevel } from "../../redux/features/milkProductionSlice";
 import { getEmployeesForMcc, getFarmersInDistrict } from "../../redux/features/userSlice";
+import { getMccByCode } from "../../redux/features/mccSlice";
 
 const DashboardMain = () => {
     const params = useParams();
@@ -39,6 +40,7 @@ const DashboardMain = () => {
         var user = JSON.parse(localStorage.getItem('mccUser'));
         setUser(user);
 
+        dispatch(getMccByCode({ mccCode: params.code }));
         // dispatch(getManureProductionOnMCCLevel({ mccId: ,periodType: 'Year', periodValue: new Date().getFullYear()}));
         // dispatch(getMilkProductionOnMCCLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
         dispatch(getEmployeesForMcc({ mccId: user.mccId }));
@@ -47,7 +49,7 @@ const DashboardMain = () => {
 
     const signout = () => {
         localStorage.removeItem('mccToken');
-        localStorage.removeItem('nccUser');
+        localStorage.removeItem('mccUser');
         window.location.replace(`/mcc/${params.code}/auth/signin`);
     }
 
