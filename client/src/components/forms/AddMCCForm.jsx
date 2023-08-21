@@ -7,21 +7,38 @@ import { Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getmccsForSelectedDistrict } from "../../redux/features/mccSlice";
+import { findSectors } from "../../utils/LocationManager";
 
 export default function AddMCCForm() {
     const dispatch = useDispatch();
     const { setOpen, setResponseMessage } = useContext(GeneralContext);
     const [ isProcessing, setIsProcessing ] = useState(false);
     const [ user, setUser ] = useState({})
+    const [ province, setProvince ] = useState('');
+    const [ sectors, setSectors ] = useState([]);
+    const [ sector, setSector ] = useState('');
 
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem('veterinary')));
     },[])
 
+    const handleProvinces = ({ currentTarget: target }) => {
+        setProvince(target.value.split('--')[1]);
+        setSectors(
+            findSectors(target.value.split('--')[0], user.district)
+        );
+    }
+
+    const handleSectors = ({ currentTarget: target }) => {
+        setSector(target.value);
+    }
+
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (data) => {
+        data.province = province.split('--')[1];
         data.district = user.district;
+        data.sector = sector;
 
         console.log(data);
 
@@ -68,31 +85,26 @@ export default function AddMCCForm() {
                         )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="confirmPassword">Province</label>
-                        <select {...register("province", { required: true })}>
+                        <label htmlFor="province">Province</label>
+                        <select name='province' onChange={handleProvinces}>
                             <option value="">Choose province</option>
-                            <option value="Kigali City">Kigali City</option>
-                            <option value="Northern province">Northern province</option>
-                            <option value="Southern province">Southern province</option>
-                            <option value="Eastern province">Eastern province</option>
-                            <option value="Western province">Western province</option>
+                            <option value="Umujyi wa Kigali--Kigali City">Kigali City</option>
+                            <option value="Amajyaruguru--Northern province">Northern province</option>
+                            <option value="Amajyepho--Southern province">Southern province</option>
+                            <option value="Iburasirazuba--Eastern province">Eastern province</option>
+                            <option value="Iburengerazuba--Western province">Western province</option>
                         </select>
-                        {errors.confirmPassword?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="sector">Sector</label>
-                        <input 
-                            type="sector"
-                            id="sector"
-                            placeholder="sector" 
-                            {...register("sector", {required: true})} 
-                            aria-invalid={errors.sector ? "true" : "false"}
-                        />
-                        {errors.sector?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
+                        <select name='sector' onChange={handleSectors}>
+                            <option value="">Select sector</option>
+                            {sectors.map((sector, index) => {
+                                return (
+                                    <option key={index} value={sector}>{sector}</option>
+                                )
+                            })}
+                        </select>
                     </FormElement>
                 </HorizontallyFlexGapContainer>
 
