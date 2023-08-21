@@ -14,20 +14,18 @@ export default function AddMCCForm() {
     const { setOpen, setResponseMessage } = useContext(GeneralContext);
     const [ isProcessing, setIsProcessing ] = useState(false);
     const [ user, setUser ] = useState({})
-    const [ province, setProvince ] = useState('');
     const [ sectors, setSectors ] = useState([]);
     const [ sector, setSector ] = useState('');
 
     useEffect(() => {
-        setUser(JSON.parse(localStorage.getItem('veterinary')));
-    },[])
+        const user = JSON.parse(localStorage.getItem('veterinary'));
+        setUser(user);
+    
+        console.log(findSectors(user.province, user.district));
 
-    const handleProvinces = ({ currentTarget: target }) => {
-        setProvince(target.value.split('--')[1]);
-        setSectors(
-            findSectors(target.value.split('--')[0], user.district)
-        );
-    }
+        // setSectors();
+
+    },[])
 
     const handleSectors = ({ currentTarget: target }) => {
         setSector(target.value);
@@ -36,7 +34,7 @@ export default function AddMCCForm() {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (data) => {
-        data.province = province.split('--')[1];
+        data.province = user.province;
         data.district = user.district;
         data.sector = sector;
 
@@ -84,7 +82,7 @@ export default function AddMCCForm() {
                             <p role="alert">MCC name is required</p>
                         )}
                     </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
+                    {/* <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="province">Province</label>
                         <select name='province' onChange={handleProvinces}>
                             <option value="">Choose province</option>
@@ -94,7 +92,7 @@ export default function AddMCCForm() {
                             <option value="Iburasirazuba--Eastern province">Eastern province</option>
                             <option value="Iburengerazuba--Western province">Western province</option>
                         </select>
-                    </FormElement>
+                    </FormElement> */}
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="sector">Sector</label>
                         <select name='sector' onChange={handleSectors}>

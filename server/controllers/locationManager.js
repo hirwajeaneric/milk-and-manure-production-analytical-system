@@ -1,6 +1,29 @@
-const { StatusCodes } = require('http-status-codes');
 const Locations = require('../database/locations.json');
-const asyncWrapper = require('../middleware/async');
+
+const asyncWrapper = (fn) => {
+    return async (req, res, next) => {
+        try {
+            await fn(req, res, next)
+        } catch (error) {
+            next(error)
+        }
+    }
+}
+
+const provinceTranslator = asyncWrapper(async(req, res, next) => {
+    const EngProvinces = ['East', 'West', 'North', 'South', 'Kigali City'];
+    const KinyProvinces = ['Iburasirazuba', 'Iburengerazuba', 'Amajyaruguru', 'Amajyepfo', 'Umujyi wa Kigali'];
+
+    console.log(req.query);
+
+    EngProvinces.forEach((element, index) => {
+        if (req.query.province === element) {
+            req.query.province = KinyProvinces[index];
+        }
+    });
+
+    next();
+})
 
 // Find provinces
 const findProvinces = asyncWrapper(async (req, res, next) => {
@@ -9,7 +32,7 @@ const findProvinces = asyncWrapper(async (req, res, next) => {
         provinces.push(province.name);
     });
 
-    res.status(StatusCodes.OK).json({ provinces: provinces });
+    res.status(200).json({ provinces: provinces });
 })
 
 // Find districts
@@ -30,7 +53,7 @@ const findDistricts = asyncWrapper(async (req, res, next) => {
         districts.push(district.name);
     });
 
-    res.status(StatusCodes.OK).json({ districts: districts })
+    res.status(200).json({ districts: districts })
 });
 
 // Find sectors
@@ -60,7 +83,7 @@ const findSectors = asyncWrapper(async (req, res, next) => {
         sectors.push(sector.name);
     });
 
-    res.status(StatusCodes.OK).json({ sectors: sectors })
+    res.status(200).json({ sectors: sectors })
 });
 
 // Find cells
@@ -97,7 +120,7 @@ const findCells = asyncWrapper(async (req, res, next) => {
     cellsData.forEach((cell) => {
         cells.push(cell.name);
     })
-    res.status(StatusCodes.OK).json({ cells: cells })
+    res.status(200).json({ cells: cells })
 });
 
 // Find villages
@@ -143,7 +166,7 @@ const findVillages = asyncWrapper(async (req, res, next) => {
         villages.push(village.name);
     })
 
-    res.status(StatusCodes.OK).json({ villages: villages })
+    res.status(200).json({ villages: villages })
 });
 
 // console.log(findProvinces());
@@ -160,5 +183,6 @@ module.exports = {
     findDistricts,
     findSectors,
     findCells,
-    findVillages
+    findVillages,
+    provinceTranslator
 }
