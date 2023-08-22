@@ -45,7 +45,7 @@ const Stats = () => {
         <VerticallyFlexGapContainer style={{ gap: '20px',boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
           <strong style={{ textAlign:'left', width: '100%' }}>Milk Weekly Records</strong>
           <HorizontallyFlexSpaceBetweenContainer>
-            <CountryLevelMilkProductionTable data={milkProductionDummyData} />
+            <CountryLevelMilkProductionTable data={[]} />
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
       
