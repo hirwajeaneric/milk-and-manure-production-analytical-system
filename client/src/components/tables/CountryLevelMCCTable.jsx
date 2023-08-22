@@ -7,7 +7,7 @@ const columns = [
   {
     field: 'name',
     headerName: 'Name',
-    width: 80,
+    width: 350,
   },
   {
     field: 'number',
@@ -17,17 +17,17 @@ const columns = [
   {
     field: 'code',
     headerName: 'Code',
-    width: 80,
+    width: 150,
   },
   {
     field: 'province',
     headerName: 'Province',
-    width: 80,
+    width: 150,
   },
   {
     field: 'district',
     headerName: 'District',
-    width: 80,
+    width: 150,
   },
   {
     field: 'status',
@@ -54,7 +54,7 @@ function CustomToolbar() {
 export const TableStyles = {
   padding: '0px',
   width: '100%',
-  height: '500px',
+  height: '400px',
   background: 'white',
   marginTop: '20px' 
 }

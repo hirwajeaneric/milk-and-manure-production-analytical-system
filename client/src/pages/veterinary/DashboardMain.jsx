@@ -2,27 +2,22 @@ import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { DashboardInnerContainer, DashboardMainContainer, SideBarMenuItem, SideBarMenueContainer, SideNavigationBar, TopNavigationBar } from "../../components/styles/DashboardStructureStyles"
 import { HorizontallyFlexGapContainer, VerticallyFlexGapContainer, VerticallyFlexSpaceBetweenContainer } from "../../components/styles/GenericStyles"
 import { MdHome, MdMenu, MdNotifications, MdPropaneTank } from 'react-icons/md';
-import { RiPlantFill, RiUser2Fill, RiUser3Fill, RiUser4Fill } from 'react-icons/ri';
-import { TiUser } from 'react-icons/ti';
+import { RiUser4Fill } from 'react-icons/ri';
 import { GiFarmer } from 'react-icons/gi';
 import { HiOfficeBuilding } from 'react-icons/hi';
-import { FaUserAlt } from 'react-icons/fa';
 import Avatar from "@mui/material/Avatar"; 
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Divider, IconButton, ListItemIcon, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
-import { useCookies } from "react-cookie";
+import { Logout, Settings } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { getSimpleCapitalizedChars } from "../../utils/HelperFunctions";
 import { getManureProductionOnDistrictLevel } from "../../redux/features/manureProductionSlice";
 import { getMilkProductionOnDistrictLevel } from "../../redux/features/milkProductionSlice";
 import { getmccsForSelectedDistrict } from "../../redux/features/mccSlice";
-import { getEmployeesInDistrict, getVeterinaries } from "../../redux/features/userSlice";
+import { getEmployeesInDistrict } from "../../redux/features/userSlice";
 
 const DashboardMain = () => {
-    const [ cookies, setCookie, removeCookie ] = useCookies(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const params = useParams();
     const dispatch = useDispatch();
@@ -43,11 +38,27 @@ const DashboardMain = () => {
         var user = JSON.parse(localStorage.getItem('veterinary'));
         setUser(user);
 
-        dispatch(getManureProductionOnDistrictLevel({ district: params.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
-        dispatch(getMilkProductionOnDistrictLevel({ district: params.district, periodType: 'Year', periodValue: new Date().getFullYear()}));
+
+        dispatch(
+            getMilkProductionOnDistrictLevel({ 
+                district: user.district, 
+                periodType: 'year', 
+                periodValue: new Date().getFullYear()
+            })
+        );
+
+        dispatch(
+            getManureProductionOnDistrictLevel({ 
+                district: user.district, 
+                periodType: 'year', 
+                periodValue: new Date().getFullYear()
+            })
+        );
+
         dispatch(getmccsForSelectedDistrict({ district: user.district }));
         dispatch(getEmployeesInDistrict({ district: params.district }));
-    }, [])
+
+    }, [dispatch])
 
     const signout = () => {
         localStorage.removeItem('vetToken');
@@ -121,16 +132,7 @@ const DashboardMain = () => {
                             <p style={{ color: 'gray', fontSize:'90%' }}>{user.email}</p>
                         </VerticallyFlexGapContainer>
                     </MenuItem>
-                    {/* <MenuItem onClick={handleClose}>
-                        <Avatar /> My account
-                    </MenuItem> */}
                     <Divider />
-                    {/* <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            <PersonAdd fontSize="small" />
-                        </ListItemIcon>
-                        Add another account
-                    </MenuItem> */}
                     <MenuItem onClick={() => {navigate('/rab/settings'); handleClose();}}>
                         <ListItemIcon>
                             <Settings fontSize="small" />
@@ -164,24 +166,12 @@ const DashboardMain = () => {
                             }
                             </div>
                         </SideBarMenuItem>
-                        {/* <SideBarMenuItem to={'resources'}>
-                            <RiPlantFill style={{ width: fullSize ? '100%' : '20%'}}/>
-                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
-                            {!fullSize && <><span className="text">Manure</span></>}
-                            </div>
-                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'mccs'}>
                             <HiOfficeBuilding style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <><span className="text">MCCs</span></>}
                             </div>
                         </SideBarMenuItem>
-                        {/* <SideBarMenuItem to={'employees'}>
-                            <RiUser2Fill style={{ width: fullSize ? '100%' : '20%'}}/>
-                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
-                            {!fullSize && <><span className="text">MCC Registers</span></>}
-                            </div>
-                        </SideBarMenuItem> */}
                         {/* <SideBarMenuItem to={'farmers'}>
                             <GiFarmer style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">

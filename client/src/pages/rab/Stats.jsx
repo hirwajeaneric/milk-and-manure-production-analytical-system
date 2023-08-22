@@ -4,31 +4,10 @@ import { HeaderTwo, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapCont
 import CountryLevelMilkProductionTable from '../../components/tables/CountryLevelMilkProductionTable'
 import { useSelector } from 'react-redux'
 
-const milkProductionDummyData = [
-  {
-    id: 'sdfasdfasdf',
-    district: 'Nyamagabe',
-    quantity: 20000,
-    period: 'weekly',
-  },
-  {
-    id: 'sdfasdfasd1',
-    district: 'Magatare',
-    quantity: 19000,
-    period: 'weekly',
-  },
-  {
-    id: 's343434d',
-    district: 'Gatsibo',
-    quantity: 19000,
-    period: 'weekly',
-  },
-]
-
 const Stats = () => {
 
-  const { isLoading: loadingManure, manureProductionOnCountryLevel, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
-  const { isLoading: loadingMilk, milkProductionOnCountryLevel, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
+  const { isLoading: loadingManure, manureProductionOnCountryLevel, manureFilterType, manureFilterValue, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
+  const { isLoading: loadingMilk, milkProductionOnCountryLevel, milkFilterType, milkFilterValue, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
   const { isLoading: loadingMccs, allMCCs, numberOfAllMCCs } = useSelector(state => state.mcc);
   const { isLoading: loadingUsers, allMccEmployees, numberOfAllMccEmployees } = useSelector(state => state.user);
 
@@ -41,17 +20,17 @@ const Stats = () => {
       <HorizontallyFlexSpaceBetweenContainer style={{ flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
         
         <VerticallyFlexGapContainer style={{ boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
-          <span style={{ textAlign:'left', width: '100%' }}><strong>Milk </strong>- Weekly Records</span>
+          <span style={{ textAlign:'left', width: '100%' }}><strong>Milk </strong>- Records in {milkFilterValue}</span>
           <HorizontallyFlexSpaceBetweenContainer style={{ alignItems: 'flex-end' }}>
-            <HeaderTwo style={{ fontSize: '200%' }}>2400 Ltrs</HeaderTwo>
+            <HeaderTwo style={{ fontSize: '200%' }}>{amountOfMilkProductionOnCountryLevel} Ltrs</HeaderTwo>
             <img src='/weekly-inputs.png' alt='' />
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
       
         <VerticallyFlexGapContainer style={{ boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
-          <span style={{ textAlign:'left', width: '100%' }}><strong>Manure </strong>- Weekly Records</span>
+          <span style={{ textAlign:'left', width: '100%' }}><strong>Manure </strong>- Records in {manureFilterValue}</span>
           <HorizontallyFlexSpaceBetweenContainer style={{ alignItems: 'flex-end' }}>
-            <HeaderTwo style={{ fontSize: '200%' }}>50 Tones</HeaderTwo>
+            <HeaderTwo style={{ fontSize: '200%' }}>{amountOfManureProductionOnCountryLevel} Tones</HeaderTwo>
             <img src='/weekly-inputs.png' alt='' />
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>

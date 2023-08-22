@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 
 const MCCs = () => {
   return (
-    <div>
+    <div style={{ width: '100%' }}>
         <Outlet />
     </div>
   )

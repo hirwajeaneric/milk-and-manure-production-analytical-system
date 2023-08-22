@@ -14,7 +14,6 @@ import { Divider, IconButton, ListItemIcon, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Logout, PersonAdd, Settings } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { getSimpleCapitalizedChars } from "../../utils/HelperFunctions";
 import { getManureProductionOnCountryLevel } from "../../redux/features/manureProductionSlice";
 import { getMilkProductionOnCountryLevel } from "../../redux/features/milkProductionSlice";
 import { getAllmccs } from "../../redux/features/mccSlice";
@@ -40,8 +39,8 @@ const DashboardMain = () => {
         var user = JSON.parse(localStorage.getItem('rabUser'));
         setUser(user);
 
-        dispatch(getManureProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
-        dispatch(getMilkProductionOnCountryLevel({ periodType: 'Year', periodValue: new Date().getFullYear()}));
+        dispatch(getManureProductionOnCountryLevel({ periodType: 'year', periodValue: new Date().getFullYear()}));
+        dispatch(getMilkProductionOnCountryLevel({ periodType: 'year', periodValue: new Date().getFullYear()}));
         dispatch(getAllmccs());
         dispatch(getAllMccEmployees());
         dispatch(getVeterinaries());
@@ -150,12 +149,6 @@ const DashboardMain = () => {
                             <HiOfficeBuilding style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
                             {!fullSize && <><span className="text">MCCs</span></>}
-                            </div>
-                        </SideBarMenuItem>
-                        <SideBarMenuItem to={'employees'}>
-                            <RiUser2Fill style={{ width: fullSize ? '100%' : '20%'}}/>
-                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
-                            {!fullSize && <><span className="text">MCC Registers</span></>}
                             </div>
                         </SideBarMenuItem>
                         <SideBarMenuItem to={'veterinaries'}>

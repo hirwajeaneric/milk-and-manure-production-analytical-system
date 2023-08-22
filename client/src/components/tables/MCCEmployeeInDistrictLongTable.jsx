@@ -1,39 +1,29 @@
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Preview } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const columns = [
   {
-    field: 'date',
-    headerName: 'Date',
-    width: 200,
+    field: 'fullname',
+    headerName: 'Name',
+    width: 350,
   },
   {
-    field: 'farmername',
-    headerName: 'Farmer',
-    width: 270,
+    field: 'phone',
+    headerName: 'Phone',
+    width: 150,
   },
   {
-    field: 'mccname',
-    headerName: 'MCC',
-    width: 300,
-  },
-  {
-    field: 'district',
-    headerName: 'District',
-    width: 120,
-  },
-  {
-    field: 'quantity',
-    headerName: 'Quantity',
-    width: 80,
+    field: 'status',
+    headerName: 'Status',
+    // width: 150,
   },
   {
     field: 'actions',
     headerName: 'Actions',
     type: 'actions',
-    width: 70,
+    // width: 70,
     renderCell: (params) => <TableActions parameters= {params} />
   },
 ]
@@ -50,13 +40,12 @@ export const TableStyles = {
   padding: '0px',
   width: '100%',
   height: '400px',
-  background: 'white',
-  marginTop: '20px' 
+  background: 'white', 
 }
 
 var rows = [];
 
-export default function MCCManureProductionTable({data}) {
+export default function MCCEmployeeInDistrictLongTable({data}) {
   rows = data;
 
   return (
@@ -69,7 +58,7 @@ export default function MCCManureProductionTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        components={{Toolbar: CustomToolbar}}
+        // components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );
@@ -84,7 +73,7 @@ const TableActions = ({parameters}) => {
     <Box>
       <Tooltip title='View / Edit'>
         <IconButton onClick={() => {navigate(parameters.row.id)}}>
-          <Preview />
+          <MoreHorizIcon />
         </IconButton>
       </Tooltip>
     </Box>

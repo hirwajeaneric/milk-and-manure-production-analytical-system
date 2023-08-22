@@ -17,7 +17,21 @@ export const getMccDetails = createAsyncThunk(
         const { id } = filter;
         try {
             const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findById?id=${id}`);
-            response.data.mcc.registrationDate = new Date(response.data.mcc.registrationDate).toLocaleString();
+            response.data.mcc.registrationdate = new Date(response.data.mcc.registrationdate).toLocaleString();
+            return response.data.mcc;
+        } catch (error) {
+            return thunkAPI.rejectWithValue('Something went wrong!!');
+        }
+    }
+);
+
+export const getMccByCode = createAsyncThunk(
+    'mcc/getMccByCode',
+    async (filter, thunkAPI) => {
+        const { mccCode } = filter;
+        try {
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findByCode?code=${mccCode}`);
+            response.data.mcc.registrationdate = new Date(response.data.mcc.registrationdate).toLocaleString();
             return response.data.mcc;
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
@@ -31,7 +45,7 @@ export const getAllmccs = createAsyncThunk(
         try {
             const response = await axios.get(serverUrl+`/api/v1/mmpas/mcc/list`);
             response.data.mccs.forEach(element => {
-                element.registrationDate = new Date(element.registrationDate).toLocaleString();
+                element.registrationdate = new Date(element.registrationdate).toLocaleString();
             });
             return response.data.mccs
         } catch (error) {
@@ -70,12 +84,23 @@ const mccSlice = createSlice({
         [getMccDetails.rejected] : (state) => {
             state.isLoading = false;
         },
+        [getMccByCode.pending] : (state) => {
+            state.isLoading = true;
+        },
+        [getMccByCode.fulfilled] : (state, action) => {
+            state.isLoading = false;
+            state.selectedMcc = action.payload;
+        },
+        [getMccByCode.rejected] : (state) => {
+            state.isLoading = false;
+        },
         [getAllmccs.pending] : (state) => {
             state.isLoading = true;
         },
         [getAllmccs.fulfilled] : (state, action) => {
             state.isLoading = false;
             state.allmccs = action.payload;
+            state.numberOfAllmccs = action.payload.length;
         },
         [getAllmccs.rejected] : (state) => {
             state.isLoading = false;
@@ -86,6 +111,7 @@ const mccSlice = createSlice({
         [getmccsForSelectedDistrict.fulfilled] : (state, action) => {
             state.isLoading = false;
             state.mccForSelectedDistrict = action.payload;
+            state.numberOfmccsForSelectedDistrict = action.payload;
         },
         [getmccsForSelectedDistrict.rejected] : (state) => {
             state.isLoading = false;
