@@ -14,8 +14,6 @@ const provinceTranslator = asyncWrapper(async(req, res, next) => {
     const EngProvinces = ['East', 'West', 'North', 'South', 'Kigali City'];
     const KinyProvinces = ['Iburasirazuba', 'Iburengerazuba', 'Amajyaruguru', 'Amajyepfo', 'Umujyi wa Kigali'];
 
-    console.log(req.query)
-
     EngProvinces.forEach((element, index) => {
         if (req.query.province === element) {
             req.query.province = KinyProvinces[index];

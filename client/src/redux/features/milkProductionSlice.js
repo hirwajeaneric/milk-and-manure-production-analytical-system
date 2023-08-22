@@ -41,6 +41,7 @@ export const getMilkProductionOnDistrictLevel = createAsyncThunk(
             response.data.milkProduction.forEach(element => {
                 element.date = new Date(element.date).toLocaleString();
             });
+
             return { milkProduction: response.data.milkProduction, periodType: periodType, periodValue: periodValue }
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
@@ -109,7 +110,11 @@ const milkProduction = createSlice({
             state.isLoading = false;
         },
         [getMilkProductionOnDistrictLevel.pending] : (state) => {
+            state.isLoading = true;
+        },
+        [getMilkProductionOnDistrictLevel.fulfilled] : (state, action) => {
             state.isLoading = false;
+
             var production = [];
             var quantity = 0;
             if (action.payload.periodType === 'year') {
@@ -122,14 +127,53 @@ const milkProduction = createSlice({
                 quantity = quantity + element.quantity;
             });
 
-            state.milkProductionOnDistrictLevel = production;
-            state.amountOfMilkProductionOnDistrictLevel = quantity;
-        },
-        [getMilkProductionOnDistrictLevel.fulfilled] : (state, action) => {
-            state.isLoading = false;
+            function calculateMCCMilkProduction(data) {
+                const mccMap = new Map();
+                let totalMilkProduction = 0;
+              
+                data.forEach(item => {
+                  const mccId = item.mccid;
+                  const quantity = item.quantity;
+              
+                  if (mccMap.has(mccId)) {
+                    mccMap.set(mccId, mccMap.get(mccId) + quantity);
+                  } else {
+                    mccMap.set(mccId, quantity);
+                  }
+              
+                  totalMilkProduction += quantity; // Add to the total milk production
+                });
+              
+                const result = [];
+              
+                mccMap.forEach((totalQuantity, mccId) => {
+                  const mccInfo = data.find(item => item.mccid === mccId);
+                  result.push({
+                    mccId: mccId,
+                    mccName: mccInfo.mccname,
+                    totalMilkProduction: totalQuantity
+                  });
+                });
+              
+                return {
+                  mccMilkProduction: result,
+                  totalMilkProduction: totalMilkProduction // Include the total milk production in the result
+                };
+            }
+            
+            const { mccMilkProduction, totalMilkProduction } = calculateMCCMilkProduction(production);
+            
+            mccMilkProduction.forEach(element => {
+                element.id = element.mccId;
+                element.period = action.payload.periodValue;
+            });
+            
+            state.milkProductionOnDistrictLevel = mccMilkProduction;
+            state.amountOfMilkProductionOnDistrictLevel = totalMilkProduction;
         },
         [getMilkProductionOnDistrictLevel.rejected] : (state) => {
             state.isLoading = false;
+
         },
         [getMilkProductionOnMCCLevel.pending] : (state) => {
             state.isLoading = true;

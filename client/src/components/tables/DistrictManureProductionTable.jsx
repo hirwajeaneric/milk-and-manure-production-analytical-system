@@ -5,32 +5,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const columns = [
   {
-    field: 'district',
-    headerName: 'District',
-    width: 80,
+    field: 'mccName',
+    headerName: 'MCC',
+    width: 500,
   },
   {
-    field: 'district',
-    headerName: 'District',
-    width: 80,
-  },
-  {
-    field: 'quantity',
+    field: 'totalManureProduction',
     headerName: 'Quantity',
-    width: 80,
+    width: 250,
   },
   {
     field: 'period',
     headerName: 'Period',
-    width: 80,
-  },
-  {
-    field: 'actions',
-    headerName: 'Actions',
-    type: 'actions',
-    width: 70,
-    renderCell: (params) => <TableActions parameters= {params} />
-  },
+    width: 350,
+  }
 ]
 
 function CustomToolbar() {
@@ -44,14 +32,14 @@ function CustomToolbar() {
 export const TableStyles = {
   padding: '0px',
   width: '100%',
-  height: '500px',
+  height: '400px',
   background: 'white',
   marginTop: '20px' 
 }
 
 var rows = [];
 
-export default function CountryLevelManureProductionTable({data}) {
+export default function DistrictManureProductionTable({data}) {
   rows = data;
 
   return (
