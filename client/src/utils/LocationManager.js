@@ -37,12 +37,11 @@ export const findSectors = (selectedProvince, selectedDistrict) => {
     axios.get(`http://localhost:5050/api/v1/mmpas/locations/sectors?province=${selectedProvince}&district=${selectedDistrict}`)
     .then(response => {
         sectors = response.data.sectors;
+        console.log(sectors);
     })
     .catch(error => {
         console.log(error);
     })
-
-    return sectors;
 }   
 
 // Find cells

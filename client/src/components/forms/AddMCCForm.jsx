@@ -20,10 +20,14 @@ export default function AddMCCForm() {
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('veterinary'));
         setUser(user);
-    
-        console.log(findSectors(user.province, user.district));
 
-        // setSectors();
+        axios.get(`http://localhost:5050/api/v1/mmpas/locations/sectors?province=${user.province}&district=${user.district}`)
+        .then(response => {
+            setSectors(response.data.sectors);  
+        })
+        .catch(error => {
+            console.log(error);
+        })
 
     },[])
 
