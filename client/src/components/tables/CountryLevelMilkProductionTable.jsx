@@ -7,25 +7,18 @@ const columns = [
   {
     field: 'district',
     headerName: 'District',
-    width: 200,
+    width: 500,
   },
   {
-    field: 'quantity',
+    field: 'totalMilkProduction',
     headerName: 'Quantity',
-    width: 120,
+    width: 250,
   },
   {
     field: 'period',
     headerName: 'Period',
-    width: 100,
-  },
-  {
-    field: 'actions',
-    headerName: 'Actions',
-    type: 'actions',
-    width: 80,
-    renderCell: (params) => <TableActions parameters= {params} />
-  },
+    width: 300,
+  }
 ]
 
 function CustomToolbar() {
@@ -59,7 +52,7 @@ export default function CountryLevelMilkProductionTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        // components={{Toolbar: CustomToolbar}}
+        components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );

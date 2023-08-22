@@ -17,7 +17,7 @@ const columns = [
   {
     field: 'period',
     headerName: 'Period',
-    width: 350,
+    width: 300,
   }
 ]
 

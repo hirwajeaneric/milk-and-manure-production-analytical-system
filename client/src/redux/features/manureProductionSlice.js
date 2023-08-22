@@ -92,19 +92,58 @@ const manureProduction = createSlice({
         [getManureProductionOnCountryLevel.fulfilled] : (state, action) => {
             state.isLoading = false;
             var production = [];
-            var quantity = 0;
+            
             if (action.payload.periodType === 'year') {
                 production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
                 production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
+    
+            function calculateDistrictManureProduction(data) {
+                const districtMap = new Map();
+                let totalManureProduction = 0; // Initialize the total manure production counter
+              
+                data.forEach(item => {
+                  const district = item.district;
+                  const quantity = item.quantity;
+              
+                  if (districtMap.has(district)) {
+                    districtMap.set(district, districtMap.get(district) + quantity);
+                  } else {
+                    districtMap.set(district, quantity);
+                  }
+              
+                  totalManureProduction += quantity; // Add to the total manure production
+                });
+              
+                const result = [];
+              
+                districtMap.forEach((totalQuantity, district) => {
+                  result.push({
+                    district: district,
+                    totalManureProduction: totalQuantity
+                  });
+                });
+              
+                return {
+                  districtManureProduction: result,
+                  totalManureProduction: totalManureProduction // Include the total manure production in the result
+                };
+            }
             
-            production.forEach(element => {
-                quantity = quantity + element.quantity;
+            const { districtManureProduction, totalManureProduction } = calculateDistrictManureProduction(production);
+            
+            districtManureProduction.forEach((element, index) => {
+                element.id = index;
+                element.period = action.payload.periodValue;
             });
 
-            state.manureProductionOnCountryLevel = production;
-            state.amountOfManureProductionOnCountryLevel = quantity;
+            console.log(districtManureProduction);
+            console.log("Total Manure Production:", totalManureProduction);
+              
+
+            state.manureProductionOnCountryLevel = districtManureProduction;
+            state.amountOfManureProductionOnCountryLevel = totalManureProduction;
         },
         [getManureProductionOnCountryLevel.rejected] : (state) => {
             state.isLoading = false;
