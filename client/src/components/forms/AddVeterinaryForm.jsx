@@ -62,7 +62,7 @@ export default function AddVeterinaryForm() {
                             type="email" 
                             id="email"
                             minLength='8'
-                            placeholder="email" 
+                            placeholder="Email" 
                             {...register("email", 
                             {required: true})} 
                             aria-invalid={errors.email ? "true" : "false"}
@@ -77,7 +77,7 @@ export default function AddVeterinaryForm() {
                             type="phone" 
                             id="phone"
                             maxLength='10'
-                            placeholder="phone" 
+                            placeholder="Phone" 
                             {...register("phone", 
                             {required: true})} 
                             aria-invalid={errors.phone ? "true" : "false"}
@@ -107,10 +107,10 @@ export default function AddVeterinaryForm() {
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="password">Password</label>
                         <input 
-                            type="password"
+                            type="text"
                             id="password" 
                             minLength='8'
-                            placeholder="password" 
+                            placeholder="Password" 
                             {...register("password", {required: true})} 
                             aria-invalid={errors.password ? "true" : "false"}
                         />
@@ -137,7 +137,7 @@ export default function AddVeterinaryForm() {
                         <input 
                             type="district"
                             id="district"
-                            placeholder="district" 
+                            placeholder="District" 
                             {...register("district", {required: true})} 
                             aria-invalid={errors.district ? "true" : "false"}
                         />
