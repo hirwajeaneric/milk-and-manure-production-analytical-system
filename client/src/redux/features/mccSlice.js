@@ -100,6 +100,7 @@ const mccSlice = createSlice({
         [getAllmccs.fulfilled] : (state, action) => {
             state.isLoading = false;
             state.allmccs = action.payload;
+            state.numberOfAllmccs = action.payload.length;
         },
         [getAllmccs.rejected] : (state) => {
             state.isLoading = false;
@@ -110,6 +111,7 @@ const mccSlice = createSlice({
         [getmccsForSelectedDistrict.fulfilled] : (state, action) => {
             state.isLoading = false;
             state.mccForSelectedDistrict = action.payload;
+            state.numberOfmccsForSelectedDistrict = action.payload;
         },
         [getmccsForSelectedDistrict.rejected] : (state) => {
             state.isLoading = false;

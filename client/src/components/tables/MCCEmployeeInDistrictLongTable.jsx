@@ -1,44 +1,29 @@
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Preview } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const columns = [
   {
-    field: 'name',
+    field: 'fullname',
     headerName: 'Name',
     width: 350,
   },
   {
-    field: 'number',
-    headerName: 'Number',
-    width: 80,
-  },
-  {
-    field: 'code',
-    headerName: 'Code',
-    width: 150,
-  },
-  {
-    field: 'province',
-    headerName: 'Province',
-    width: 150,
-  },
-  {
-    field: 'district',
-    headerName: 'District',
+    field: 'phone',
+    headerName: 'Phone',
     width: 150,
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 80,
+    // width: 150,
   },
   {
     field: 'actions',
     headerName: 'Actions',
     type: 'actions',
-    width: 70,
+    // width: 70,
     renderCell: (params) => <TableActions parameters= {params} />
   },
 ]
@@ -55,13 +40,12 @@ export const TableStyles = {
   padding: '0px',
   width: '100%',
   height: '400px',
-  background: 'white',
-  marginTop: '20px' 
+  background: 'white', 
 }
 
 var rows = [];
 
-export default function CountryLevelMCCTable({data}) {
+export default function MCCEmployeeInDistrictLongTable({data}) {
   rows = data;
 
   return (
@@ -74,7 +58,7 @@ export default function CountryLevelMCCTable({data}) {
         rowsPerPageOptions={[20]}
         disableSelectionOnClick
         experimentalFeatures={{newEditingApi: true}}
-        components={{Toolbar: CustomToolbar}}
+        // components={{Toolbar: CustomToolbar}}
       />
     </Box>
   );
@@ -89,7 +73,7 @@ const TableActions = ({parameters}) => {
     <Box>
       <Tooltip title='View / Edit'>
         <IconButton onClick={() => {navigate(parameters.row.id)}}>
-          <Preview />
+          <MoreHorizIcon />
         </IconButton>
       </Tooltip>
     </Box>

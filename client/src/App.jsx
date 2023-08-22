@@ -24,6 +24,7 @@ import RabProductionDetails from './pages/rab/ProductionDetails';
 import RabReportPreview from './pages/rab/ReportPreview';
 import Veterinaries from './pages/rab/Veterinaries';
 import VeterinaryDetails from './pages/rab/VeterinaryDetails';
+import RabMccList from './pages/rab/ListOfMCCs';
 
 
 // VETERINARIES //////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +134,7 @@ function App() {
               </Route>
             </Route>
             <Route path='mccs' element={<RabMCCs />}>
+              <Route path='' element={<RabMccList />} />
               <Route path=':mccId' element={<RabMCCInfo />} />
             </Route>
             <Route path='employees' element={<RabMCCEmployees />}>
