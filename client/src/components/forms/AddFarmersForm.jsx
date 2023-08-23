@@ -4,14 +4,23 @@ import axios from 'axios';
 const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 import { GeneralContext } from "../../App";
 import { Button } from "@mui/material";
-import { useContext, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getFarmers } from "../../redux/features/userSlice";
+import { useParams } from "react-router-dom";
+import { getSectorsForMccDistrict } from "../../redux/features/mccSlice";
 
 export default function AddFarmersForm() {
     const dispatch = useDispatch();
     const { setOpen, setResponseMessage } = useContext(GeneralContext);
     const [ isProcessing, setIsProcessing ] = useState(false);
+    const params = useParams();
+
+    useEffect(() => {
+        dispatch(getSectorsForMccDistrict({ mccCode: params.code }))
+    },[])
+
+    const { sectors } = useSelector(state => state.mcc);
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -87,10 +96,12 @@ export default function AddFarmersForm() {
                             <p role="alert">Phone</p>
                         )}
                     </FormElement>
+                </HorizontallyFlexGapContainer>
+                <HorizontallyFlexGapContainer style={{ gap: '10px' }}>
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="nationalId">National ID</label>
                         <input 
-                            type="nationalId" 
+                            type="text" 
                             id="nationalId"
                             maxLength='16'
                             minLength='16'
@@ -102,13 +113,11 @@ export default function AddFarmersForm() {
                         {errors.nationalId?.type === "required" && (
                             <p role="alert">National id is required</p>
                         )}
-                    </FormElement>
-                </HorizontallyFlexGapContainer>
-                <HorizontallyFlexGapContainer style={{ gap: '10px' }}>  
+                    </FormElement>  
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="password">Password</label>
                         <input 
-                            type="password"
+                            type="text"
                             id="password" 
                             minLength='8'
                             placeholder="Password" 
@@ -120,28 +129,15 @@ export default function AddFarmersForm() {
                         )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="confirmPassword">Province</label>
-                        <select {...register("province", { required: true })}>
-                            <option value="">Choose province</option>
-                            <option value="Kigali City">Kigali City</option>
-                            <option value="Northern province">Northern province</option>
-                            <option value="Southern province">Southern province</option>
-                            <option value="Eastern province">Eastern province</option>
-                            <option value="Western province">Western province</option>
+                        <label htmlFor="sector">Sector</label>
+                        <select {...register("sector", { required: true })}>
+                            <option value="">Choose sector</option>
+                            {sectors && sectors.map((sector, index) => {
+                                return (
+                                    <option key={index} value={sector}>{sector}</option>
+                                )
+                            })}
                         </select>
-                        {errors.confirmPassword?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
-                    </FormElement>
-                    <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="sector">District</label>
-                        <input 
-                            type="text"
-                            id="sector"
-                            placeholder="Sector" 
-                            {...register("sector", {required: true})} 
-                            aria-invalid={errors.sector ? "true" : "false"}
-                        />
                         {errors.sector?.type === "required" && (
                             <p role="alert">Required</p>
                         )}
@@ -154,10 +150,10 @@ export default function AddFarmersForm() {
                     : <Button variant="contained" color="primary" size="small" type="submit">Register</Button>
                     }
                     
-                    {isProcessing 
+                    {/* {isProcessing 
                     ? <Button disabled variant="contained" color="primary" size="small">Removing...</Button> 
                     : <Button variant="contained" color="error" size="small" type="submit">Remove</Button>
-                    }
+                    } */}
                 </HorizontallyFlexSpaceBetweenContainer>
             </VerticallyFlexGapForm>
         </VerticallyFlexGapContainer>

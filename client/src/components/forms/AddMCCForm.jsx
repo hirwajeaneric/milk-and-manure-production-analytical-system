@@ -86,17 +86,6 @@ export default function AddMCCForm() {
                             <p role="alert">MCC name is required</p>
                         )}
                     </FormElement>
-                    {/* <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="province">Province</label>
-                        <select name='province' onChange={handleProvinces}>
-                            <option value="">Choose province</option>
-                            <option value="Umujyi wa Kigali--Kigali City">Kigali City</option>
-                            <option value="Amajyaruguru--Northern province">Northern province</option>
-                            <option value="Amajyepho--Southern province">Southern province</option>
-                            <option value="Iburasirazuba--Eastern province">Eastern province</option>
-                            <option value="Iburengerazuba--Western province">Western province</option>
-                        </select>
-                    </FormElement> */}
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="sector">Sector</label>
                         <select name='sector' onChange={handleSectors}>
@@ -116,10 +105,10 @@ export default function AddMCCForm() {
                     : <Button variant="contained" color="primary" size="small" type="submit">Register</Button>
                     }
                     
-                    {isProcessing 
+                    {/* {isProcessing 
                     ? <Button disabled variant="contained" color="primary" size="small">Removing...</Button> 
                     : <Button variant="contained" color="error" size="small" type="submit">Remove</Button>
-                    }
+                    } */}
                 </HorizontallyFlexSpaceBetweenContainer>
             </VerticallyFlexGapForm>
         </VerticallyFlexGapContainer>

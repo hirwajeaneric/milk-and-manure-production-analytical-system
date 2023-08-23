@@ -10,14 +10,9 @@ const columns = [
     width: 350,
   },
   {
-    field: 'number',
-    headerName: 'Number',
-    width: 80,
-  },
-  {
     field: 'code',
     headerName: 'Code',
-    width: 150,
+    width: 200,
   },
   {
     field: 'province',
@@ -32,7 +27,7 @@ const columns = [
   {
     field: 'status',
     headerName: 'Status',
-    width: 80,
+    width: 120,
   },
   {
     field: 'actions',

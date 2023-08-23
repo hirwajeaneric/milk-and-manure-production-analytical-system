@@ -1,8 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
-import { HeaderTwo, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles'
-import CountryLevelMilkProductionTable from '../../components/tables/CountryLevelMilkProductionTable'
+import { HeaderTwo, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles';
 import { useSelector } from 'react-redux'
+import MilkYearMonthChart from '../../components/charts/MilkYearMonthChart'
+import ManureYearMonthChart from '../../components/charts/ManureYearMonthChart'
 
 const Stats = () => {
 
@@ -36,17 +37,13 @@ const Stats = () => {
         </VerticallyFlexGapContainer>
       
         <VerticallyFlexGapContainer style={{ gap: '20px', boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
-          <strong style={{ textAlign:'left', width: '100%' }}>Registered MCCs vs Unregistered ones</strong>
-          <HorizontallyFlexSpaceBetweenContainer>
-            <img src='/RegisteredVsUnregistered.png' style={{ width: '100%' }} alt='' />
-          </HorizontallyFlexSpaceBetweenContainer>
+          <strong style={{ textAlign:'left', width: '100%' }}>Comparison of Milk production for year 2022 and 2023</strong>
+          <MilkYearMonthChart />            
         </VerticallyFlexGapContainer>
       
         <VerticallyFlexGapContainer style={{ gap: '20px',boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
-          <strong style={{ textAlign:'left', width: '100%' }}>Milk Weekly Records</strong>
-          <HorizontallyFlexSpaceBetweenContainer>
-            <CountryLevelMilkProductionTable data={[]} />
-          </HorizontallyFlexSpaceBetweenContainer>
+        <strong style={{ textAlign:'left', width: '100%' }}>Comparison of Manure production for year 2022 and 2023</strong>
+          <ManureYearMonthChart />            
         </VerticallyFlexGapContainer>
       
       </HorizontallyFlexSpaceBetweenContainer>
