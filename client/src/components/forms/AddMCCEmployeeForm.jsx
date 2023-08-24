@@ -89,7 +89,8 @@ export default function AddMCCEmployeeForm() {
                         <input 
                             type="text" 
                             id="phone"
-                            minLength='8'
+                            minLength='10'
+                            maxLength='10'
                             placeholder="Phone" 
                             {...register("phone", 
                             {required: true})} 
@@ -139,10 +140,10 @@ export default function AddMCCEmployeeForm() {
                     : <Button variant="contained" color="primary" size="small" type="submit">Register</Button>
                     }
                     
-                    {isProcessing 
+                    {/* {isProcessing 
                     ? <Button disabled variant="contained" color="primary" size="small">Removing...</Button> 
                     : <Button variant="contained" color="error" size="small" type="submit">Remove</Button>
-                    }
+                    } */}
                 </HorizontallyFlexSpaceBetweenContainer>
             </VerticallyFlexGapForm>
         </VerticallyFlexGapContainer>

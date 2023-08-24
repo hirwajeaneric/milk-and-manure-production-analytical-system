@@ -12,11 +12,40 @@ export default function AddVeterinaryForm() {
     const dispatch = useDispatch();
     const { setOpen, setResponseMessage } = useContext(GeneralContext);
     const [ isProcessing, setIsProcessing ] = useState(false);
+    const [ province, setProvince ] = useState();
+    const [ district, setDistrict ] = useState()
+    const [ districts, setDistricts ] = useState();
+
+    const handleProvince = ({ currentTarget: target }) => {
+        setProvince(target.value);
+
+        axios.get(`${serverUrl}/api/v1/mmpas/locations/districts?province=${target.value}`)
+        .then(response => {
+            setDistricts(response.data.districts)
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
+
+    const handleDistrict = ({ currentTarget: target }) => {
+        setDistrict(target.value);
+
+        axios.get(`${serverUrl}/api/v1/mmpas/locations/sectors?province=${province}&district=${target.value}`)
+        .then(response => {
+            setSectors(response.data.sectors)
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (data) => {
         data.role = 'veterinary';
+        data.province = province;
+        data.district = district;
 
         setIsProcessing(true);
 
@@ -119,32 +148,28 @@ export default function AddVeterinaryForm() {
                         )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
-                        <label htmlFor="confirmPassword">Province</label>
-                        <select {...register("province", { required: true })}>
+                        <label htmlFor="province">Province</label>
+                        <select name='province' onChange={handleProvince}>
                             <option value="">Choose province</option>
                             <option value="Kigali City">Kigali City</option>
-                            <option value="Northern province">Northern province</option>
-                            <option value="Southern province">Southern province</option>
-                            <option value="Eastern province">Eastern province</option>
-                            <option value="Western province">Western province</option>
+                            <option value="East">East</option>
+                            <option value="West">West</option>
+                            <option value="North">North</option>
+                            <option value="South">South</option>
                         </select>
-                        {errors.province?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
                     </FormElement>
                     <FormElement style={{ color: 'gray' }}>
                         <label htmlFor="district">District</label>
-                        <input 
-                            type="district"
-                            id="district"
-                            placeholder="District" 
-                            {...register("district", {required: true})} 
-                            aria-invalid={errors.district ? "true" : "false"}
-                        />
-                        {errors.district?.type === "required" && (
-                            <p role="alert">Required</p>
-                        )}
+                        <select name='district' onChange={handleDistrict}>
+                            <option value="">Choose district</option>
+                            {districts && districts.map((district, index) => {
+                                return (
+                                    <option key={index} value={district}>{district}</option>
+                                )
+                            })}
+                        </select>
                     </FormElement>
+                    
                 </HorizontallyFlexGapContainer>
 
                 <HorizontallyFlexSpaceBetweenContainer style={{ gap: '10px' }}>  
@@ -153,10 +178,10 @@ export default function AddVeterinaryForm() {
                     : <Button variant="contained" color="primary" size="small" type="submit">Register</Button>
                     }
                     
-                    {isProcessing 
+                    {/* {isProcessing 
                     ? <Button disabled variant="contained" color="primary" size="small">Removing...</Button> 
                     : <Button variant="contained" color="error" size="small" type="submit">Remove</Button>
-                    }
+                    } */}
                 </HorizontallyFlexSpaceBetweenContainer>
             </VerticallyFlexGapForm>
         </VerticallyFlexGapContainer>

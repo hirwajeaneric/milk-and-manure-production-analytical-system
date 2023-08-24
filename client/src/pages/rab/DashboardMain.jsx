@@ -1,23 +1,21 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { DashboardInnerContainer, DashboardMainContainer, SideBarMenuItem, SideBarMenueContainer, SideNavigationBar, TopNavigationBar } from "../../components/styles/DashboardStructureStyles"
 import { HorizontallyFlexGapContainer, VerticallyFlexGapContainer, VerticallyFlexSpaceBetweenContainer } from "../../components/styles/GenericStyles"
-import { MdHome, MdMenu, MdNotifications, MdPropaneTank } from 'react-icons/md';
-import { RiPlantFill, RiUser2Fill, RiUser3Fill, RiUser4Fill } from 'react-icons/ri';
-import { TiUser } from 'react-icons/ti';
-import { GiFarmer } from 'react-icons/gi';
+import { MdHome, MdMenu, MdPropaneTank } from 'react-icons/md';
+import { RiUser3Fill, RiUser4Fill } from 'react-icons/ri';
 import { HiOfficeBuilding } from 'react-icons/hi';
-import { FaUserAlt } from 'react-icons/fa';
 import Avatar from "@mui/material/Avatar"; 
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { Divider, IconButton, ListItemIcon, Tooltip } from "@mui/material";
+import { Box, Button, Divider, IconButton, ListItemIcon, Modal, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
+import { Logout, Settings } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { getManureProductionOnCountryLevel } from "../../redux/features/manureProductionSlice";
 import { getMilkProductionOnCountryLevel } from "../../redux/features/milkProductionSlice";
 import { getAllmccs } from "../../redux/features/mccSlice";
 import { getAllMccEmployees, getVeterinaries } from "../../redux/features/userSlice";
+import FilterForm from "../../components/forms/FilterForm";
 
 const DashboardMain = () => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -26,6 +24,9 @@ const DashboardMain = () => {
     const [fullSize, setFullSize] = useState(false);
     const open = Boolean(anchorEl);
     const [user, setUser] = useState({});
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -55,22 +56,25 @@ const DashboardMain = () => {
     return (
         <VerticallyFlexSpaceBetweenContainer style={{ backgroundColor: '#e0ebeb' }}>
             <TopNavigationBar>
+                
                 <div className="left">
                     <MdMenu style={{ cursor: 'pointer' }} onClick={() => setFullSize(!fullSize)}/>
                     <Link to={`/rab}`} style={{ color: '#339966' }}>MMPAs</Link>
                     <h3>RAB Official</h3>
                 </div>    
+
                 <div className="right">
-                    <MdNotifications style={{ fontSize: '150%', color: 'gray'}} />
+                    <Button color="inherit" size='small' variant='contained' onClick={handleOpenModal}>Change period</Button>
+                    <Button color="info" size='small' variant='text' onClick={handleOpenModal}>Generate reports</Button>
+                    
                     <Tooltip title="Account settings">
                         <IconButton onClick={handleClick} size="small" sx={{ ml: 2, background: 'white' }} aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
                             <Avatar sx={{ width: 32, height: 32, background: 'black' }}></Avatar>
                         </IconButton>
                     </Tooltip>
                 </div>
-                <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
+                
+                <Menu anchorEl={anchorEl} id="account-menu"
                     open={open}
                     onClose={handleClose}
                     onClick={handleClose}
@@ -157,12 +161,6 @@ const DashboardMain = () => {
                             {!fullSize && <><span className="text">Veterinaries</span></>}
                             </div>
                         </SideBarMenuItem>
-                        {/* <SideBarMenuItem to={'farmers'}>
-                            <GiFarmer style={{ width: fullSize ? '100%' : '20%'}}/>
-                            <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
-                            {!fullSize && <><span className="text">Farmers</span></>}
-                            </div>
-                        </SideBarMenuItem> */}
                         <SideBarMenuItem to={'settings'}>
                             <RiUser4Fill style={{ width: fullSize ? '100%' : '20%'}}/>
                             <div style={{ width: fullSize ? '0%' : '80%'}} className="nav-data">
@@ -171,8 +169,6 @@ const DashboardMain = () => {
                         </SideBarMenuItem>                    
                     </SideBarMenueContainer>
                 </SideNavigationBar>
-                
-
 
                 <DashboardMainContainer  style={{ width: fullSize ? '95%' : '80%' }}>
                     <DashboardInnerContainer>
@@ -181,6 +177,22 @@ const DashboardMain = () => {
                 </DashboardMainContainer>
 
             </HorizontallyFlexGapContainer>
+
+            <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    }}
+                >
+                <FilterForm />
+                </Box>
+            </Modal>
         </VerticallyFlexSpaceBetweenContainer>
     )
 }

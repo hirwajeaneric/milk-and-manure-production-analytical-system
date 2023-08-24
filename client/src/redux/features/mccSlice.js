@@ -8,6 +8,7 @@ const initialState = {
     numberOfAllmccs: 0,
     mccForSelectedDistrict: [],
     numberOfmccsForSelectedDistrict: 0,
+    sectors: [],
     isLoading: false,
 }
 
@@ -48,6 +49,24 @@ export const getAllmccs = createAsyncThunk(
                 element.registrationdate = new Date(element.registrationdate).toLocaleString();
             });
             return response.data.mccs
+        } catch (error) {
+            return thunkAPI.rejectWithValue('Something went wrong!!');
+        }
+    }
+);
+
+export const getSectorsForMccDistrict = createAsyncThunk(
+    'mcc/getSectorsForMccDistrict',
+    async (filter, thunkAPI) => {
+        const { mccCode } = filter;
+        try {
+            const response = await axios.get(`${serverUrl}/api/v1/mmpas/mcc/findByCode?code=${mccCode}`);
+            response.data.mcc.registrationdate = new Date(response.data.mcc.registrationdate).toLocaleString();
+            
+            const sectorResponse = await axios.get(`${serverUrl}/api/v1/mmpas/locations/sectors?province=${response.data.mcc.province}&district=${response.data.mcc.district}`);
+            console.log(sectorResponse.data.sectors);
+
+            return sectorResponse.data.sectors;
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
         }
@@ -114,6 +133,16 @@ const mccSlice = createSlice({
             state.numberOfmccsForSelectedDistrict = action.payload;
         },
         [getmccsForSelectedDistrict.rejected] : (state) => {
+            state.isLoading = false;
+        },
+        [getSectorsForMccDistrict.pending] : (state) => {
+            state.isLoading = true;
+        },
+        [getSectorsForMccDistrict.fulfilled] : (state, action) => {
+            state.isLoading = false;
+            state.sectors = action.payload;
+        },
+        [getSectorsForMccDistrict.rejected] : (state) => {
             state.isLoading = false;
         }
     }
