@@ -4,6 +4,7 @@ const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 
 const initialState = {
     manureProductionOnCountryLevel: [],
+    comparativeManureProductionStatsCountryLevel: [],
     amountOfManureProductionOnCountryLevel: 0,
     manureProductionOnDistrictLevel: [],
     amountOfManureProductionOnDistrictLevel: 0,
@@ -41,7 +42,7 @@ export const getManureProductionOnDistrictLevel = createAsyncThunk(
             response.data.manureProduction.forEach(element => {
                 element.date = new Date(element.date).toLocaleString();
             });
-            
+
             return { manureProduction: response.data.manureProduction, periodType: periodType, periodValue: periodValue }
         } catch (error) {
             return thunkAPI.rejectWithValue('Something went wrong!!');
@@ -92,13 +93,112 @@ const manureProduction = createSlice({
         [getManureProductionOnCountryLevel.fulfilled] : (state, action) => {
             state.isLoading = false;
             var production = [];
-            
+
+            // Comparative Manure production by months
+            function compareManureProductionByMonths(data) {
+                let comparativeManureProduction = [];
+                let totalProductionByMonthThisYear = [0,0,0,0,0,0,0,0,0,0,0,0];
+                let totalProductionByMonthLastYear = [0,0,0,0,0,0,0,0,0,0,0,0];
+
+                data.forEach(element => {
+                    // This year
+                    if (Number(element.year) === action.payload.periodValue) {
+                        if (Number(element.month) === 1) {
+                            totalProductionByMonthThisYear[0] = totalProductionByMonthThisYear[0] + element.quantity; 
+                        } else if (Number(element.month) === 2) {
+                            totalProductionByMonthThisYear[1] = totalProductionByMonthThisYear[1] + element.quantity; 
+                        } else if (Number(element.month) === 3) {
+                            totalProductionByMonthThisYear[2] = totalProductionByMonthThisYear[2] + element.quantity; 
+                        } else if (Number(element.month) === 4) {
+                            totalProductionByMonthThisYear[3] = totalProductionByMonthThisYear[3] + element.quantity; 
+                        } else if (Number(element.month) === 5) {
+                            totalProductionByMonthThisYear[4] = totalProductionByMonthThisYear[4] + element.quantity; 
+                        } else if (Number(element.month) === 6) {
+                            totalProductionByMonthThisYear[5] = totalProductionByMonthThisYear[5] + element.quantity; 
+                        } else if (Number(element.month) === 7) {
+                            totalProductionByMonthThisYear[6] = totalProductionByMonthThisYear[6] + element.quantity; 
+                        } else if (Number(element.month) === 8) {
+                            totalProductionByMonthThisYear[7] = totalProductionByMonthThisYear[7] + element.quantity; 
+                        } else if (Number(element.month) === 9) {
+                            totalProductionByMonthThisYear[8] = totalProductionByMonthThisYear[8] + element.quantity; 
+                        } else if (Number(element.month) === 10) {
+                            totalProductionByMonthThisYear[9] = totalProductionByMonthThisYear[9] + element.quantity; 
+                        } else if (Number(element.month) === 11) {
+                            totalProductionByMonthThisYear[10] = totalProductionByMonthThisYear[10] + element.quantity; 
+                        } else if (Number(element.month) === 12) {
+                            totalProductionByMonthThisYear[11] = totalProductionByMonthThisYear[11] + element.quantity; 
+                        } 
+                    }
+
+                    // Last year
+                    if (Number(element.year) === action.payload.periodValue-1) {
+                        if (Number(element.month) === 1) {
+                            totalProductionByMonthLastYear[0] = totalProductionByMonthLastYear[0] + element.quantity; 
+                        } else if (Number(element.month) === 2) {
+                            totalProductionByMonthLastYear[1] = totalProductionByMonthLastYear[1] + element.quantity; 
+                        } else if (Number(element.month) === 3) {
+                            totalProductionByMonthLastYear[2] = totalProductionByMonthLastYear[2] + element.quantity; 
+                        } else if (Number(element.month) === 4) {
+                            totalProductionByMonthLastYear[3] = totalProductionByMonthLastYear[3] + element.quantity; 
+                        } else if (Number(element.month) === 5) {
+                            totalProductionByMonthLastYear[4] = totalProductionByMonthLastYear[4] + element.quantity; 
+                        } else if (Number(element.month) === 6) {
+                            totalProductionByMonthLastYear[5] = totalProductionByMonthLastYear[5] + element.quantity; 
+                        } else if (Number(element.month) === 7) {
+                            totalProductionByMonthLastYear[6] = totalProductionByMonthLastYear[6] + element.quantity; 
+                        } else if (Number(element.month) === 8) {
+                            totalProductionByMonthLastYear[7] = totalProductionByMonthLastYear[7] + element.quantity; 
+                        } else if (Number(element.month) === 9) {
+                            totalProductionByMonthLastYear[8] = totalProductionByMonthLastYear[8] + element.quantity; 
+                        } else if (Number(element.month) === 10) {
+                            totalProductionByMonthLastYear[9] = totalProductionByMonthLastYear[9] + element.quantity; 
+                        } else if (Number(element.month) === 11) {
+                            totalProductionByMonthLastYear[10] = totalProductionByMonthLastYear[10] + element.quantity; 
+                        } else if (Number(element.month) === 12) {
+                            totalProductionByMonthLastYear[11] = totalProductionByMonthLastYear[11] + element.quantity; 
+                        } 
+                    }
+                });
+
+                console.log(totalProductionByMonthThisYear);
+                console.log(totalProductionByMonthLastYear);
+
+                const combinedStats = combineProductionArrays(totalProductionByMonthThisYear, totalProductionByMonthLastYear);
+
+                return combinedStats;
+            }   
+
+            // Combining statistics for both years
+            function combineProductionArrays(thisYear, lastYear) {
+                const months = [
+                  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                ];
+              
+                const stats = months.map((month, index) => {
+                  const combinedProduction = {
+                    name: month,
+                    [2022]: lastYear[index],
+                    [2023]: thisYear[index],
+                    amt: thisYear[index] + lastYear[index]
+                  };
+                  return combinedProduction;
+                });
+              
+                return stats;
+            }
+
+            const comparativeManureProduction = compareManureProductionByMonths(action.payload.manureProduction);
+            console.log(comparativeManureProduction);
+
+            // Sort out production for this year or month
             if (action.payload.periodType === 'year') {
                 production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
                 production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
     
+            // Manure production by districts
             function calculateDistrictManureProduction(data) {
                 const districtMap = new Map();
                 let totalManureProduction = 0; // Initialize the total manure production counter
@@ -133,15 +233,14 @@ const manureProduction = createSlice({
             
             const { districtManureProduction, totalManureProduction } = calculateDistrictManureProduction(production);
             
+            // Assigning indexes for table display
             districtManureProduction.forEach((element, index) => {
                 element.id = index;
                 element.period = action.payload.periodValue;
             });
-
-            console.log(districtManureProduction);
-            console.log("Total Manure Production:", totalManureProduction);
-              
-
+           
+            // Connecting to the store
+            state.comparativeManureProductionStatsCountryLevel = comparativeManureProduction;
             state.manureProductionOnCountryLevel = districtManureProduction;
             state.amountOfManureProductionOnCountryLevel = totalManureProduction;
         },
@@ -155,17 +254,13 @@ const manureProduction = createSlice({
             state.isLoading = false;
 
             var production = [];
-            var quantity = 0;
+            
             if (action.payload.periodType === 'year') {
                 production = action.payload.manureProduction.filter(element => Number(element.year) === action.payload.periodValue);
             } else if (action.payload.periodType === 'month') {
                 production = action.payload.manureProduction.filter(element =>  Number(element.month) === action.payload.periodValue || Number(element.year) === new Date().getFullYear());
             }
-
-            production.forEach(element => {
-                quantity = quantity + element.quantity;
-            });
-
+            
             function calculateMCCManureProduction(data) {
                 const mccMap = new Map();
                 let totalManureProduction = 0;
@@ -206,7 +301,7 @@ const manureProduction = createSlice({
                 element.id = element.mccId;
                 element.period = action.payload.periodValue;
             });
-        
+            
             state.manureProductionOnDistrictLevel = mccManureProduction;
             state.amountOfManureProductionOnDistrictLevel = totalManureProduction;
         },

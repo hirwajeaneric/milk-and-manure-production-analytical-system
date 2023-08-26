@@ -7,10 +7,38 @@ import ManureYearMonthChart from '../../components/charts/ManureYearMonthChart'
 
 const Stats = () => {
 
-  const { isLoading: loadingManure, manureProductionOnCountryLevel, manureFilterType, manureFilterValue, amountOfManureProductionOnCountryLevel } = useSelector(state => state.manure);
-  const { isLoading: loadingMilk, milkProductionOnCountryLevel, milkFilterType, milkFilterValue, amountOfMilkProductionOnCountryLevel } = useSelector(state => state.milk);
-  const { isLoading: loadingMccs, allMCCs, numberOfAllMCCs } = useSelector(state => state.mcc);
-  const { isLoading: loadingUsers, allMccEmployees, numberOfAllMccEmployees } = useSelector(state => state.user);
+  const { 
+    isLoading: loadingManure, 
+    manureProductionOnCountryLevel, 
+    manureFilterType, 
+    comparativeManureProductionStatsCountryLevel, 
+    manureFilterValue, 
+    amountOfManureProductionOnCountryLevel 
+  } = useSelector(state => state.manure);
+  
+  const { 
+    isLoading: loadingMilk, 
+    milkProductionOnCountryLevel, 
+    milkFilterType, 
+    comparativeMilkProductionStatsCountryLevel, 
+    milkFilterValue, 
+    amountOfMilkProductionOnCountryLevel 
+  } = useSelector(state => state.milk);
+  
+  const { 
+    isLoading: loadingMccs, 
+    allMCCs, 
+    numberOfAllMCCs 
+  } = useSelector(state => state.mcc);
+  
+  const { 
+    isLoading: loadingUsers, 
+    allMccEmployees, 
+    numberOfAllMccEmployees 
+  } = useSelector(state => state.user);
+
+
+
 
   return (
     <VerticallyFlexGapContainer>
@@ -36,14 +64,14 @@ const Stats = () => {
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
       
-        <VerticallyFlexGapContainer style={{ gap: '20px', boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
+        <VerticallyFlexGapContainer style={{ gap: '20px', boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '100%' }}>
           <strong style={{ textAlign:'left', width: '100%' }}>Comparison of Milk production for year 2022 and 2023</strong>
-          <MilkYearMonthChart />            
+          <MilkYearMonthChart data={comparativeMilkProductionStatsCountryLevel} />            
         </VerticallyFlexGapContainer>
       
-        <VerticallyFlexGapContainer style={{ gap: '20px',boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
+        <VerticallyFlexGapContainer style={{ gap: '20px',boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '100%' }}>
         <strong style={{ textAlign:'left', width: '100%' }}>Comparison of Manure production for year 2022 and 2023</strong>
-          <ManureYearMonthChart />            
+          <ManureYearMonthChart data={comparativeManureProductionStatsCountryLevel}/>            
         </VerticallyFlexGapContainer>
       
       </HorizontallyFlexSpaceBetweenContainer>
