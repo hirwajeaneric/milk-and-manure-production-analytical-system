@@ -24,21 +24,6 @@ const Stats = () => {
     milkFilterValue, 
     amountOfMilkProductionOnDistrictLevel 
   } = useSelector(state => state.milk);
-  
-  const { 
-    isLoading: loadingMccs, 
-    allMCCs, 
-    numberOfAllMCCs 
-  } = useSelector(state => state.mcc);
-  
-  const { 
-    isLoading: loadingUsers, 
-    allMccEmployees, 
-    numberOfAllMccEmployees 
-  } = useSelector(state => state.user);
-
-
-
 
   return (
     <VerticallyFlexGapContainer>
@@ -52,7 +37,7 @@ const Stats = () => {
           <span style={{ textAlign:'left', width: '100%' }}><strong>Milk </strong>- Records in {milkFilterValue}</span>
           <HorizontallyFlexSpaceBetweenContainer style={{ alignItems: 'flex-end' }}>
             <HeaderTwo style={{ fontSize: '200%' }}>{amountOfMilkProductionOnDistrictLevel} Ltrs</HeaderTwo>
-            <img src='/weekly-inputs.png' alt='' />
+            {/* <img src='/weekly-inputs.png' alt='' /> */}
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
       
@@ -60,7 +45,7 @@ const Stats = () => {
           <span style={{ textAlign:'left', width: '100%' }}><strong>Manure </strong>- Records in {manureFilterValue}</span>
           <HorizontallyFlexSpaceBetweenContainer style={{ alignItems: 'flex-end' }}>
             <HeaderTwo style={{ fontSize: '200%' }}>{amountOfManureProductionOnDistrictLevel} Tones</HeaderTwo>
-            <img src='/weekly-inputs.png' alt='' />
+            {/* <img src='/weekly-inputs.png' alt='' /> */}
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
       

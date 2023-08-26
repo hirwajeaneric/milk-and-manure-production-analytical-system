@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { HeaderTwo, HorizontallyFlexSpaceBetweenContainer, VerticallyFlexGapContainer } from '../../components/styles/GenericStyles'
-import CountryLevelMilkProductionTable from '../../components/tables/CountryLevelMilkProductionTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMilkProductionOnMCCLevel } from '../../redux/features/milkProductionSlice'
 import { getManureProductionOnMCCLevel } from '../../redux/features/manureProductionSlice'

@@ -24,21 +24,6 @@ const Stats = () => {
     milkFilterValue, 
     amountOfMilkProductionOnCountryLevel 
   } = useSelector(state => state.milk);
-  
-  const { 
-    isLoading: loadingMccs, 
-    allMCCs, 
-    numberOfAllMCCs 
-  } = useSelector(state => state.mcc);
-  
-  const { 
-    isLoading: loadingUsers, 
-    allMccEmployees, 
-    numberOfAllMccEmployees 
-  } = useSelector(state => state.user);
-
-
-
 
   return (
     <VerticallyFlexGapContainer>
