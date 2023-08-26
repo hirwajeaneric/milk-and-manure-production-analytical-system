@@ -50,8 +50,7 @@ export const TableStyles = {
   padding: '0px',
   width: '100%',
   height: '400px',
-  background: 'white',
-  marginTop: '20px' 
+  background: 'white', 
 }
 
 var rows = [];

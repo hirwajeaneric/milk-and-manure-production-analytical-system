@@ -5,6 +5,8 @@ const serverUrl = import.meta.env.VITE_REACT_APP_SERVERURL;
 const initialState = {
     manureProductionOnCountryLevel: [],
     comparativeManureProductionStatsCountryLevel: [],
+    comparativeManureProductionStatsDistrictLevel: [],
+    comparativeManureProductionStatsMCCLevel: [],
     amountOfManureProductionOnCountryLevel: 0,
     manureProductionOnDistrictLevel: [],
     amountOfManureProductionOnDistrictLevel: 0,
@@ -96,7 +98,6 @@ const manureProduction = createSlice({
 
             // Comparative Manure production by months
             function compareManureProductionByMonths(data) {
-                let comparativeManureProduction = [];
                 let totalProductionByMonthThisYear = [0,0,0,0,0,0,0,0,0,0,0,0];
                 let totalProductionByMonthLastYear = [0,0,0,0,0,0,0,0,0,0,0,0];
 
@@ -160,9 +161,6 @@ const manureProduction = createSlice({
                     }
                 });
 
-                console.log(totalProductionByMonthThisYear);
-                console.log(totalProductionByMonthLastYear);
-
                 const combinedStats = combineProductionArrays(totalProductionByMonthThisYear, totalProductionByMonthLastYear);
 
                 return combinedStats;
@@ -189,7 +187,6 @@ const manureProduction = createSlice({
             }
 
             const comparativeManureProduction = compareManureProductionByMonths(action.payload.manureProduction);
-            console.log(comparativeManureProduction);
 
             // Sort out production for this year or month
             if (action.payload.periodType === 'year') {
