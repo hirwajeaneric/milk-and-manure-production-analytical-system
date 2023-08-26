@@ -5,6 +5,8 @@ import CountryLevelMilkProductionTable from '../../components/tables/CountryLeve
 import { useDispatch, useSelector } from 'react-redux'
 import { getMilkProductionOnMCCLevel } from '../../redux/features/milkProductionSlice'
 import { getManureProductionOnMCCLevel } from '../../redux/features/manureProductionSlice'
+import MilkYearMonthChart from '../../components/charts/MilkYearMonthChart'
+import ManureYearMonthChart from '../../components/charts/ManureYearMonthChart'
 
 const Stats = () => {
   const dispatch = useDispatch();
@@ -14,8 +16,21 @@ const Stats = () => {
     dispatch(getMilkProductionOnMCCLevel({ mccId: JSON.parse(localStorage.getItem('mccUser')).mccId, periodType: 'year', periodValue: new Date().getFullYear()}))
   },[dispatch])
 
-  const { amountOfMilkProductionOnMccLevel, milkFilterType, milkFilterValue, milkProductionOnMccLevel } = useSelector(state => state.milk);
-  const { amountOfManureProductionOnMccLevel, manureFilterType, manureFilterValue, manureProductionOnMccLevel } = useSelector(state => state.manure);
+  const { 
+    amountOfMilkProductionOnMccLevel, 
+    comparativeMilkProductionStatsMCCLevel,
+    milkFilterType, 
+    milkFilterValue, 
+    milkProductionOnMccLevel 
+  } = useSelector(state => state.milk);
+  
+  const { 
+    amountOfManureProductionOnMccLevel,
+    comparativeManureProductionStatsMCCLevel, 
+    manureFilterType, 
+    manureFilterValue, 
+    manureProductionOnMccLevel 
+  } = useSelector(state => state.manure);
 
   return (
     <VerticallyFlexGapContainer>
@@ -42,18 +57,14 @@ const Stats = () => {
           </HorizontallyFlexSpaceBetweenContainer>
         </VerticallyFlexGapContainer>
       
-        <VerticallyFlexGapContainer style={{ gap: '20px', boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
-          <strong style={{ textAlign:'left', width: '100%' }}>Registered MCCs vs Unregistered ones</strong>
-          <HorizontallyFlexSpaceBetweenContainer>
-            <img src='/RegisteredVsUnregistered.png' style={{ width: '100%' }} alt='' />
-          </HorizontallyFlexSpaceBetweenContainer>
+        <VerticallyFlexGapContainer style={{ gap: '20px', boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '100%' }}>
+          <strong style={{ textAlign:'left', width: '100%' }}>Comparison of Milk production for year 2022 and 2023</strong>
+          <MilkYearMonthChart data={comparativeMilkProductionStatsMCCLevel} />            
         </VerticallyFlexGapContainer>
       
-        <VerticallyFlexGapContainer style={{ gap: '20px',boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '49%' }}>
-          <strong style={{ textAlign:'left', width: '100%' }}>Milk Weekly Records</strong>
-          <HorizontallyFlexSpaceBetweenContainer>
-            <CountryLevelMilkProductionTable data={[]} />
-          </HorizontallyFlexSpaceBetweenContainer>
+        <VerticallyFlexGapContainer style={{ gap: '20px',boxShadow: '0px 2px 8px rgba(0,0,0,0.32)', background:'white', padding: '20px', borderRadius:'5px', width: '100%' }}>
+        <strong style={{ textAlign:'left', width: '100%' }}>Comparison of Manure production for year 2022 and 2023</strong>
+          <ManureYearMonthChart data={comparativeManureProductionStatsMCCLevel}/>            
         </VerticallyFlexGapContainer>
       
       </HorizontallyFlexSpaceBetweenContainer>
