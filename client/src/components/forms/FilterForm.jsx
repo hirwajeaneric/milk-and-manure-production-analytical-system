@@ -2,80 +2,54 @@ import { FormElement, HeaderTwo, HorizontallyFlexSpaceBetweenContainer, Vertical
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-export default function FilterForm() {
+export default function FilterForm(props) {
+    const { handleCloseModal } = props;
+
     const dispatch = useDispatch();
-    const [ isProcessing, setIsProcessing ] = useState(false);
-    const [ filterPeriodType, setFilterPeriodType ] = useState('');
-    const [ filterPeriodValue, setFilterPeriodValue ] = useState('');
+    const navigate = useNavigate();
 
-    const handleFilterPeriodType = ({ currentTarget: target }) => {
-        setFilterPeriodType(target.value);
+    const [ filterData, setProductionType ] = useState({});
+
+    const handleFilterData = ({ currentTarget: target }) => {
+        setProductionType({...filterData, [target.name]:target.value});
     }
 
-    const handleFilterPeriodValue = ({ currentTarget: target }) => {
-        setFilterPeriodValue(target.value);
-
-        if (target.name === 'periodType') {
-
-        }
-    }
-
-    const submitFilterValues = (e) => {
+    const submitReport = (e) => {
         e.preventDefault();
+        
+        filterData.location = 'country';
 
-        console.log(filterPeriodType);
-        console.log(filterPeriodValue);
+        dispatch({type: 'report/setReport', payload: filterData});
+        handleCloseModal();
+        navigate(`/rab/report-preview`);
     };
 
     return (
         <VerticallyFlexGapContainer style={{ gap: '10px', padding: '15px', borderRadius: '5px', background: 'white' }}>
-            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Choose filter period</HeaderTwo>
-            <VerticallyFlexGapForm className="right" style={{ gap: '10px' }} onSubmit={submitFilterValues}>
+            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Choose Report</HeaderTwo>
+            <VerticallyFlexGapForm className="right" style={{ gap: '10px' }} onSubmit={submitReport}>
                 <FormElement style={{ color: 'gray' }}>
-                    <label htmlFor="periodType">Period type</label>
-                    <select onChange={handleFilterPeriodType}>
-                        <option value="">Choose period</option>
-                        <option value="year">Year</option>
-                        <option value="month">Month</option>
+                    <label htmlFor="type">Report type</label>
+                    <select name="type" onChange={handleFilterData}>
+                        <option value="">Choose production type</option>
+                        <option value="milk">Milk</option>
+                        <option value="manure">Manure</option>
+                        <option value="mccs">Milk Collection Centers</option>
                     </select>
                 </FormElement>
-                <FormElement style={{ color: 'gray' }}>
-                    <label htmlFor="periodValue">Year</label>
-                    <select onChange={handleFilterPeriodValue}>
-                        <option value="">Choose year</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
+                {/* <FormElement style={{ color: 'gray' }}>
+                    <label htmlFor="location">Location</label>
+                    <select name="location" onChange={handleFilterData}>
+                        <option value="">Choose location</option>
+                        <option value="country">Country</option>
+                        <option value="district">District</option>
                     </select>
-                </FormElement>
-
-                <FormElement style={{ color: 'gray' }}>
-                    <label htmlFor="periodValue">Month</label>
-                    <select onChange={handleFilterPeriodValue}>
-                        <option value="">Choose month</option>
-                        <option value="1">January</option>
-                        <option value="2">February</option>
-                        <option value="3">March</option>
-                        <option value="4">April</option>
-                        <option value="5">May</option>
-                        <option value="6">June</option>
-                        <option value="7">July</option>
-                        <option value="8">August</option>
-                        <option value="9">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
-                    </select>
-                </FormElement>
+                </FormElement> */}
 
                 <HorizontallyFlexSpaceBetweenContainer style={{ gap: '10px' }}>  
-                    {isProcessing 
-                    ? <Button disabled variant="contained" color="primary" size="small">PROCESSING...</Button> 
-                    : <Button variant="contained" color="primary" size="small" type="submit">Register</Button>
-                    }
+                    <Button variant="contained" color="primary" size="small" type="submit">Generate</Button>
                 </HorizontallyFlexSpaceBetweenContainer>
             </VerticallyFlexGapForm>
         </VerticallyFlexGapContainer>

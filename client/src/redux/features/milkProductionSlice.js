@@ -7,6 +7,7 @@ const initialState = {
     comparativeMilkProductionStatsCountryLevel: [],
     comparativeMilkProductionStatsDistrictLevel: [],
     comparativeMilkProductionStatsMCCLevel: [],
+    milkProductionTableOfProvinces: {},
     amountOfMilkProductionOnCountryLevel: 0,
     milkProductionOnDistrictLevel: [],
     amountOfMilkProductionOnDistrictLevel: 0,
@@ -180,6 +181,33 @@ function calculateMCCMilkProduction(data) {
       totalMilkProduction: totalMilkProduction // Include the total milk production in the result
     };
 }
+
+// Milk production table for districts
+// function getMilkProductionTableForDistricts(production) {
+//     var kigali = 0;
+//     var north = 0;
+//     var south = 0;
+//     var east = 0;
+//     var west = 0;
+
+//     production.forEach(production => {
+//         if (production === '') {
+//             kigali = kigali + production.quantity;    
+//         }
+//         if (production === '') {
+//             north = north + production.quantity;    
+//         }
+//         if (production === '') {
+//             south = south + production.quantity;    
+//         }
+//         if (production === '') {
+//             east = east + production.quantity;    
+//         }
+//         if (production === '') {
+//             west = west + production.quantity;    
+//         }
+//     });
+// }
 
 export const getMilkProductionOnCountryLevel = createAsyncThunk(
     'milk/getMilkProductionOnCountryLevel',

@@ -17,11 +17,13 @@ const ReportPreview = () => {
         <title>Report preview</title>
         <meta name="description" content={`Report preview`} /> 
       </Helmet>
-    
-      <HeaderTwo style={{ width: '100%', textAlign: 'left' }}><strong>Report preview </strong></HeaderTwo>
-      <Button variant='contained' size='small' color='secondary' onClick={handlePrint}>Print</Button>
 
-      <VerticallyFlexGapContainer style={{ gap: '20px', alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <HeaderTwo style={{ width: '100%', textAlign: 'left' }}><strong>Report preview </strong></HeaderTwo>
+        <Button variant='contained' size='small' color='secondary' onClick={handlePrint}>Print</Button>
+      </div>
+
+      <VerticallyFlexGapContainer style={{ gap: '20px', alignItems: 'flex-start', alignItems: 'center' }}>
         <ComponentToPrint ref={componentRef} />      
       </VerticallyFlexGapContainer>
     </VerticallyFlexGapContainer>
