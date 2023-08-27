@@ -64,9 +64,8 @@ const DashboardMain = () => {
                 </div>    
 
                 <div className="right">
-                    <Button color="inherit" size='small' variant='contained' onClick={handleOpenModal}>Change period</Button>
                     <Button color="info" size='small' variant='text' onClick={handleOpenModal}>Generate reports</Button>
-                    
+
                     <Tooltip title="Account settings">
                         <IconButton onClick={handleClick} size="small" sx={{ ml: 2, background: 'white' }} aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
                             <Avatar sx={{ width: 32, height: 32, background: 'black' }}></Avatar>
@@ -179,18 +178,19 @@ const DashboardMain = () => {
             </HorizontallyFlexGapContainer>
 
             <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 400,
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4,
+                <Box 
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
                     }}
                 >
-                <FilterForm />
+                <FilterForm handleCloseModal={handleCloseModal} />
                 </Box>
             </Modal>
         </VerticallyFlexSpaceBetweenContainer>
