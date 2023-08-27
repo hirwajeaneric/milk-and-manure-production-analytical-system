@@ -28,7 +28,7 @@ export default function FilterForm(props) {
 
     return (
         <VerticallyFlexGapContainer style={{ gap: '10px', padding: '15px', borderRadius: '5px', background: 'white' }}>
-            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Choose Report</HeaderTwo>
+            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Choose eport</HeaderTwo>
             <VerticallyFlexGapForm className="right" style={{ gap: '10px' }} onSubmit={submitReport}>
                 <FormElement style={{ color: 'gray' }}>
                     <label htmlFor="type">Report type</label>
