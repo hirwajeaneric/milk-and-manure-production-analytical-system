@@ -18,6 +18,8 @@ export default function FilterForm(props) {
 
     const submitReport = (e) => {
         e.preventDefault();
+        
+        filterData.location = 'country';
 
         dispatch({type: 'report/setReport', payload: filterData});
         handleCloseModal();
@@ -26,7 +28,7 @@ export default function FilterForm(props) {
 
     return (
         <VerticallyFlexGapContainer style={{ gap: '10px', padding: '15px', borderRadius: '5px', background: 'white' }}>
-            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Choose filter period</HeaderTwo>
+            <HeaderTwo style={{ width: '100%', fontSize: '100%', textAlign: 'left' }}>Choose Report</HeaderTwo>
             <VerticallyFlexGapForm className="right" style={{ gap: '10px' }} onSubmit={submitReport}>
                 <FormElement style={{ color: 'gray' }}>
                     <label htmlFor="type">Report type</label>
@@ -34,16 +36,17 @@ export default function FilterForm(props) {
                         <option value="">Choose production type</option>
                         <option value="milk">Milk</option>
                         <option value="manure">Manure</option>
+                        <option value="mccs">Milk Collection Centers</option>
                     </select>
                 </FormElement>
-                <FormElement style={{ color: 'gray' }}>
+                {/* <FormElement style={{ color: 'gray' }}>
                     <label htmlFor="location">Location</label>
                     <select name="location" onChange={handleFilterData}>
                         <option value="">Choose location</option>
                         <option value="country">Country</option>
                         <option value="district">District</option>
                     </select>
-                </FormElement>
+                </FormElement> */}
 
                 <HorizontallyFlexSpaceBetweenContainer style={{ gap: '10px' }}>  
                     <Button variant="contained" color="primary" size="small" type="submit">Generate</Button>

@@ -6,7 +6,16 @@ import { useSelector } from 'react-redux';
 export const ComponentToPrint = React.forwardRef((props, ref) => {
     // FORM PROCESSING AND RESPONSE PROVISION
     const params =  useParams();
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('rabUser')));
+    },[])
+
     const { type, location } = useSelector(state => state.report);
+    const { milkProductionOnCountryLevel } = useSelector(state => state.milk);
+    const { manureProductionOnCountryLevel } = useSelector(state => state.manure);
+    const { allmccs } = useSelector(state => state.mcc);
 
     return (
         <>
@@ -28,50 +37,36 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                         
                         <div className='report-period'>
                             <div className='left'>
-                                <p>Report period: Year 2023</p>
+                                <p>Report period: Year {new Date().getFullYear()}</p>
                             </div>
                             <div right='right'>
                                 <p>Generated on: {new Date().toDateString()}</p>
-                                <p>By: Impuhwe Stella</p>
+                                <p>By: {user.fullName}</p>
                             </div>
                         </div>
                     </ReportHeader>
 
                     <ReportBody>
-                        <p>The table bellow contains milk production data from all provinces in Rwanda</p>
+                        <p>The table bellow contains milk production data from all districts in Rwanda</p>
 
                         <TableList>
                             <thead>
                                 <tr>
-                                    <th>Province</th>
+                                    <th>District</th>
                                     <th>Quantity in Litres</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Kigali City</td>
-                                    <td>100000</td>
-                                </tr>
-                                <tr>
-                                    <td>Northern province</td>
-                                    <td>470000</td>
-                                </tr>
-                                <tr>
-                                    <td>Southern province</td>
-                                    <td>500000</td>
-                                </tr>
-                                <tr>
-                                    <td>Eastern province</td>
-                                    <td>600000</td>
-                                </tr>
-                                <tr>
-                                    <td>Western province</td>
-                                    <td>440000</td>
-                                </tr>
-                                <tr>
-                                    <td>Total</td>
-                                    <td>2110000</td>
-                                </tr>
+                                {milkProductionOnCountryLevel && 
+                                    milkProductionOnCountryLevel.map((production, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{production.district}</td>
+                                                <td>{production.totalMilkProduction}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </TableList>
 
@@ -105,49 +100,34 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                             </div>
                             <div right='right'>
                                 <p>Generated on: {new Date().toDateString()}</p>
-                                <p>By: Impuhwe Stella</p>
+                                <p>By: {user.fullName}</p>
                             </div>
                         </div>
                     </ReportHeader>
 
                     <ReportBody>
-                        <p>The table bellow contains manure production data from all provinces in Rwanda</p>
+                        <p>The table bellow contains manure production data from all districts in Rwanda</p>
 
                         <TableList>
                             <thead>
                                 <tr>
-                                    <th>Province</th>
-                                    <th>Quantity in tones</th>
+                                    <th>District</th>
+                                    <th>Quantity in Kilograms</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Kigali City</td>
-                                    <td>50000</td>
-                                </tr>
-                                <tr>
-                                    <td>Northern province</td>
-                                    <td>60000</td>
-                                </tr>
-                                <tr>
-                                    <td>Southern province</td>
-                                    <td>65000</td>
-                                </tr>
-                                <tr>
-                                    <td>Eastern province</td>
-                                    <td>64000</td>
-                                </tr>
-                                <tr>
-                                    <td>Western province</td>
-                                    <td>60000</td>
-                                </tr>
-                                <tr>
-                                    <td>Total</td>
-                                    <td>251000</td>
-                                </tr>
+                                {manureProductionOnCountryLevel && 
+                                    manureProductionOnCountryLevel.map((production, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{production.district}</td>
+                                                <td>{production.totalManureProduction}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </TableList>
-
                     </ReportBody>
 
                     <ReportFooter>
@@ -174,18 +154,18 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                         
                         <div className='report-period'>
                             <div className='left'>
-                                <p>Report period: Year 2023</p>
-                                <p>District: Gasabo</p>
+                                <p>Report period: Year [new Date().getFullYear()]</p>
+                                {/* <p>District: Gasabo</p> */}
                             </div>
                             <div right='right'>
                                 <p>Generated on: {new Date().toDateString()}</p>
-                                <p>By: Muyango Bailly</p>
+                                <p>By: {user.fullName}</p>
                             </div>
                         </div>
                     </ReportHeader>
 
                     <ReportBody>
-                        <p>The table bellow contains a list of all milk collection centers operating in Gasabo district</p>
+                        <p>The table bellow contains a list of all Milk Collection Centers operating in Rwanda</p>
 
                         <TableList>
                             <thead>
@@ -196,18 +176,16 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>gasabo01</td>
-                                    <td>Kagugu Milk Collection Center</td>
-                                </tr>
-                                <tr>
-                                    <td>gasabo02</td>
-                                    <td>Giramata</td>
-                                </tr>
-                                <tr>
-                                    <td>gasabo03</td>
-                                    <td>Ndera MCC Cooperative</td>
-                                </tr>
+                                {allmccs && 
+                                    allmccs.map((mcc, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{mcc.district}</td>
+                                                <td>{mcc.name}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </TableList>
 
